@@ -1,0 +1,304 @@
+name: README Drift Detection
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  readme-drift-detection:
+    name: Detect README Drift
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect changed files
+        id: changed
+        uses: tj-actions/changed-files@v44
+
+      - name: Check for README drift
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+          ADDED_FILES: ${{ steps.changed.outputs.added_files }}
+          DELETED_FILES: ${{ steps.changed.outputs.deleted_files }}
+          RENAMED_FILES: ${{ steps.changed.outputs.renamed_files }}
+        run: |
+          ERRORS=()
+          WARNINGS=()
+
+          # -----------------------------------------------------------
+          # 1. Determine if drift check is needed
+          # -----------------------------------------------------------
+          STRUCTURAL_CHANGE=false
+          README_MODIFIED=false
+
+          for file in $ALL_CHANGED_FILES; do
+            if [[ "$file" == "README.md" ]]; then
+              README_MODIFIED=true
+            fi
+          done
+
+          # Check for file additions, deletions, or renames
+          if [ -n "$ADDED_FILES" ] || [ -n "$DELETED_FILES" ] || [ -n "$RENAMED_FILES" ]; then
+            STRUCTURAL_CHANGE=true
+          fi
+
+          # Also check for changes to files referenced in README sections
+          for file in $ALL_CHANGED_FILES; do
+            case "$file" in
+              agents/*|contracts/*|policies/*|standards/*|schemas/*|scripts/*|wiki/*|.github/*)
+                STRUCTURAL_CHANGE=true
+                ;;
+            esac
+          done
+
+          if [ "$STRUCTURAL_CHANGE" = false ] && [ "$README_MODIFIED" = false ]; then
+            echo "No structural changes or README modifications detected. Skipping drift check."
+            exit 0
+          fi
+
+          echo "Running README drift detection..."
+          echo ""
+
+          # -----------------------------------------------------------
+          # 2. Validate Repository Structure tree
+          # -----------------------------------------------------------
+          echo "=== Repository Structure Tree Check ==="
+
+          # Extract files listed in the README structure tree
+          # The tree is between ``` markers after "## Repository Structure"
+          README_TREE_FILES=()
+
+          IN_TREE=false
+          while IFS= read -r line; do
+            if [[ "$line" == '```' ]] && [ "$IN_TREE" = true ]; then
+              break
+            fi
+            if [ "$IN_TREE" = true ]; then
+              # Extract filename from tree line (strip tree chars, comments, whitespace)
+              FNAME=$(echo "$line" | sed 's/[│├└─┐┘┬┴┼]//g' | sed 's/#.*$//' | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+              if [ -n "$FNAME" ] && [[ "$FNAME" != "forsetti-agentic-edition/" ]]; then
+                README_TREE_FILES+=("$FNAME")
+              fi
+            fi
+            if [[ "$line" == '```' ]] && [ "$IN_TREE" = false ]; then
+              IN_TREE=true
+            fi
+          done < <(sed -n '/^## Repository Structure/,/^## /p' README.md)
+
+          # Build actual file/directory list (top-level and one level deep)
+          ACTUAL_ITEMS=()
+          # Root-level files (excluding hidden files except .github)
+          for item in *.md .github; do
+            if [ -e "$item" ]; then
+              ACTUAL_ITEMS+=("$item")
+            fi
+          done
+          # Key directories and their contents
+          for dir in agents contracts policies standards schemas scripts wiki changelog; do
+            if [ -d "$dir" ]; then
+              ACTUAL_ITEMS+=("$dir/")
+              for item in "$dir"/*; do
+                if [ -e "$item" ]; then
+                  ACTUAL_ITEMS+=("$(basename "$item")")
+                fi
+              done
+            fi
+          done
+          # .github subdirectories
+          if [ -d ".github" ]; then
+            for item in .github/*/; do
+              if [ -d "$item" ]; then
+                ACTUAL_ITEMS+=("$(basename "$item")/")
+              fi
+            done
+            # PR template
+            for item in .github/*.md; do
+              if [ -f "$item" ]; then
+                ACTUAL_ITEMS+=("$(basename "$item")")
+              fi
+            done
+          fi
+
+          # Check for files listed in README but not on disk
+          STALE_COUNT=0
+          for readme_file in "${README_TREE_FILES[@]}"; do
+            # Skip directory entries (end with /)
+            if [[ "$readme_file" == */ ]]; then
+              DIR_NAME="${readme_file%/}"
+              if [ ! -d "$DIR_NAME" ] && [ ! -d ".github/$DIR_NAME" ]; then
+                WARNINGS+=("Structure tree: Directory '$readme_file' listed in README but does not exist")
+                STALE_COUNT=$((STALE_COUNT + 1))
+              fi
+              continue
+            fi
+
+            # Check if the file exists somewhere reasonable
+            FOUND=false
+            if [ -f "$readme_file" ]; then
+              FOUND=true
+            fi
+            # Check in subdirectories
+            for dir in agents contracts policies standards schemas scripts wiki changelog .github .github/workflows .github/ISSUE_TEMPLATE; do
+              if [ -f "$dir/$readme_file" ]; then
+                FOUND=true
+                break
+              fi
+            done
+
+            if [ "$FOUND" = false ]; then
+              WARNINGS+=("Structure tree: File '$readme_file' listed in README but not found on disk")
+              STALE_COUNT=$((STALE_COUNT + 1))
+            fi
+          done
+
+          # Check for actual files not in README tree
+          # Only check key directories for new files
+          MISSING_COUNT=0
+          for dir in agents contracts policies standards schemas scripts; do
+            if [ -d "$dir" ]; then
+              for item in "$dir"/*; do
+                if [ -f "$item" ]; then
+                  BASENAME=$(basename "$item")
+                  FOUND_IN_README=false
+                  for readme_file in "${README_TREE_FILES[@]}"; do
+                    if [[ "$readme_file" == "$BASENAME" ]]; then
+                      FOUND_IN_README=true
+                      break
+                    fi
+                  done
+                  if [ "$FOUND_IN_README" = false ]; then
+                    WARNINGS+=("Structure tree: File '$item' exists on disk but not listed in README")
+                    MISSING_COUNT=$((MISSING_COUNT + 1))
+                  fi
+                fi
+              done
+            fi
+          done
+
+          TREE_DISCREPANCIES=$((STALE_COUNT + MISSING_COUNT))
+          echo "  Stale entries (in README, not on disk): $STALE_COUNT"
+          echo "  Missing entries (on disk, not in README): $MISSING_COUNT"
+          echo ""
+
+          # -----------------------------------------------------------
+          # 3. Validate Document Hierarchy table
+          # -----------------------------------------------------------
+          echo "=== Document Hierarchy Check ==="
+
+          HIERARCHY_ISSUES=0
+
+          # Check that the 4 policy documents listed exist
+          for policy in COMPLIANCE_POLICY.md CHANGE_CONTROL_POLICY.md RELEASE_POLICY.md DOCUMENTATION_POLICY.md; do
+            if [ ! -f "$policy" ]; then
+              WARNINGS+=("Document Hierarchy: Policy document '$policy' referenced but not found")
+              HIERARCHY_ISSUES=$((HIERARCHY_ISSUES + 1))
+            fi
+          done
+
+          # Check that FORSETTI_CONSTITUTION.md exists
+          if [ ! -f "FORSETTI_CONSTITUTION.md" ]; then
+            ERRORS+=("Document Hierarchy: Constitution file 'FORSETTI_CONSTITUTION.md' not found")
+          fi
+
+          # Check for new policy documents not in the hierarchy
+          for file in *_POLICY.md; do
+            if [ -f "$file" ]; then
+              IN_README=$(grep -c "$file" README.md || true)
+              if [ "$IN_README" -eq 0 ]; then
+                WARNINGS+=("Document Hierarchy: Policy document '$file' exists but is not listed in README")
+                HIERARCHY_ISSUES=$((HIERARCHY_ISSUES + 1))
+              fi
+            fi
+          done
+
+          echo "  Hierarchy issues: $HIERARCHY_ISSUES"
+          echo ""
+
+          # -----------------------------------------------------------
+          # 4. Validate Role Model section
+          # -----------------------------------------------------------
+          echo "=== Role Model Check ==="
+
+          ROLE_ISSUES=0
+
+          # Extract role names from agents/ directory
+          ACTUAL_ROLES=()
+          for agent_file in agents/*.md; do
+            if [ -f "$agent_file" ]; then
+              ROLE=$(basename "$agent_file" .md | sed 's/-/ /g')
+              ACTUAL_ROLES+=("$ROLE")
+            fi
+          done
+
+          # Check each actual role is mentioned in the Role Model section
+          ROLE_SECTION=$(sed -n '/^## Role Model/,/^## /p' README.md)
+
+          for role in "${ACTUAL_ROLES[@]}"; do
+            # Case-insensitive check for role name in the section
+            if ! echo "$ROLE_SECTION" | grep -iq "$role"; then
+              WARNINGS+=("Role Model: Agent '$role' (agents/$(echo "$role" | sed 's/ /-/g').md) exists but not found in README Role Model section")
+              ROLE_ISSUES=$((ROLE_ISSUES + 1))
+            fi
+          done
+
+          # Check for roles in README not backed by agent files
+          README_ROLES=$(echo "$ROLE_SECTION" | grep -oP '(?<=### )\w[\w ]*' || true)
+          while IFS= read -r readme_role; do
+            if [ -z "$readme_role" ]; then continue; fi
+            ROLE_FILE="agents/$(echo "$readme_role" | tr '[:upper:]' '[:lower:]' | sed 's/ /-/g').md"
+            if [ ! -f "$ROLE_FILE" ]; then
+              WARNINGS+=("Role Model: Role '$readme_role' listed in README but no corresponding file at '$ROLE_FILE'")
+              ROLE_ISSUES=$((ROLE_ISSUES + 1))
+            fi
+          done <<< "$README_ROLES"
+
+          echo "  Role issues: $ROLE_ISSUES"
+          echo ""
+
+          # -----------------------------------------------------------
+          # 5. Determine total discrepancies and report
+          # -----------------------------------------------------------
+          TOTAL_DISCREPANCIES=$((TREE_DISCREPANCIES + HIERARCHY_ISSUES + ROLE_ISSUES))
+
+          # Promote to errors if 3+ discrepancies
+          if [ "$TOTAL_DISCREPANCIES" -ge 3 ]; then
+            for warning in "${WARNINGS[@]}"; do
+              ERRORS+=("$warning")
+            done
+            WARNINGS=()
+          fi
+
+          # Print warnings
+          for warning in "${WARNINGS[@]}"; do
+            echo "::warning::$warning"
+          done
+
+          # Print errors
+          for error in "${ERRORS[@]}"; do
+            echo "::error::$error"
+          done
+
+          echo ""
+          echo "========================================"
+          echo "  README Drift Detection Report"
+          echo "========================================"
+          echo "  Structure tree:      $TREE_DISCREPANCIES discrepancies ($STALE_COUNT stale, $MISSING_COUNT missing)"
+          echo "  Document hierarchy:  $HIERARCHY_ISSUES issues"
+          echo "  Role model:          $ROLE_ISSUES issues"
+          echo "  Total:               $TOTAL_DISCREPANCIES"
+
+          if [ ${#ERRORS[@]} -gt 0 ]; then
+            echo "  Status:              FAIL"
+            echo "========================================"
+            echo ""
+            echo "README has drifted from the actual repository state."
+            echo "Please update README.md to reflect the current structure."
+            exit 1
+          elif [ ${#WARNINGS[@]} -gt 0 ]; then
+            echo "  Status:              WARNING"
+            echo "========================================"
+          else
+            echo "  Status:              PASS"
+            echo "========================================"
+          fi

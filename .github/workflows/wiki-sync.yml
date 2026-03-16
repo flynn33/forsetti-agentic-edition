@@ -1,0 +1,217 @@
+name: Wiki Sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'FORSETTI_CONSTITUTION.md'
+      - 'AGENTS.md'
+      - 'agents/**'
+      - 'COMPLIANCE_POLICY.md'
+      - 'RELEASE_POLICY.md'
+      - 'CHANGE_CONTROL_POLICY.md'
+      - 'DOCUMENTATION_POLICY.md'
+      - 'README.md'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-wiki-pages:
+    name: Sync Wiki from Canonical Sources
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Sync wiki pages
+        run: |
+          # -----------------------------------------------------------
+          # 1. Determine which canonical files changed
+          # -----------------------------------------------------------
+          CHANGED_FILES=$(git diff --name-only HEAD~1 2>/dev/null || git diff --name-only HEAD)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          echo ""
+
+          # Track which wiki pages need updating
+          UPDATE_CONSTITUTION=false
+          UPDATE_AGENT_ROLES=false
+          UPDATE_COMPLIANCE=false
+          UPDATE_RELEASES=false
+          UPDATE_WORKFLOW=false
+          UPDATE_HOME=false
+
+          while IFS= read -r file; do
+            case "$file" in
+              FORSETTI_CONSTITUTION.md) UPDATE_CONSTITUTION=true ;;
+              AGENTS.md) UPDATE_AGENT_ROLES=true ;;
+              agents/*) UPDATE_AGENT_ROLES=true ;;
+              COMPLIANCE_POLICY.md) UPDATE_COMPLIANCE=true ;;
+              RELEASE_POLICY.md) UPDATE_RELEASES=true ;;
+              CHANGE_CONTROL_POLICY.md) UPDATE_WORKFLOW=true ;;
+              DOCUMENTATION_POLICY.md) UPDATE_WORKFLOW=true ;;
+              README.md) UPDATE_HOME=true ;;
+            esac
+          done <<< "$CHANGED_FILES"
+
+          # -----------------------------------------------------------
+          # 2. Get version and commit info for sync headers
+          # -----------------------------------------------------------
+          CURRENT_VERSION=$(grep -oP '(?<=## \[)[0-9]+\.[0-9]+\.[0-9]+' changelog/CHANGELOG.md | head -1 || echo "unreleased")
+          SHORT_SHA=$(git rev-parse --short HEAD)
+
+          echo "Current version: $CURRENT_VERSION"
+          echo "Commit: $SHORT_SHA"
+          echo ""
+
+          # -----------------------------------------------------------
+          # Helper: Generate wiki page from a single canonical source
+          # -----------------------------------------------------------
+          generate_single_source_page() {
+            local TITLE="$1"
+            local CANONICAL="$2"
+            local WIKI_PATH="$3"
+
+            {
+              echo "# $TITLE"
+              echo ""
+              echo "> **Canonical source**: [\`$CANONICAL\`](../$CANONICAL)"
+              echo "> **Last synced**: v$CURRENT_VERSION / $SHORT_SHA"
+              echo ""
+              # Strip the first H1 heading line and any immediately following blank line
+              tail -n +2 "$CANONICAL" | sed '1{/^$/d}'
+            } > "$WIKI_PATH"
+
+            echo "Updated: $WIKI_PATH (from $CANONICAL)"
+          }
+
+          # -----------------------------------------------------------
+          # 3. Update each affected wiki page
+          # -----------------------------------------------------------
+
+          # Constitution
+          if [ "$UPDATE_CONSTITUTION" = true ]; then
+            generate_single_source_page "Constitution" "FORSETTI_CONSTITUTION.md" "wiki/Constitution.md"
+          fi
+
+          # Compliance
+          if [ "$UPDATE_COMPLIANCE" = true ]; then
+            generate_single_source_page "Compliance" "COMPLIANCE_POLICY.md" "wiki/Compliance.md"
+          fi
+
+          # Releases
+          if [ "$UPDATE_RELEASES" = true ]; then
+            generate_single_source_page "Releases" "RELEASE_POLICY.md" "wiki/Releases.md"
+          fi
+
+          # Agent Roles (composite: AGENTS.md + agents/*.md)
+          if [ "$UPDATE_AGENT_ROLES" = true ]; then
+            {
+              echo "# Agent Roles"
+              echo ""
+              echo "> **Canonical sources**: [\`AGENTS.md\`](../AGENTS.md), [\`agents/*.md\`](../agents/)"
+              echo "> **Last synced**: v$CURRENT_VERSION / $SHORT_SHA"
+              echo ""
+              # Include AGENTS.md content (strip first H1)
+              tail -n +2 "AGENTS.md" | sed '1{/^$/d}'
+              echo ""
+              echo "---"
+              echo ""
+              echo "## Individual Role Definitions"
+              echo ""
+              # Append each agent role file
+              for agent_file in agents/*.md; do
+                if [ -f "$agent_file" ]; then
+                  ROLE_NAME=$(basename "$agent_file" .md | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+                  echo "### $ROLE_NAME"
+                  echo ""
+                  # Strip first H1 from each agent file
+                  tail -n +2 "$agent_file" | sed '1{/^$/d}'
+                  echo ""
+                  echo "---"
+                  echo ""
+                fi
+              done
+            } > "wiki/Agent-Roles.md"
+
+            echo "Updated: wiki/Agent-Roles.md (from AGENTS.md + agents/*.md)"
+          fi
+
+          # Workflow (composite: CHANGE_CONTROL_POLICY.md + DOCUMENTATION_POLICY.md)
+          if [ "$UPDATE_WORKFLOW" = true ]; then
+            {
+              echo "# Workflow"
+              echo ""
+              echo "> **Canonical sources**: [\`CHANGE_CONTROL_POLICY.md\`](../CHANGE_CONTROL_POLICY.md), [\`DOCUMENTATION_POLICY.md\`](../DOCUMENTATION_POLICY.md)"
+              echo "> **Last synced**: v$CURRENT_VERSION / $SHORT_SHA"
+              echo ""
+              echo "## Change Control"
+              echo ""
+              tail -n +2 "CHANGE_CONTROL_POLICY.md" | sed '1{/^$/d}'
+              echo ""
+              echo "---"
+              echo ""
+              echo "## Documentation Policy"
+              echo ""
+              tail -n +2 "DOCUMENTATION_POLICY.md" | sed '1{/^$/d}'
+            } > "wiki/Workflow.md"
+
+            echo "Updated: wiki/Workflow.md (from CHANGE_CONTROL_POLICY.md + DOCUMENTATION_POLICY.md)"
+          fi
+
+          # Home (from README.md)
+          if [ "$UPDATE_HOME" = true ]; then
+            {
+              echo "# Forsetti Agentic Edition — Wiki"
+              echo ""
+              echo "Welcome to the Forsetti Agentic Edition wiki. This wiki provides navigational summaries of the governance framework. All wiki content is derived from canonical repository documents."
+              echo ""
+              echo "**Canonical sources are authoritative.** If a conflict exists between this wiki and a repository markdown file, the repository file is correct."
+              echo ""
+              echo "> **Canonical source**: [\`README.md\`](../README.md)"
+              echo "> **Last synced**: v$CURRENT_VERSION / $SHORT_SHA"
+              echo ""
+              echo "## Navigation"
+              echo ""
+              echo "| Page | Summary | Canonical Source |"
+              echo "|------|---------|-----------------|"
+              echo "| [Constitution](Constitution.md) | Foundational principles and governance doctrine | \`FORSETTI_CONSTITUTION.md\` |"
+              echo "| [Agent Roles](Agent-Roles.md) | Governed roles and their authority boundaries | \`AGENTS.md\`, \`agents/*.md\` |"
+              echo "| [Workflow](Workflow.md) | Task lifecycle and required workflow | \`CHANGE_CONTROL_POLICY.md\`, \`DOCUMENTATION_POLICY.md\` |"
+              echo "| [Compliance](Compliance.md) | Compliance model and blocking violations | \`COMPLIANCE_POLICY.md\` |"
+              echo "| [Releases](Releases.md) | Versioning, changelog, and release process | \`RELEASE_POLICY.md\` |"
+              echo "| [Glossary](Glossary.md) | Key terms and definitions | Various |"
+              echo ""
+              echo "---"
+              echo ""
+              echo "## README Content"
+              echo ""
+              # Include README content (strip first H1)
+              tail -n +2 "README.md" | sed '1{/^$/d}'
+            } > "wiki/Home.md"
+
+            echo "Updated: wiki/Home.md (from README.md)"
+          fi
+
+          # -----------------------------------------------------------
+          # 4. Check if anything actually changed
+          # -----------------------------------------------------------
+          if git diff --quiet wiki/; then
+            echo ""
+            echo "No effective changes to wiki files. Skipping commit."
+            exit 0
+          fi
+
+          # -----------------------------------------------------------
+          # 5. Commit and push
+          # -----------------------------------------------------------
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add wiki/
+          git commit -m "docs(wiki): sync wiki pages from canonical sources [automated]"
+          git push
+          echo ""
+          echo "Wiki pages synced and pushed successfully."

@@ -1,0 +1,184 @@
+name: Version Tracking
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  version-consistency-check:
+    name: Validate Version Consistency
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect changed files
+        id: changed
+        uses: tj-actions/changed-files@v44
+
+      - name: Validate version consistency
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          ALL_CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        run: |
+          if [ -z "$PR_BODY" ]; then
+            echo "::error::PR body is empty. Cannot determine version impact."
+            exit 1
+          fi
+
+          FAILED=0
+          WARNINGS=()
+
+          # -----------------------------------------------------------
+          # 1. Extract current version from CHANGELOG.md
+          # -----------------------------------------------------------
+          CURRENT_VERSION=$(grep -oP '(?<=## \[)[0-9]+\.[0-9]+\.[0-9]+' changelog/CHANGELOG.md | head -1 || true)
+          if [ -z "$CURRENT_VERSION" ]; then
+            echo "::error::Could not extract current version from changelog/CHANGELOG.md."
+            exit 1
+          fi
+
+          CURRENT_MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
+          CURRENT_MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
+          CURRENT_PATCH=$(echo "$CURRENT_VERSION" | cut -d. -f3)
+
+          echo "Current version: $CURRENT_VERSION"
+
+          # -----------------------------------------------------------
+          # 2. Extract Release Impact and Change Class from PR body
+          # -----------------------------------------------------------
+          RELEASE_IMPACT=$(echo "$PR_BODY" | grep -A0 '**Release Impact**' | sed 's/.*:\s*//' | sed 's/<!--.*-->//g' | tr -d '[:space:]' | head -1 || true)
+          CHANGE_CLASS=$(echo "$PR_BODY" | grep -A0 '**Change Class**' | sed 's/.*:\s*//' | sed 's/<!--.*-->//g' | tr -d '[:space:]' | head -1 || true)
+
+          echo "Detected Release Impact: '$RELEASE_IMPACT'"
+          echo "Detected Change Class: '$CHANGE_CLASS'"
+
+          if [ -z "$RELEASE_IMPACT" ]; then
+            echo "::error::Could not extract Release Impact from PR body."
+            FAILED=1
+          fi
+          if [ -z "$CHANGE_CLASS" ]; then
+            echo "::error::Could not extract Change Class from PR body."
+            FAILED=1
+          fi
+
+          # Exit early if we can't parse the basics
+          if [ "$FAILED" -eq 1 ]; then
+            exit 1
+          fi
+
+          # -----------------------------------------------------------
+          # 3. Compute expected next version
+          # -----------------------------------------------------------
+          case "$RELEASE_IMPACT" in
+            none|governance-only)
+              EXPECTED_VERSION="$CURRENT_VERSION"
+              ;;
+            patch)
+              EXPECTED_VERSION="$CURRENT_MAJOR.$CURRENT_MINOR.$((CURRENT_PATCH + 1))"
+              ;;
+            minor)
+              EXPECTED_VERSION="$CURRENT_MAJOR.$((CURRENT_MINOR + 1)).0"
+              ;;
+            major)
+              EXPECTED_VERSION="$((CURRENT_MAJOR + 1)).0.0"
+              ;;
+            *)
+              echo "::error::Unrecognized Release Impact: '$RELEASE_IMPACT'. Expected one of: none, patch, minor, major, governance-only."
+              FAILED=1
+              EXPECTED_VERSION="unknown"
+              ;;
+          esac
+
+          echo "Expected next version: $EXPECTED_VERSION"
+
+          # -----------------------------------------------------------
+          # 4. Check changelog for expected version or Unreleased section
+          # -----------------------------------------------------------
+          if [[ "$RELEASE_IMPACT" != "none" ]] && [[ "$RELEASE_IMPACT" != "governance-only" ]]; then
+            HAS_EXPECTED=$(grep -c "## \[$EXPECTED_VERSION\]" changelog/CHANGELOG.md || true)
+            HAS_UNRELEASED=$(grep -c "## \[Unreleased\]" changelog/CHANGELOG.md || true)
+
+            if [ "$HAS_EXPECTED" -eq 0 ] && [ "$HAS_UNRELEASED" -eq 0 ]; then
+              WARNINGS+=("Changelog does not contain an entry for version $EXPECTED_VERSION or an [Unreleased] section. A changelog entry will be required before merge.")
+            fi
+          fi
+
+          # -----------------------------------------------------------
+          # 5. Validate change-class-to-impact consistency
+          # -----------------------------------------------------------
+          # Define typical version impacts per change class (from versioning-rules.json)
+          declare -A TYPICAL_IMPACT
+          TYPICAL_IMPACT=(
+            ["feature"]="minor"
+            ["bugfix"]="patch"
+            ["refactor"]="none"
+            ["docs"]="none"
+            ["governance"]="governance-only"
+            ["release"]="none"
+            ["metadata"]="none"
+            ["breaking-change"]="major"
+          )
+
+          # Define impact ordering for comparison
+          declare -A IMPACT_ORDER
+          IMPACT_ORDER=(
+            ["none"]=0
+            ["governance-only"]=0
+            ["patch"]=1
+            ["minor"]=2
+            ["major"]=3
+          )
+
+          TYPICAL="${TYPICAL_IMPACT[$CHANGE_CLASS]}"
+          if [ -n "$TYPICAL" ]; then
+            TYPICAL_ORD="${IMPACT_ORDER[$TYPICAL]}"
+            DECLARED_ORD="${IMPACT_ORDER[$RELEASE_IMPACT]}"
+
+            if [ -n "$TYPICAL_ORD" ] && [ -n "$DECLARED_ORD" ]; then
+              if [ "$DECLARED_ORD" -lt "$TYPICAL_ORD" ]; then
+                echo "::error::Release Impact '$RELEASE_IMPACT' is lower than the typical impact '$TYPICAL' for Change Class '$CHANGE_CLASS'. Downgrading version impact is a compliance concern."
+                FAILED=1
+              elif [ "$DECLARED_ORD" -gt "$TYPICAL_ORD" ]; then
+                WARNINGS+=("Release Impact '$RELEASE_IMPACT' is higher than the typical impact '$TYPICAL' for Change Class '$CHANGE_CLASS'. This may be over-classified.")
+              fi
+            fi
+          fi
+
+          # -----------------------------------------------------------
+          # 6. Breaking change validation
+          # -----------------------------------------------------------
+          if [ "$CHANGE_CLASS" = "breaking-change" ]; then
+            if [ "$RELEASE_IMPACT" != "major" ]; then
+              echo "::error::Change Class is 'breaking-change' but Release Impact is '$RELEASE_IMPACT'. Breaking changes must have 'major' Release Impact."
+              FAILED=1
+            fi
+          fi
+
+          # -----------------------------------------------------------
+          # 7. Print warnings and summary
+          # -----------------------------------------------------------
+          for warning in "${WARNINGS[@]}"; do
+            echo "::warning::$warning"
+          done
+
+          echo ""
+          echo "==============================="
+          echo "  Version Tracking Summary"
+          echo "==============================="
+          echo "  Current version:  $CURRENT_VERSION"
+          echo "  Change class:     $CHANGE_CLASS"
+          echo "  Release impact:   $RELEASE_IMPACT"
+          echo "  Expected version: $EXPECTED_VERSION"
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo "  Status:           FAIL"
+            echo "==============================="
+            exit 1
+          elif [ ${#WARNINGS[@]} -gt 0 ]; then
+            echo "  Status:           WARNING"
+            echo "==============================="
+          else
+            echo "  Status:           PASS"
+            echo "==============================="
+          fi
