@@ -32,9 +32,13 @@ jobs:
           # -----------------------------------------------------------
           # 1. Extract current version from CHANGELOG.md
           # -----------------------------------------------------------
-          CURRENT_VERSION=$(grep -oP '(?<=## \[)[0-9]+\.[0-9]+\.[0-9]+' changelog/CHANGELOG.md | head -1 || true)
+          if [ -f VERSION ]; then
+            CURRENT_VERSION=$(cat VERSION | tr -d '[:space:]')
+          else
+            CURRENT_VERSION=$(grep -oP '(?<=## \[)[0-9]+\.[0-9]+\.[0-9]+' changelog/CHANGELOG.md | head -1 || true)
+          fi
           if [ -z "$CURRENT_VERSION" ]; then
-            echo "::error::Could not extract current version from changelog/CHANGELOG.md."
+            echo "::error::Could not determine current version from VERSION file or changelog/CHANGELOG.md."
             exit 1
           fi
 
