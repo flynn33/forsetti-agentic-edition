@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/schemas/agentic-edition/compliance-report.schema.json",
+  "title": "Forsetti Agentic Edition Compliance Report",
+  "description": "Schema for compliance reports in the Forsetti Agentic Edition governance workflow.",
+  "type": "object",
+  "properties": {
+    "task_reference": {
+      "type": "string",
+      "description": "Reference to the task contract being evaluated."
+    },
+    "acting_role": {
+      "type": "string",
+      "description": "The role that performed the work under review.",
+      "enum": [
+        "architect",
+        "builder",
+        "validator",
+        "release_manager",
+        "documentation_manager",
+        "governance_steward"
+      ]
+    },
+    "compliance_status": {
+      "type": "string",
+      "description": "Overall compliance outcome of the review.",
+      "enum": [
+        "pass",
+        "request_changes",
+        "block"
+      ]
+    },
+    "blocking_issues": {
+      "type": "array",
+      "description": "List of issues that block completion.",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "missing_requirements": {
+      "type": "array",
+      "description": "List of requirements that have not been met.",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "documentation_status": {
+      "type": "string",
+      "description": "Status of required documentation updates.",
+      "enum": [
+        "complete",
+        "incomplete",
+        "not_applicable"
+      ]
+    },
+    "release_status": {
+      "type": "string",
+      "description": "Whether the change has been classified for release.",
+      "enum": [
+        "classified",
+        "unclassified",
+        "not_applicable"
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional free-form notes from the reviewer."
+    }
+  },
+  "required": [
+    "task_reference",
+    "acting_role",
+    "compliance_status",
+    "documentation_status",
+    "release_status"
+  ],
+  "additionalProperties": false
+}

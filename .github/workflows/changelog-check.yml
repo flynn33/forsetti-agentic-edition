@@ -1,0 +1,71 @@
+name: Changelog Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  changelog-required:
+    name: Verify Changelog Updated
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect changed files
+        id: changed
+        uses: tj-actions/changed-files@v44
+
+      - name: Check changelog for meaningful changes
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        run: |
+          MEANINGFUL=false
+          CHANGELOG_UPDATED=false
+
+          # Paths that are NOT considered meaningful for changelog purposes
+          METADATA_PATTERNS=(
+            "changelog/"
+            "wiki/"
+            ".github/ISSUE_TEMPLATE/"
+            ".gitignore"
+            ".editorconfig"
+          )
+
+          for file in $ALL_CHANGED_FILES; do
+            # Check if this file is the changelog itself
+            if [[ "$file" == "changelog/CHANGELOG.md" ]]; then
+              CHANGELOG_UPDATED=true
+              continue
+            fi
+
+            # Check if the file is metadata-only
+            IS_METADATA=false
+            for pattern in "${METADATA_PATTERNS[@]}"; do
+              if [[ "$file" == ${pattern}* ]]; then
+                IS_METADATA=true
+                break
+              fi
+            done
+
+            if [ "$IS_METADATA" = false ]; then
+              MEANINGFUL=true
+              echo "Meaningful change detected: $file"
+            fi
+          done
+
+          if [ "$MEANINGFUL" = true ] && [ "$CHANGELOG_UPDATED" = false ]; then
+            echo "::error::Meaningful files were changed but changelog/CHANGELOG.md was not updated."
+            echo ""
+            echo "If this change affects governance content, policies, schemas, standards,"
+            echo "agent definitions, contracts, or workflows, a changelog entry is required."
+            echo ""
+            echo "Add an entry to changelog/CHANGELOG.md describing this change."
+            exit 1
+          fi
+
+          if [ "$MEANINGFUL" = false ]; then
+            echo "Only metadata files were changed. Changelog update not required."
+          else
+            echo "Changelog was updated. Check passed."
+          fi

@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "canonical_source": "repository_markdown",
+  "canonical_source_description": "The single source of truth for all documentation is the markdown files committed to the repository. Wiki pages, external documentation sites, and generated outputs are derived surfaces that must stay synchronized with the canonical repository markdown.",
+  "sync_pairs": [
+    {
+      "canonical": "README.md",
+      "derived": "wiki/Home.md",
+      "description": "Repository README is the canonical source for the project overview. The wiki home page must reflect the same content and structure.",
+      "sync_direction": "canonical_to_derived"
+    },
+    {
+      "canonical": "CONSTITUTION.md",
+      "derived": "wiki/Constitution.md",
+      "description": "The constitutional governance document. The wiki copy must be an exact reproduction with no editorial additions.",
+      "sync_direction": "canonical_to_derived"
+    },
+    {
+      "canonical": "docs/architecture.md",
+      "derived": "wiki/Architecture.md",
+      "description": "Architecture documentation. Wiki version must match canonical with no divergence in diagrams, descriptions, or constraints.",
+      "sync_direction": "canonical_to_derived"
+    },
+    {
+      "canonical": "docs/glossary.md",
+      "derived": "wiki/Glossary.md",
+      "description": "Project glossary defining all governance and technical terms. Wiki version must be an exact copy to prevent definition drift.",
+      "sync_direction": "canonical_to_derived"
+    },
+    {
+      "canonical": "docs/agent-roles.md",
+      "derived": "wiki/Agent-Roles.md",
+      "description": "Human-readable documentation of agent roles. Must reflect the machine-readable policies/agent-roles.json accurately.",
+      "sync_direction": "canonical_to_derived"
+    },
+    {
+      "canonical": "docs/compliance-guide.md",
+      "derived": "wiki/Compliance-Guide.md",
+      "description": "Compliance guide explaining rules and enforcement. Must stay aligned with policies/compliance-rules.json.",
+      "sync_direction": "canonical_to_derived"
+    },
+    {
+      "canonical": "docs/versioning.md",
+      "derived": "wiki/Versioning.md",
+      "description": "Versioning documentation. Must reflect policies/versioning-rules.json accurately.",
+      "sync_direction": "canonical_to_derived"
+    },
+    {
+      "canonical": "docs/changelog-guide.md",
+      "derived": "wiki/Changelog-Guide.md",
+      "description": "Guide for producing changelog entries. Must reflect policies/changelog-rules.json accurately.",
+      "sync_direction": "canonical_to_derived"
+    },
+    {
+      "canonical": "CHANGELOG.md",
+      "derived": "wiki/Changelog.md",
+      "description": "Project changelog. Wiki version must be a faithful copy with no omissions or additions.",
+      "sync_direction": "canonical_to_derived"
+    },
+    {
+      "canonical": "policies/agent-roles.json",
+      "derived": "docs/agent-roles.md",
+      "description": "The machine-readable role definitions are canonical for role authority. The human-readable docs must accurately describe them without contradiction.",
+      "sync_direction": "canonical_to_derived"
+    },
+    {
+      "canonical": "policies/compliance-rules.json",
+      "derived": "docs/compliance-guide.md",
+      "description": "The machine-readable compliance rules are canonical. The human-readable guide must accurately describe them without contradiction.",
+      "sync_direction": "canonical_to_derived"
+    }
+  ],
+  "sync_rules": {
+    "timing": {
+      "same_pr_sync": "When a canonical source is modified, the corresponding derived surface should be updated in the same pull request whenever feasible.",
+      "follow_up_tolerance": "If same-PR sync is not feasible, a follow-up task contract must be created and linked before the original PR merges. The follow-up must be completed within the next release cycle.",
+      "maximum_drift_age": "No derived surface may be more than one release behind its canonical source. Drift older than one release cycle is a compliance violation."
+    },
+    "tolerance": {
+      "formatting_differences": "Minor formatting differences between canonical and derived are acceptable if they do not alter meaning. Examples: heading level adjustments for wiki navigation, addition of wiki-specific navigation links at the top or bottom of the page.",
+      "content_divergence": "No content divergence is permitted. Definitions, descriptions, constraints, rules, enum values, and factual statements must match exactly between canonical and derived.",
+      "addition_policy": "Derived surfaces must not contain substantive content that does not exist in the canonical source. Wiki-specific navigation aids and cross-reference links are the only permitted additions."
+    },
+    "format": {
+      "canonical_format": "GitHub-flavored Markdown (GFM)",
+      "derived_wiki_format": "GitHub Wiki Markdown",
+      "json_to_markdown_rendering": "When the canonical source is JSON, the derived markdown must accurately represent all fields, values, and relationships without omission or editorial interpretation."
+    }
+  },
+  "review_requirements": {
+    "who_reviews": "documentation_manager",
+    "review_scope": [
+      "Verify all modified canonical sources have corresponding derived surface updates or linked follow-up task contracts.",
+      "Verify no content divergence exists between canonical and derived surfaces.",
+      "Verify wiki-specific additions are limited to permitted navigation aids.",
+      "Verify JSON-to-markdown derived documents accurately reflect the current JSON canonical source.",
+      "Flag any drift older than the maximum_drift_age tolerance."
+    ],
+    "review_timing": "Documentation sync review must occur before the validator renders a final compliance decision on any PR that modifies canonical sources.",
+    "escalation": "If widespread drift is detected across multiple sync pairs, the documentation_manager must escalate to the architect for a dedicated documentation sync task contract."
+  }
+}

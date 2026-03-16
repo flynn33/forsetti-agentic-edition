@@ -1,0 +1,147 @@
+name: Protected Path Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  protected-paths:
+    name: Verify Approval Labels for Protected Paths
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect changed files
+        id: changed
+        uses: tj-actions/changed-files@v44
+
+      - name: Check PR labels
+        id: labels
+        env:
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels) }}
+        run: |
+          HAS_GOVERNANCE_LABEL=false
+          HAS_SENSITIVE_LABEL=false
+
+          if echo "$PR_LABELS" | grep -q '"name":\s*"approval:governance-class"'; then
+            HAS_GOVERNANCE_LABEL=true
+          fi
+          if echo "$PR_LABELS" | grep -q '"name":\s*"approval:sensitive"'; then
+            HAS_SENSITIVE_LABEL=true
+          fi
+
+          echo "has_governance_label=$HAS_GOVERNANCE_LABEL" >> "$GITHUB_OUTPUT"
+          echo "has_sensitive_label=$HAS_SENSITIVE_LABEL" >> "$GITHUB_OUTPUT"
+
+      - name: Check protected path approvals
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+          HAS_GOVERNANCE_LABEL: ${{ steps.labels.outputs.has_governance_label }}
+          HAS_SENSITIVE_LABEL: ${{ steps.labels.outputs.has_sensitive_label }}
+        run: |
+          # Define governance-class protected paths (require approval:governance-class)
+          GOVERNANCE_PATHS=(
+            "FORSETTI_CONSTITUTION.md"
+            "COMPLIANCE_POLICY.md"
+            "CHANGE_CONTROL_POLICY.md"
+            "RELEASE_POLICY.md"
+            "DOCUMENTATION_POLICY.md"
+            "AGENTS.md"
+          )
+
+          # Define governance-class protected directories
+          GOVERNANCE_DIRS=(
+            "policies/"
+            "agents/"
+          )
+
+          # Define sensitive protected paths (require approval:sensitive or higher)
+          SENSITIVE_DIRS=(
+            "schemas/"
+            ".github/workflows/"
+          )
+
+          SENSITIVE_FILES=(
+            ".github/CODEOWNERS"
+          )
+
+          GOVERNANCE_MODIFIED=()
+          SENSITIVE_MODIFIED=()
+
+          for file in $ALL_CHANGED_FILES; do
+            # Check governance-class paths
+            for gov_path in "${GOVERNANCE_PATHS[@]}"; do
+              if [[ "$file" == "$gov_path" ]]; then
+                GOVERNANCE_MODIFIED+=("$file")
+              fi
+            done
+
+            for gov_dir in "${GOVERNANCE_DIRS[@]}"; do
+              if [[ "$file" == ${gov_dir}* ]]; then
+                GOVERNANCE_MODIFIED+=("$file")
+              fi
+            done
+
+            # Check sensitive paths
+            for sens_dir in "${SENSITIVE_DIRS[@]}"; do
+              if [[ "$file" == ${sens_dir}* ]]; then
+                SENSITIVE_MODIFIED+=("$file")
+              fi
+            done
+
+            for sens_file in "${SENSITIVE_FILES[@]}"; do
+              if [[ "$file" == "$sens_file" ]]; then
+                SENSITIVE_MODIFIED+=("$file")
+              fi
+            done
+          done
+
+          FAILED=0
+
+          # Check governance-class paths
+          if [ ${#GOVERNANCE_MODIFIED[@]} -gt 0 ]; then
+            echo "Governance-class protected paths modified:"
+            for f in "${GOVERNANCE_MODIFIED[@]}"; do
+              echo "  - $f"
+            done
+
+            if [ "$HAS_GOVERNANCE_LABEL" != "true" ]; then
+              echo ""
+              echo "::error::Governance-class protected paths were modified but the 'approval:governance-class' label is not present."
+              echo "These paths require governance-class approval before merging."
+              echo "A governance steward must review and add the 'approval:governance-class' label."
+              FAILED=1
+            else
+              echo "Label 'approval:governance-class' is present. Governance approval confirmed."
+            fi
+          fi
+
+          # Check sensitive paths
+          if [ ${#SENSITIVE_MODIFIED[@]} -gt 0 ]; then
+            echo ""
+            echo "Sensitive protected paths modified:"
+            for f in "${SENSITIVE_MODIFIED[@]}"; do
+              echo "  - $f"
+            done
+
+            if [ "$HAS_SENSITIVE_LABEL" != "true" ] && [ "$HAS_GOVERNANCE_LABEL" != "true" ]; then
+              echo ""
+              echo "::error::Sensitive protected paths were modified but neither 'approval:sensitive' nor 'approval:governance-class' label is present."
+              echo "These paths require at least sensitive-level approval before merging."
+              echo "A maintainer or governance steward must review and add the appropriate approval label."
+              FAILED=1
+            else
+              echo "Appropriate approval label is present. Sensitive approval confirmed."
+            fi
+          fi
+
+          if [ ${#GOVERNANCE_MODIFIED[@]} -eq 0 ] && [ ${#SENSITIVE_MODIFIED[@]} -eq 0 ]; then
+            echo "No protected paths were modified. Check passed."
+          fi
+
+          if [ "$FAILED" -eq 1 ]; then
+            exit 1
+          fi
+
+          echo "All protected path approvals verified. Check passed."

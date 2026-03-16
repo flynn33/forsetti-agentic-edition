@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/schemas/agentic-edition/task-contract.schema.json",
+  "title": "Forsetti Agentic Edition Task Contract",
+  "description": "Schema for task contracts in the Forsetti Agentic Edition governance workflow.",
+  "type": "object",
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Unique task identifier following the FAE naming convention.",
+      "pattern": "^FAE-(TASK|BUG|GOV|REL)-\\d{3,}$"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable title for the task.",
+      "minLength": 1
+    },
+    "date": {
+      "type": "string",
+      "description": "Date the task contract was created.",
+      "format": "date"
+    },
+    "initiating_request": {
+      "type": "string",
+      "description": "The original request or trigger that initiated this task."
+    },
+    "acting_role": {
+      "type": "string",
+      "description": "The role responsible for executing the task.",
+      "enum": [
+        "architect",
+        "builder",
+        "validator",
+        "release_manager",
+        "documentation_manager"
+      ]
+    },
+    "reviewer_role": {
+      "type": "string",
+      "description": "The role responsible for reviewing the task output.",
+      "enum": [
+        "architect",
+        "builder",
+        "validator",
+        "release_manager",
+        "documentation_manager",
+        "governance_steward"
+      ]
+    },
+    "change_class": {
+      "type": "string",
+      "description": "Classification of the change being made.",
+      "enum": [
+        "feature",
+        "bugfix",
+        "refactor",
+        "docs",
+        "governance",
+        "release",
+        "metadata",
+        "breaking-change"
+      ]
+    },
+    "approval_class": {
+      "type": "string",
+      "description": "Level of approval required for this task.",
+      "enum": [
+        "standard",
+        "sensitive",
+        "governance-class",
+        "emergency",
+        "release-critical"
+      ]
+    },
+    "objective": {
+      "type": "string",
+      "description": "Clear statement of what the task aims to achieve.",
+      "minLength": 1
+    },
+    "business_reason": {
+      "type": "string",
+      "description": "Justification for why this task is necessary.",
+      "minLength": 1
+    },
+    "in_scope": {
+      "type": "array",
+      "description": "List of items explicitly within the scope of this task.",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "out_of_scope": {
+      "type": "array",
+      "description": "List of items explicitly excluded from the scope of this task.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_outputs": {
+      "type": "array",
+      "description": "Deliverables that must be produced by this task.",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "documentation_impact": {
+      "type": "object",
+      "description": "Flags indicating which documentation areas are affected.",
+      "properties": {
+        "readme_update": {
+          "type": "boolean",
+          "description": "Whether the README requires an update."
+        },
+        "wiki_update": {
+          "type": "boolean",
+          "description": "Whether the wiki requires an update."
+        },
+        "glossary_update": {
+          "type": "boolean",
+          "description": "Whether the glossary requires an update."
+        }
+      },
+      "required": [
+        "readme_update",
+        "wiki_update",
+        "glossary_update"
+      ],
+      "additionalProperties": false
+    },
+    "release_impact": {
+      "type": "string",
+      "description": "The expected impact on the project version.",
+      "enum": [
+        "none",
+        "patch",
+        "minor",
+        "major",
+        "governance-only"
+      ]
+    },
+    "validation_requirements": {
+      "type": "array",
+      "description": "Checks and validations that must pass before the task is complete.",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "risks_constraints": {
+      "type": "array",
+      "description": "Known risks or constraints associated with this task.",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "escalation_triggers": {
+      "type": "array",
+      "description": "Conditions that should trigger escalation to a higher authority.",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "definition_of_done": {
+      "type": "array",
+      "description": "Criteria that must all be satisfied for the task to be considered complete.",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "completion_summary_requirements": {
+      "type": "array",
+      "description": "Items that must be included in the task completion summary.",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "task_id",
+    "title",
+    "date",
+    "initiating_request",
+    "acting_role",
+    "reviewer_role",
+    "change_class",
+    "approval_class",
+    "objective",
+    "business_reason",
+    "in_scope",
+    "out_of_scope",
+    "required_outputs",
+    "documentation_impact",
+    "release_impact",
+    "validation_requirements",
+    "definition_of_done",
+    "completion_summary_requirements"
+  ],
+  "additionalProperties": false
+}

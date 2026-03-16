@@ -1,0 +1,47 @@
+# Glossary
+
+Key terms used throughout the Forsetti Agentic Edition governance framework.
+
+**Approval Class**: The required authority level for a change (standard, sensitive, governance-class, emergency, release-critical). Defined in `CHANGE_CONTROL_POLICY.md`.
+
+**Blocking Violation**: A compliance failure that prevents a change from being merged. Defined in `COMPLIANCE_POLICY.md`.
+
+**Breaking Change**: A change that alters governance rules in a way that existing consumers must adapt. Defined in `RELEASE_POLICY.md`.
+
+**Canonical Source**: The authoritative version of a document — always the repository markdown file. Defined in `DOCUMENTATION_POLICY.md`.
+
+**Change Class**: The classification of a change by type (feature, bugfix, refactor, docs, governance, release, metadata, breaking-change). Defined in `CHANGE_CONTROL_POLICY.md`.
+
+**Compliance Report**: A structured assessment of whether work meets governance requirements, rendered by the Validator. Defined in `COMPLIANCE_POLICY.md`.
+
+**Constitutional Amendment**: A formal change to `FORSETTI_CONSTITUTION.md` requiring governance-class approval and a standalone governance change process.
+
+**Derived Content**: Content that summarizes or references a canonical source (e.g., wiki pages). Not authoritative.
+
+**Documentation Drift**: A state where documentation no longer accurately reflects the current repository state. Defined in `DOCUMENTATION_POLICY.md`.
+
+**Drive-By Edit**: An unauthorized modification to files outside the task contract scope. Prohibited.
+
+**Escalation**: The process of raising a task to higher authority when it exceeds the acting role's authority or when ambiguity cannot be resolved.
+
+**Evidence**: Observable artifacts (file changes, test results, validation output) that demonstrate compliance with governance requirements.
+
+**Governance Steward**: An elevated authority role for constitutional amendments and governance-class changes.
+
+**Governance-Only**: A version impact classification for constitutional/compliance changes tracked in the changelog but not in semantic versioning.
+
+**Interpretation Debt**: The cost created when documentation is ambiguous enough that readers must guess or assume meaning.
+
+**Meaningful Change**: A change that alters governance rules, policy content, role definitions, contract templates, standards, schemas, or enforcement mechanisms. Requires a task contract.
+
+**Protected Path**: A file or directory requiring elevated authority (governance-class or sensitive) to modify. Listed in `policies/repo-boundaries.json`.
+
+**Role Authority**: The defined boundaries of what a governed role may and may not do. Exceeding role authority is prohibited.
+
+**Scope Binding**: The principle that the task contract defines the boundaries of authorized work. Changes outside scope are violations.
+
+**Task Contract**: A structured document defining scope, authority, expected outputs, and validation requirements for a task. Created from templates in `contracts/`.
+
+**Truthfulness Standard**: The requirement that delivered claims match observable evidence. Defined in `COMPLIANCE_POLICY.md`.
+
+**Version Impact**: The classification of how a change affects the semantic version (none, patch, minor, major, governance-only). Defined in `RELEASE_POLICY.md`.

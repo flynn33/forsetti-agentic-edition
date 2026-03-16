@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "rules": [
+    {
+      "rule_id": "FAE-C001",
+      "title": "Task Contract Required Before Execution",
+      "severity": "critical",
+      "applies_to": ["architect", "builder"],
+      "description": "No implementation work may begin without an approved task contract produced by the architect role. The contract must include change classification, approval classification, scope definition, and affected files. The builder role must not modify any file until a valid task contract exists for the current task.",
+      "validation_method": "workflow:contract_existence_check",
+      "failure_consequence": "block_merge"
+    },
+    {
+      "rule_id": "FAE-C002",
+      "title": "Scope Boundary Enforcement",
+      "severity": "critical",
+      "applies_to": ["builder"],
+      "description": "The builder role must only modify files explicitly listed in the task contract scope. Any file modification outside the declared scope constitutes a scope violation. If additional files are discovered as necessary during implementation, the builder must escalate to the architect for a contract amendment before proceeding.",
+      "validation_method": "workflow:scope_diff_audit",
+      "failure_consequence": "block_merge"
+    },
+    {
+      "rule_id": "FAE-C003",
+      "title": "Role Separation Enforcement",
+      "severity": "critical",
+      "applies_to": "all",
+      "description": "No agent may perform actions assigned to a different role. The architect must not implement. The builder must not validate its own compliance. The validator must not implement fixes. The release manager must not validate scope compliance. Each role must operate strictly within its allowed_actions as defined in agent-roles.json.",
+      "validation_method": "workflow:role_action_audit",
+      "failure_consequence": "block_merge"
+    },
+    {
+      "rule_id": "FAE-C004",
+      "title": "Protected Asset Governance Gate",
+      "severity": "critical",
+      "applies_to": "all",
+      "description": "Files designated as protected or governance-only in repo-boundaries.json must not be modified without governance-class approval from the governance_steward role. Any pull request touching protected assets without the required approval class label and governance steward authorization must be blocked.",
+      "validation_method": "workflow:protected_path_gate",
+      "failure_consequence": "block_merge"
+    },
+    {
+      "rule_id": "FAE-C005",
+      "title": "Changelog Entry Required for Substantive Changes",
+      "severity": "high",
+      "applies_to": ["builder", "release_manager"],
+      "description": "Every change classified as feature, bugfix, refactor, breaking-change, governance, or release must include a changelog entry conforming to changelog-rules.json. The entry must contain all required fields and accurate version impact classification. Changes classified as docs or metadata are exempt unless they affect user-facing behavior.",
+      "validation_method": "schema:changelog_entry_validation",
+      "failure_consequence": "request_changes"
+    },
+    {
+      "rule_id": "FAE-C006",
+      "title": "Breaking Change Disclosure Mandate",
+      "severity": "critical",
+      "applies_to": ["architect", "builder", "release_manager"],
+      "description": "Any change that alters public API surface, removes functionality, changes default behavior, modifies configuration schema, or breaks backward compatibility must be explicitly classified as breaking-change. The changelog entry must include a migration_note field. The version impact must be classified as major. Undisclosed breaking changes discovered by the validator or release manager constitute a critical violation.",
+      "validation_method": "workflow:breaking_change_audit",
+      "failure_consequence": "block_merge"
+    },
+    {
+      "rule_id": "FAE-C007",
+      "title": "Completion Summary Truthfulness",
+      "severity": "critical",
+      "applies_to": ["builder"],
+      "description": "The builder's completion summary must accurately reflect what was changed, what was not changed, what issues remain, and what tests or validations were run. Claims of completion must be supported by evidence. Known failures, skipped validations, or unresolved issues must not be omitted. Any discrepancy between the completion summary and the actual diff constitutes a truthfulness violation.",
+      "validation_method": "workflow:completion_summary_diff_reconciliation",
+      "failure_consequence": "block_merge"
+    },
+    {
+      "rule_id": "FAE-C008",
+      "title": "Documentation Sync Compliance",
+      "severity": "high",
+      "applies_to": ["builder", "documentation_manager"],
+      "description": "When a change affects behavior, configuration, public API, or architecture that is documented in any canonical source listed in docs-sync-rules.json, the corresponding documentation must be updated in the same pull request or a linked follow-up task contract must be created. The documentation manager must verify sync status before documentation compliance can be confirmed.",
+      "validation_method": "workflow:docs_sync_audit",
+      "failure_consequence": "request_changes"
+    },
+    {
+      "rule_id": "FAE-C009",
+      "title": "Version Classification Accuracy",
+      "severity": "high",
+      "applies_to": ["architect", "release_manager"],
+      "description": "The version impact classification assigned by the architect must conform to versioning-rules.json change_type_mapping. The release manager must independently confirm the classification before release authorization. Misclassification of version impact — particularly downgrading a major change to minor or patch — constitutes a release integrity violation.",
+      "validation_method": "workflow:version_classification_review",
+      "failure_consequence": "request_changes"
+    },
+    {
+      "rule_id": "FAE-C010",
+      "title": "Governance Change Isolation",
+      "severity": "critical",
+      "applies_to": "all",
+      "description": "Changes classified as governance must be submitted in isolation and must not be bundled with feature, bugfix, refactor, or other non-governance changes. Governance changes require governance-class approval and governance_steward authorization. This ensures constitutional and policy amendments receive focused review without being obscured by unrelated implementation work.",
+      "validation_method": "workflow:governance_isolation_check",
+      "failure_consequence": "block_merge"
+    }
+  ]
+}

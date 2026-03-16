@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "protected_paths": {
+    "description": "Files and directories that require governance-class approval to modify. Any pull request touching these paths without governance_steward authorization and a governance-class approval label must be blocked.",
+    "paths": [
+      "CONSTITUTION.md",
+      "policies/agent-roles.json",
+      "policies/compliance-rules.json",
+      "policies/repo-boundaries.json",
+      "policies/versioning-rules.json",
+      "policies/changelog-rules.json",
+      "policies/docs-sync-rules.json",
+      "policies/labels.json",
+      ".github/labels.json",
+      ".github/workflows/governance-*.yml",
+      ".github/CODEOWNERS"
+    ]
+  },
+  "governance_only_paths": {
+    "description": "Subset of protected paths that are constitutional — foundational governance documents. These define the rules that all other rules derive from. Modification requires constitutional amendment process with full governance_steward review and impact assessment.",
+    "paths": [
+      "CONSTITUTION.md",
+      "policies/agent-roles.json",
+      "policies/compliance-rules.json",
+      "policies/repo-boundaries.json"
+    ]
+  },
+  "role_limited_paths": {
+    "description": "Paths that may only be modified by specific roles as part of their authorized workflow. Other roles must not touch these files even if they appear in a task contract scope.",
+    "mappings": [
+      {
+        "path_pattern": "policies/**",
+        "allowed_roles": ["governance_steward"],
+        "reason": "Policy files are governance assets requiring governance_steward authority."
+      },
+      {
+        "path_pattern": "CHANGELOG.md",
+        "allowed_roles": ["builder", "release_manager"],
+        "reason": "Changelog entries are produced by builders and reviewed by release managers."
+      },
+      {
+        "path_pattern": ".github/workflows/**",
+        "allowed_roles": ["architect", "governance_steward"],
+        "reason": "Workflow definitions affect process enforcement and require planning or governance authority."
+      },
+      {
+        "path_pattern": "docs/wiki/**",
+        "allowed_roles": ["builder", "documentation_manager"],
+        "reason": "Wiki content is maintained by builders and audited by documentation managers."
+      },
+      {
+        "path_pattern": "RELEASE_NOTES.md",
+        "allowed_roles": ["release_manager"],
+        "reason": "Release notes are exclusively managed by the release manager role."
+      }
+    ]
+  },
+  "approval_required_paths": {
+    "description": "Paths that require a specific minimum approval class on the pull request before merge is permitted.",
+    "mappings": [
+      {
+        "path_pattern": "CONSTITUTION.md",
+        "minimum_approval_class": "governance-class",
+        "reason": "Constitutional document requires full governance review."
+      },
+      {
+        "path_pattern": "policies/**",
+        "minimum_approval_class": "governance-class",
+        "reason": "All policy manifests require governance-class approval."
+      },
+      {
+        "path_pattern": ".github/workflows/governance-*.yml",
+        "minimum_approval_class": "governance-class",
+        "reason": "Governance enforcement workflows are protected at governance level."
+      },
+      {
+        "path_pattern": ".github/CODEOWNERS",
+        "minimum_approval_class": "sensitive",
+        "reason": "CODEOWNERS changes affect review routing and require elevated approval."
+      },
+      {
+        "path_pattern": "src/**",
+        "minimum_approval_class": "standard",
+        "reason": "Source code changes require at minimum standard approval."
+      },
+      {
+        "path_pattern": "docs/**",
+        "minimum_approval_class": "standard",
+        "reason": "Documentation changes require at minimum standard approval."
+      }
+    ]
+  },
+  "notes": [
+    "Path patterns use glob syntax. ** matches any depth of directories.",
+    "When a file matches multiple mappings, the most restrictive rule applies.",
+    "Protected path enforcement is validated by compliance rule FAE-C004.",
+    "Governance isolation is validated by compliance rule FAE-C010.",
+    "Role-limited path enforcement is validated by the role_action_audit workflow referenced in FAE-C003.",
+    "Emergency approval class may override standard and sensitive approval requirements but never governance-class requirements."
+  ]
+}

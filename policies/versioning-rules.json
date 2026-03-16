@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "versioning_scheme": "semver",
+  "version_classes": [
+    {
+      "version_impact": "none",
+      "description": "Changes that have no effect on the released artifact version. Includes internal documentation fixes, metadata updates, CI configuration changes, and comment-only edits that do not alter behavior, public API, or user-facing output.",
+      "semver_effect": "no version bump"
+    },
+    {
+      "version_impact": "patch",
+      "description": "Backward-compatible bug fixes that correct incorrect behavior without adding new functionality or changing existing public API surface. Includes defect corrections, performance fixes with no API change, and security patches that maintain compatibility.",
+      "semver_effect": "increment patch (0.0.x)"
+    },
+    {
+      "version_impact": "minor",
+      "description": "Backward-compatible additions of new functionality. Includes new features, new public API surface that does not alter existing contracts, new configuration options with safe defaults, and non-breaking enhancements to existing behavior.",
+      "semver_effect": "increment minor (0.x.0), reset patch to 0"
+    },
+    {
+      "version_impact": "major",
+      "description": "Changes that break backward compatibility. Includes removal of public API surface, changes to default behavior, configuration schema changes requiring migration, renamed or restructured public contracts, and any change that requires consumers to modify their integration.",
+      "semver_effect": "increment major (x.0.0), reset minor and patch to 0"
+    },
+    {
+      "version_impact": "governance-only",
+      "description": "Changes to governance policy, process definitions, constitutional documents, or compliance rules that do not alter the software artifact itself. These changes affect how the project is governed, not what it ships. Version bump is not required unless the project policy explicitly versions governance documents.",
+      "semver_effect": "no version bump unless governance versioning is enabled"
+    }
+  ],
+  "change_type_mapping": {
+    "description": "Maps each change_class to its typical version_impact. Architects and release managers use this as the baseline classification. Deviations from the typical mapping must be justified in the task contract.",
+    "mappings": [
+      {
+        "change_class": "feature",
+        "typical_version_impact": "minor",
+        "notes": "New functionality is minor unless it replaces or removes existing behavior, which makes it major."
+      },
+      {
+        "change_class": "bugfix",
+        "typical_version_impact": "patch",
+        "notes": "Bug fixes are patch unless the fix changes public API behavior in a breaking way, which makes it major."
+      },
+      {
+        "change_class": "refactor",
+        "typical_version_impact": "none",
+        "notes": "Internal restructuring with no behavior change is none. If refactoring changes public API surface, reclassify as breaking-change with major impact."
+      },
+      {
+        "change_class": "docs",
+        "typical_version_impact": "none",
+        "notes": "Documentation-only changes do not affect the artifact version."
+      },
+      {
+        "change_class": "governance",
+        "typical_version_impact": "governance-only",
+        "notes": "Governance changes follow the governance-only track. They do not affect artifact versioning unless the project explicitly versions governance."
+      },
+      {
+        "change_class": "release",
+        "typical_version_impact": "none",
+        "notes": "Release process changes (CI, release scripts, workflow updates) are none unless they change the artifact output."
+      },
+      {
+        "change_class": "metadata",
+        "typical_version_impact": "none",
+        "notes": "Metadata changes (labels, configs, non-behavioral project files) do not affect artifact version."
+      },
+      {
+        "change_class": "breaking-change",
+        "typical_version_impact": "major",
+        "notes": "Breaking changes are always major. This classification must not be downgraded without governance_steward approval."
+      }
+    ]
+  },
+  "breaking_change_rules": {
+    "definition": "A change is breaking if it meets any of the following criteria: removes or renames a public API symbol; changes the signature of a public API method or function; alters the default behavior of an existing public feature; changes configuration schema in a way that invalidates existing configurations; removes a supported platform, runtime, or dependency; changes serialization format in a way that breaks existing consumers.",
+    "requirements": [
+      "Must be classified as change_class breaking-change with version_impact major.",
+      "Must include a changelog entry with the breaking_change field set to true.",
+      "Must include a migration_note in the changelog entry describing the migration path.",
+      "Must be disclosed in the task contract before implementation begins.",
+      "Must be independently verified by the release_manager before release authorization.",
+      "Must not be bundled with unrelated non-breaking changes in the same pull request unless the task contract explicitly justifies the bundling."
+    ]
+  },
+  "changelog_requirements": {
+    "description": "Defines when a changelog entry is required based on change_class and version_impact.",
+    "required_when": [
+      "change_class is feature",
+      "change_class is bugfix",
+      "change_class is refactor and version_impact is not none",
+      "change_class is breaking-change",
+      "change_class is governance",
+      "change_class is release and version_impact is not none"
+    ],
+    "exempt_when": [
+      "change_class is docs and version_impact is none",
+      "change_class is metadata and version_impact is none",
+      "change_class is refactor and version_impact is none",
+      "change_class is release and version_impact is none"
+    ]
+  },
+  "release_note_requirements": {
+    "description": "Defines what must appear in release notes for each version impact class.",
+    "by_version_impact": {
+      "major": {
+        "required_sections": ["breaking_changes", "migration_guide", "new_features", "bug_fixes", "known_issues"],
+        "notes": "Major releases must prominently list all breaking changes with migration instructions."
+      },
+      "minor": {
+        "required_sections": ["new_features", "bug_fixes", "known_issues"],
+        "notes": "Minor releases highlight new functionality and include any relevant fixes."
+      },
+      "patch": {
+        "required_sections": ["bug_fixes", "known_issues"],
+        "notes": "Patch releases focus on fixes and any residual known issues."
+      },
+      "none": {
+        "required_sections": [],
+        "notes": "No release notes required for changes with no version impact."
+      },
+      "governance-only": {
+        "required_sections": ["governance_changes"],
+        "notes": "Governance changes are documented separately from artifact release notes."
+      }
+    }
+  },
+  "classification_rules": [
+    "The architect assigns initial change_class and version_impact in the task contract.",
+    "The builder must not alter the classification without a contract amendment from the architect.",
+    "The release_manager independently confirms the classification before authorizing a release.",
+    "If the release_manager disagrees with the classification, the task is escalated to the architect for reclassification.",
+    "Downgrading a major classification to minor or patch requires governance_steward approval.",
+    "Version impact must be consistent across the task contract, changelog entry, and release notes."
+  ]
+}

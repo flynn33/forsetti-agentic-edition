@@ -1,0 +1,199 @@
+{
+  "schema_version": "1.0",
+  "required_fields": [
+    {
+      "field": "title",
+      "type": "string",
+      "description": "A concise human-readable summary of the change in imperative mood. Maximum 120 characters. Must describe what the change does, not how it was implemented.",
+      "constraints": {
+        "max_length": 120,
+        "min_length": 10,
+        "format": "imperative_mood"
+      }
+    },
+    {
+      "field": "change_class",
+      "type": "enum",
+      "description": "The classification of this change. Must match the change_class assigned in the task contract and must be one of the standard change_class enum values.",
+      "allowed_values": ["feature", "bugfix", "refactor", "docs", "governance", "release", "metadata", "breaking-change"]
+    },
+    {
+      "field": "version_impact",
+      "type": "enum",
+      "description": "The version impact of this change as determined by the architect and confirmed by the release manager. Must conform to versioning-rules.json change_type_mapping.",
+      "allowed_values": ["none", "patch", "minor", "major", "governance-only"]
+    },
+    {
+      "field": "summary",
+      "type": "string",
+      "description": "A detailed description of what changed and why. Must be specific enough for a consumer to understand the impact without reading the diff. Minimum 30 characters.",
+      "constraints": {
+        "min_length": 30,
+        "max_length": 2000
+      }
+    },
+    {
+      "field": "affected_area",
+      "type": "string",
+      "description": "The module, component, layer, or subsystem affected by this change. Used for filtering and release note grouping. Must reference a recognized area within the project.",
+      "constraints": {
+        "min_length": 2,
+        "max_length": 100
+      }
+    }
+  ],
+  "optional_fields": [
+    {
+      "field": "breaking_change",
+      "type": "boolean",
+      "description": "Whether this change breaks backward compatibility. Must be true when change_class is breaking-change. Must be true when version_impact is major and the change alters public API or default behavior. When true, migration_note becomes required.",
+      "default": false,
+      "conditional_requirement": "Required and must be true when change_class is breaking-change."
+    },
+    {
+      "field": "migration_note",
+      "type": "string",
+      "description": "Instructions for consumers on how to migrate from the previous behavior to the new behavior. Required when breaking_change is true. Must be actionable and specific.",
+      "constraints": {
+        "min_length": 20,
+        "max_length": 5000
+      },
+      "conditional_requirement": "Required when breaking_change is true."
+    },
+    {
+      "field": "task_reference",
+      "type": "string",
+      "description": "A reference to the task contract, issue number, or pull request that authorized this change. Format: issue number, PR number, or task contract identifier.",
+      "constraints": {
+        "max_length": 200
+      }
+    }
+  ],
+  "change_class_requirements": {
+    "description": "Defines which change_class values require a changelog entry and which are exempt.",
+    "requires_entry": [
+      {
+        "change_class": "feature",
+        "reason": "All new features must be documented in the changelog for consumer awareness."
+      },
+      {
+        "change_class": "bugfix",
+        "reason": "All bug fixes must be documented so consumers know which defects were corrected."
+      },
+      {
+        "change_class": "breaking-change",
+        "reason": "All breaking changes must be prominently documented with migration notes."
+      },
+      {
+        "change_class": "governance",
+        "reason": "All governance changes must be documented for transparency and auditability."
+      },
+      {
+        "change_class": "release",
+        "reason": "Release process changes that affect version impact must be documented."
+      }
+    ],
+    "entry_conditional": [
+      {
+        "change_class": "refactor",
+        "condition": "Required only when version_impact is not none. Internal refactors with no external impact are exempt."
+      }
+    ],
+    "exempt": [
+      {
+        "change_class": "docs",
+        "condition": "Exempt when version_impact is none. Required if documentation change affects user-facing behavior descriptions."
+      },
+      {
+        "change_class": "metadata",
+        "condition": "Exempt when version_impact is none. Required if metadata change affects build output or artifact content."
+      }
+    ]
+  },
+  "breaking_change_rules": {
+    "required_fields_when_breaking": ["title", "change_class", "version_impact", "summary", "affected_area", "breaking_change", "migration_note"],
+    "constraints": [
+      "change_class must be breaking-change.",
+      "version_impact must be major.",
+      "breaking_change must be true.",
+      "migration_note must be present and actionable.",
+      "summary must explicitly state what breaks and for whom.",
+      "title must indicate the breaking nature of the change."
+    ],
+    "validation_method": "schema:breaking_change_entry_validation"
+  },
+  "validation_rules": [
+    {
+      "rule": "required_fields_present",
+      "description": "All required fields must be present and non-empty in every changelog entry.",
+      "validation_method": "schema:field_presence_check"
+    },
+    {
+      "rule": "enum_values_valid",
+      "description": "change_class and version_impact must contain values from their respective enum definitions.",
+      "validation_method": "schema:enum_validation"
+    },
+    {
+      "rule": "version_impact_consistent",
+      "description": "version_impact in the changelog entry must match the version_impact in the task contract and the change_type_mapping in versioning-rules.json.",
+      "validation_method": "workflow:cross_reference_validation"
+    },
+    {
+      "rule": "breaking_change_completeness",
+      "description": "When breaking_change is true, migration_note must be present. When change_class is breaking-change, breaking_change must be true.",
+      "validation_method": "schema:conditional_field_validation"
+    },
+    {
+      "rule": "title_format",
+      "description": "title must be imperative mood, between 10 and 120 characters, and must not duplicate the summary.",
+      "validation_method": "schema:title_format_check"
+    },
+    {
+      "rule": "summary_specificity",
+      "description": "summary must be at least 30 characters and must describe impact, not just list file changes.",
+      "validation_method": "schema:summary_quality_check"
+    }
+  ],
+  "rejection_conditions": [
+    {
+      "condition": "missing_required_field",
+      "description": "Any required field is absent or empty.",
+      "action": "request_changes"
+    },
+    {
+      "condition": "invalid_enum_value",
+      "description": "change_class or version_impact contains a value not in the standard enum.",
+      "action": "request_changes"
+    },
+    {
+      "condition": "breaking_change_without_migration_note",
+      "description": "breaking_change is true but migration_note is missing or empty.",
+      "action": "block_merge"
+    },
+    {
+      "condition": "undisclosed_breaking_change",
+      "description": "Diff evidence shows a breaking change but breaking_change is false or change_class is not breaking-change.",
+      "action": "block_merge"
+    },
+    {
+      "condition": "version_impact_mismatch",
+      "description": "version_impact in changelog does not match the task contract or violates change_type_mapping.",
+      "action": "request_changes"
+    },
+    {
+      "condition": "missing_entry_for_required_class",
+      "description": "A change_class that requires an entry has no corresponding changelog entry.",
+      "action": "request_changes"
+    },
+    {
+      "condition": "title_exceeds_length",
+      "description": "title exceeds 120 characters.",
+      "action": "request_changes"
+    },
+    {
+      "condition": "summary_too_vague",
+      "description": "summary is under 30 characters or describes only file names without impact.",
+      "action": "request_changes"
+    }
+  ]
+}

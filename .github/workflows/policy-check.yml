@@ -1,0 +1,96 @@
+name: PR Policy Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  check-pr-template:
+    name: Validate PR Template Sections
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate required PR sections
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          MISSING=()
+          EMPTY=()
+
+          # Define required sections
+          SECTIONS=(
+            "Task Reference"
+            "Change Classification"
+            "Scope Confirmation"
+            "Documentation Impact"
+            "Release and Changelog Status"
+            "Validation Statement"
+            "Known Risks or Issues"
+            "Compliance Checklist"
+          )
+
+          if [ -z "$PR_BODY" ]; then
+            echo "::error::PR body is empty. All required sections are missing."
+            echo "Required sections:"
+            for section in "${SECTIONS[@]}"; do
+              echo "  - $section"
+            done
+            exit 1
+          fi
+
+          for section in "${SECTIONS[@]}"; do
+            # Check if section header exists
+            if ! echo "$PR_BODY" | grep -qiE "^#+\s*${section}"; then
+              MISSING+=("$section")
+              continue
+            fi
+
+            # Extract content between this section header and the next section header (or end)
+            CONTENT=$(echo "$PR_BODY" | sed -n "/^#.*${section}/,/^#/p" | tail -n +2 | head -n -1)
+
+            # Strip whitespace, HTML comments, placeholder text, and checkbox lines
+            STRIPPED=$(echo "$CONTENT" | sed 's/<!--.*-->//g' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^\s*$' | grep -v '^\s*-\s*\[ \]' || true)
+
+            # For checklist sections, at least one checkbox should be checked
+            if echo "$CONTENT" | grep -q '\- \['; then
+              if ! echo "$CONTENT" | grep -q '\- \[x\]'; then
+                # Section has checkboxes but none are checked — acceptable if there is other content
+                if [ -z "$STRIPPED" ]; then
+                  EMPTY+=("$section")
+                fi
+              fi
+            else
+              # Non-checklist section: must have non-placeholder content
+              if [ -z "$STRIPPED" ]; then
+                EMPTY+=("$section")
+              fi
+            fi
+          done
+
+          FAILED=0
+
+          if [ ${#MISSING[@]} -gt 0 ]; then
+            echo "::error::Missing required PR sections:"
+            for section in "${MISSING[@]}"; do
+              echo "  - $section"
+            done
+            FAILED=1
+          fi
+
+          if [ ${#EMPTY[@]} -gt 0 ]; then
+            echo "::warning::The following sections appear to be empty or not filled in:"
+            for section in "${EMPTY[@]}"; do
+              echo "  - $section"
+            done
+            FAILED=1
+          fi
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo ""
+            echo "Please ensure all required sections of the PR template are present and completed."
+            exit 1
+          fi
+
+          echo "All required PR sections are present and populated."

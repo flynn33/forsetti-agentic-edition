@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/schemas/agentic-edition/release-entry.schema.json",
+  "title": "Forsetti Agentic Edition Release Entry",
+  "description": "Schema for changelog and release entries in the Forsetti Agentic Edition governance workflow.",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the release entry."
+    },
+    "change_class": {
+      "type": "string",
+      "description": "Classification of the change.",
+      "enum": [
+        "feature",
+        "bugfix",
+        "refactor",
+        "docs",
+        "governance",
+        "release",
+        "metadata",
+        "breaking-change"
+      ]
+    },
+    "version_impact": {
+      "type": "string",
+      "description": "The impact this change has on the project version.",
+      "enum": [
+        "none",
+        "patch",
+        "minor",
+        "major",
+        "governance-only"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "description": "Human-readable summary of the change.",
+      "minLength": 1
+    },
+    "affected_area": {
+      "type": "string",
+      "description": "The area of the project affected by this change."
+    },
+    "breaking_change": {
+      "type": "boolean",
+      "description": "Whether this change breaks backward compatibility."
+    },
+    "task_reference": {
+      "type": "string",
+      "description": "Reference to the task contract that produced this change."
+    },
+    "approval_class": {
+      "type": "string",
+      "description": "Level of approval applied to this change.",
+      "enum": [
+        "standard",
+        "sensitive",
+        "governance-class",
+        "emergency",
+        "release-critical"
+      ]
+    },
+    "migration_note": {
+      "type": "string",
+      "description": "Migration instructions for consumers. Required when breaking_change is true."
+    },
+    "documentation_impact": {
+      "type": "string",
+      "description": "Description of how documentation is affected by this change."
+    }
+  },
+  "required": [
+    "title",
+    "change_class",
+    "version_impact",
+    "summary",
+    "affected_area",
+    "breaking_change",
+    "task_reference",
+    "approval_class"
+  ],
+  "if": {
+    "properties": {
+      "breaking_change": {
+        "const": true
+      }
+    },
+    "required": [
+      "breaking_change"
+    ]
+  },
+  "then": {
+    "required": [
+      "migration_note"
+    ]
+  },
+  "additionalProperties": false
+}

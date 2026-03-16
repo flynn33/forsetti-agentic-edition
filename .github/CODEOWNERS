@@ -1,0 +1,43 @@
+# Forsetti Agentic Edition — CODEOWNERS
+# Maps governance-sensitive paths to required reviewers
+
+# Constitutional and top-level governance
+FORSETTI_CONSTITUTION.md    @forsetti/governance-stewards
+AGENTS.md                   @forsetti/governance-stewards
+COMPLIANCE_POLICY.md        @forsetti/governance-stewards
+CHANGE_CONTROL_POLICY.md    @forsetti/governance-stewards
+RELEASE_POLICY.md           @forsetti/governance-stewards
+DOCUMENTATION_POLICY.md     @forsetti/governance-stewards
+
+# Root-level contributor docs
+README.md                   @forsetti/maintainers
+VISION.md                   @forsetti/governance-stewards
+CONTRIBUTING.md             @forsetti/maintainers
+CODE_OF_DELIVERY.md         @forsetti/maintainers
+
+# Agent role definitions
+agents/                     @forsetti/governance-stewards
+
+# Contract templates
+contracts/                  @forsetti/maintainers
+
+# Machine-readable policies
+policies/                   @forsetti/governance-stewards
+
+# Standards
+standards/                  @forsetti/maintainers
+
+# JSON schemas
+schemas/                    @forsetti/maintainers
+
+# GitHub automation
+.github/                    @forsetti/governance-stewards
+
+# Changelog
+changelog/                  @forsetti/release-managers
+
+# Wiki (derived content)
+wiki/                       @forsetti/documentation-managers
+
+# Guardrail scripts
+scripts/                    @forsetti/governance-stewards

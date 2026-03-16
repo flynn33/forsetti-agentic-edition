@@ -1,0 +1,248 @@
+# Forsetti Agentic Edition
+
+**Governance Framework for AI Coding Agents and Agentic Engineering Teams**
+
+---
+
+## Purpose
+
+Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems.
+
+It is not a runtime SDK or application framework. It is a **governance layer** that enforces disciplined delivery through:
+
+- Constitutional governance
+- Role-based authority boundaries
+- Contract-driven execution
+- Compliance validation with required evidence
+- Release traceability
+- Documentation integrity and synchronization
+
+## Core Problem
+
+AI-led development, without governance, produces predictable failures:
+
+- **Uncontrolled scope expansion** — agents change more than requested
+- **Undocumented changes** — modifications without documentation updates
+- **Architectural drift** — structural integrity erodes across changes
+- **False completion claims** — "done" without validation
+- **Weak validation discipline** — tests and guardrails skipped or ignored
+- **Stale documentation** — READMEs and wikis diverge from reality
+- **Poor release traceability** — changes merged without version classification or changelog
+
+Forsetti Agentic Edition exists to prevent these failures through explicit governance, not implicit trust.
+
+---
+
+## What It Governs
+
+- Agent roles and authority boundaries
+- Task contracts and scope binding
+- Repository change control and approval workflows
+- Compliance evidence and validation requirements
+- Versioning discipline and release integrity
+- Changelog requirements and release traceability
+- Documentation synchronization and drift prevention
+- GitHub workflow enforcement
+
+## What It Does Not Govern
+
+- Application runtime behavior
+- UI design systems
+- Language-specific implementation details
+- Business-domain logic
+- Deployment platform internals
+
+These concerns belong to downstream repositories and their own governance models.
+
+---
+
+## Document Hierarchy
+
+Authority flows downward. Higher-ranked documents override lower-ranked documents in case of conflict.
+
+| Rank | Document(s) | Authority |
+|------|-------------|-----------|
+| 1 | `FORSETTI_CONSTITUTION.md` | Highest. Foundational principles and governance doctrine. |
+| 2 | Policy documents | Binding governance policies. |
+| 3 | `standards/*.md` | Operational standards for naming, versioning, changelog, documentation, review. |
+| 4 | `contracts/*.md` | Task contract templates that bind agent scope. |
+| 5 | `policies/*.json` | Machine-readable policy manifests for CI enforcement. |
+| 6 | `agents/*.md` | Role-specific agent instructions. |
+| 7 | `wiki/*.md` | Derived summary content. Not canonical. |
+
+### Policy Documents (Rank 2)
+
+- `COMPLIANCE_POLICY.md` — Compliance model, evidence requirements, blocking violations
+- `CHANGE_CONTROL_POLICY.md` — Change classification, approval workflows, scope control
+- `RELEASE_POLICY.md` — Versioning discipline, changelog requirements, release readiness
+- `DOCUMENTATION_POLICY.md` — Canonical sources, wiki role, synchronization rules
+
+---
+
+## Role Model
+
+Forsetti Agentic Edition defines five governed roles. Each role has explicit authority and explicit boundaries. No role may exceed its authority. Role separation ensures independent verification and prevents conflicts of interest.
+
+### Architect
+
+Plans tasks, creates contracts, classifies changes, identifies risks, and defines scope. The Architect determines what work should be done and how it should be bounded. The Architect does not execute implementation work.
+
+### Builder
+
+Executes work within contract scope. Updates documentation as required by the documentation policy. Reports blockers and scope questions to the Architect. The Builder does not approve its own work, classify releases, or modify governance documents without governance-class approval.
+
+### Validator
+
+Reviews scope compliance, truthfulness of completion claims, documentation accuracy, and release classification correctness. The Validator provides independent verification. The Validator does not modify production artifacts or execute implementation work during validation.
+
+### Release Manager
+
+Confirms version classification correctness, changelog integrity, and release readiness. The Release Manager gates releases on evidence — correct semantic version, complete changelog, passing validation. The Release Manager does not modify implementation artifacts.
+
+### Documentation Manager
+
+Reviews README integrity, wiki synchronization, glossary consistency, and documentation drift. The Documentation Manager enforces the documentation policy and verifies that derived surfaces remain aligned with canonical sources. The Documentation Manager has authority to block PRs for documentation violations.
+
+---
+
+## Default Posture
+
+This framework operates with a **strict default posture**.
+
+- All governance rules are enforced unless an explicit policy exception exists.
+- Convenience does not override compliance.
+- Shortcuts that weaken traceability, documentation integrity, or validation discipline are prohibited.
+- "We'll fix it later" is not an acceptable justification for skipping required governance steps.
+- Agents and human contributors are held to the same governance standard.
+
+---
+
+## Repository Structure
+
+```
+forsetti-agentic-edition/
+├── README.md                    # This file — repository overview and orientation
+├── VISION.md                    # Mission, problem statement, strategic goals
+├── FORSETTI_CONSTITUTION.md     # Highest authority — foundational governance
+├── AGENTS.md                    # Primary agent instructions and operating rules
+├── COMPLIANCE_POLICY.md         # Compliance model and blocking violations
+├── CHANGE_CONTROL_POLICY.md     # Change classes, approval classes, scope control
+├── RELEASE_POLICY.md            # Versioning, changelog, release readiness
+├── DOCUMENTATION_POLICY.md      # Canonical sources, wiki role, sync rules
+├── CONTRIBUTING.md              # Contributor guide
+├── CODE_OF_DELIVERY.md          # Delivery doctrine
+├── .github/                     # GitHub automation
+│   ├── workflows/               # CI/CD workflow definitions
+│   ├── ISSUE_TEMPLATE/          # Issue templates
+│   └── PULL_REQUEST_TEMPLATE.md # PR template with documentation impact section
+├── agents/                      # Role-specific agent instructions
+│   ├── architect.md             # Architect role instructions
+│   ├── builder.md               # Builder role instructions
+│   ├── validator.md             # Validator role instructions
+│   ├── release-manager.md       # Release Manager role instructions
+│   └── docs-manager.md          # Documentation Manager role instructions
+├── contracts/                   # Task contract templates
+│   ├── feature-contract.md      # Feature task contract
+│   ├── bugfix-contract.md       # Bugfix task contract
+│   ├── refactor-contract.md     # Refactor task contract
+│   └── governance-contract.md   # Governance change contract
+├── policies/                    # Machine-readable JSON policy manifests
+│   ├── protected-files.json     # Protected file registry
+│   ├── approval-requirements.json # Approval class definitions
+│   └── change-classes.json      # Change class definitions
+├── standards/                   # Operational standards
+│   ├── naming.md                # Naming conventions
+│   ├── versioning.md            # Versioning standard
+│   ├── changelog.md             # Changelog format standard
+│   ├── documentation.md         # Documentation format standard
+│   └── review.md                # Review process standard
+├── changelog/                   # Changelog and release notes
+│   └── CHANGELOG.md             # Running changelog
+├── wiki/                        # Derived wiki content (not canonical)
+│   ├── Overview.md              # Derived from README.md
+│   ├── Constitution.md          # Derived from FORSETTI_CONSTITUTION.md
+│   ├── Agent-Roles.md           # Derived from AGENTS.md
+│   ├── Workflow.md              # Derived from AGENTS.md, CHANGE_CONTROL_POLICY.md
+│   ├── Compliance.md            # Derived from COMPLIANCE_POLICY.md
+│   ├── Releases.md              # Derived from RELEASE_POLICY.md
+│   └── Documentation.md         # Derived from DOCUMENTATION_POLICY.md
+├── schemas/                     # JSON validation schemas
+│   ├── contract-schema.json     # Task contract validation schema
+│   └── policy-schema.json       # Policy manifest validation schema
+└── scripts/                     # Guardrail validation scripts
+    ├── validate-contracts.sh    # Contract completeness validation
+    ├── validate-changelog.sh    # Changelog format validation
+    └── validate-docs-sync.sh   # Documentation sync validation
+```
+
+---
+
+## Quick Start for Agents
+
+### Step 1: Understand Governance
+
+Read `FORSETTI_CONSTITUTION.md`. This is the highest-authority document. It establishes the foundational principles that all other documents implement. Do not skip this step.
+
+### Step 2: Understand Your Operating Rules
+
+Read `AGENTS.md`. This document defines the role model, workflow sequence, operating constraints, and compliance requirements that apply to all agent contributors.
+
+### Step 3: Understand the Relevant Policy
+
+Read the policy document relevant to your current task:
+
+- Making changes? Read `CHANGE_CONTROL_POLICY.md`
+- Validating work? Read `COMPLIANCE_POLICY.md`
+- Preparing a release? Read `RELEASE_POLICY.md`
+- Updating documentation? Read `DOCUMENTATION_POLICY.md`
+
+### Step 4: Operate Under Contract
+
+Create or receive a task contract before beginning meaningful work. The contract defines your scope, authority, expected outputs, and validation requirements. Work performed without a contract is non-compliant.
+
+### Step 5: Follow the Workflow
+
+The required workflow is:
+
+1. **Contract** — Define scope and authority before starting
+2. **Scope** — Work within contract boundaries; do not expand unilaterally
+3. **Execute** — Implement the contracted work
+4. **Validate** — Run required validation and produce evidence
+5. **Release** — Classify, changelog, and gate the release on evidence
+
+Each step has requirements defined in the relevant policy document. Skipping steps is a compliance violation.
+
+---
+
+## Quick Start for Human Contributors
+
+### Reviewing Agent Work
+
+When reviewing PRs produced by AI agents, verify:
+
+1. A task contract exists and the PR scope matches the contract
+2. The documentation impact section is completed and accurate
+3. Validation evidence is present (test results, lint output, guardrail checks)
+4. Changelog entry exists if required by the change class
+5. Wiki sync was performed or `docs:needs-sync` label was applied if canonical sources changed
+
+### Modifying Governance
+
+Governance documents are protected. Modifying them requires:
+
+1. A governance-class change classification
+2. Architect proposal with rationale
+3. Validator review for compliance impact
+4. CODEOWNERS approval (where configured)
+
+See `CHANGE_CONTROL_POLICY.md` for the full governance change process.
+
+---
+
+## Governance Contact
+
+This framework is maintained through its own governance process. Issues, proposals, and questions should be filed as GitHub issues with the appropriate labels.
+
+---
+
+*This document is a canonical source. Derived wiki page: `wiki/Overview.md`.*
