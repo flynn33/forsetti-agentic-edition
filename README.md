@@ -120,59 +120,61 @@ This framework operates with a **strict default posture**.
 ## Repository Structure
 
 ```
-forsetti-agentic-edition/
-├── README.md                    # This file — repository overview and orientation
-├── VISION.md                    # Mission, problem statement, strategic goals
-├── FORSETTI_CONSTITUTION.md     # Highest authority — foundational governance
-├── AGENTS.md                    # Primary agent instructions and operating rules
-├── COMPLIANCE_POLICY.md         # Compliance model and blocking violations
-├── CHANGE_CONTROL_POLICY.md     # Change classes, approval classes, scope control
-├── RELEASE_POLICY.md            # Versioning, changelog, release readiness
-├── DOCUMENTATION_POLICY.md      # Canonical sources, wiki role, sync rules
-├── CONTRIBUTING.md              # Contributor guide
-├── CODE_OF_DELIVERY.md          # Delivery doctrine
-├── .github/                     # GitHub automation
-│   ├── workflows/               # CI/CD workflow definitions
-│   ├── ISSUE_TEMPLATE/          # Issue templates
-│   └── PULL_REQUEST_TEMPLATE.md # PR template with documentation impact section
-├── agents/                      # Role-specific agent instructions
-│   ├── architect.md             # Architect role instructions
-│   ├── builder.md               # Builder role instructions
-│   ├── validator.md             # Validator role instructions
-│   ├── release-manager.md       # Release Manager role instructions
-│   └── docs-manager.md          # Documentation Manager role instructions
-├── contracts/                   # Task contract templates
-│   ├── feature-contract.md      # Feature task contract
-│   ├── bugfix-contract.md       # Bugfix task contract
-│   ├── refactor-contract.md     # Refactor task contract
-│   └── governance-contract.md   # Governance change contract
-├── policies/                    # Machine-readable JSON policy manifests
-│   ├── protected-files.json     # Protected file registry
-│   ├── approval-requirements.json # Approval class definitions
-│   └── change-classes.json      # Change class definitions
-├── standards/                   # Operational standards
-│   ├── naming.md                # Naming conventions
-│   ├── versioning.md            # Versioning standard
-│   ├── changelog.md             # Changelog format standard
-│   ├── documentation.md         # Documentation format standard
-│   └── review.md                # Review process standard
-├── changelog/                   # Changelog and release notes
-│   └── CHANGELOG.md             # Running changelog
-├── wiki/                        # Derived wiki content (not canonical)
-│   ├── Overview.md              # Derived from README.md
-│   ├── Constitution.md          # Derived from FORSETTI_CONSTITUTION.md
-│   ├── Agent-Roles.md           # Derived from AGENTS.md
-│   ├── Workflow.md              # Derived from AGENTS.md, CHANGE_CONTROL_POLICY.md
-│   ├── Compliance.md            # Derived from COMPLIANCE_POLICY.md
-│   ├── Releases.md              # Derived from RELEASE_POLICY.md
-│   └── Documentation.md         # Derived from DOCUMENTATION_POLICY.md
-├── schemas/                     # JSON validation schemas
-│   ├── contract-schema.json     # Task contract validation schema
-│   └── policy-schema.json       # Policy manifest validation schema
-└── scripts/                     # Guardrail validation scripts
-    ├── validate-contracts.sh    # Contract completeness validation
-    ├── validate-changelog.sh    # Changelog format validation
-    └── validate-docs-sync.sh   # Documentation sync validation
+├── AGENTS.md
+├── CHANGE_CONTROL_POLICY.md
+├── CODE_OF_DELIVERY.md
+├── COMPLIANCE_POLICY.md
+├── CONTRIBUTING.md
+├── DOCUMENTATION_POLICY.md
+├── FORSETTI_CONSTITUTION.md
+├── LICENSE.md
+├── README.md
+├── RELEASE_POLICY.md
+├── VERSION
+├── VISION.md
+├── agents/
+  ├── architect.md
+  ├── builder.md
+  ├── docs-manager.md
+  ├── release-manager.md
+  ├── validator.md
+├── changelog/
+  ├── CHANGELOG.md
+  ├── release-notes-template.md
+├── contracts/
+  ├── bugfix-contract-template.md
+  ├── governance-change-template.md
+  ├── release-contract-template.md
+  ├── task-contract-template.md
+├── policies/
+  ├── agent-roles.json
+  ├── changelog-rules.json
+  ├── compliance-rules.json
+  ├── docs-sync-rules.json
+  ├── labels.json
+  ├── repo-boundaries.json
+  ├── versioning-rules.json
+├── schemas/
+  ├── compliance-report.schema.json
+  ├── release-entry.schema.json
+  ├── task-contract.schema.json
+├── scripts/
+  ├── validate-repo.ps1
+  ├── validate-repo.sh
+├── standards/
+  ├── changelog-standard.md
+  ├── documentation-standard.md
+  ├── naming-standard.md
+  ├── review-standard.md
+  ├── versioning-standard.md
+├── wiki/
+  ├── Agent-Roles.md
+  ├── Compliance.md
+  ├── Constitution.md
+  ├── Glossary.md
+  ├── Home.md
+  ├── Releases.md
+  ├── Workflow.md
 ```
 
 ---
