@@ -1,0 +1,282 @@
+name: Changelog Agent
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 'Change title'
+        required: true
+        type: string
+      change_class:
+        description: 'Change class'
+        required: true
+        type: choice
+        options:
+          - feature
+          - bugfix
+          - refactor
+          - docs
+          - governance
+          - metadata
+          - breaking-change
+      version_impact:
+        description: 'Version impact'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - none
+          - governance-only
+      summary:
+        description: 'Change summary (min 30 chars)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: changelog-agent-main
+  cancel-in-progress: false
+
+jobs:
+  generate-changelog:
+    name: Generate Changelog Entry
+    runs-on: ubuntu-latest
+    if: >-
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event.pull_request.merged == true && github.actor != 'github-actions[bot]')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog entry
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title || '' }}
+          PR_BODY: ${{ github.event.pull_request.body || '' }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '0' }}
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+          PR_USER: ${{ github.event.pull_request.user.login || github.actor }}
+          MANUAL_TITLE: ${{ github.event.inputs.title || '' }}
+          MANUAL_CLASS: ${{ github.event.inputs.change_class || '' }}
+          MANUAL_IMPACT: ${{ github.event.inputs.version_impact || '' }}
+          MANUAL_SUMMARY: ${{ github.event.inputs.summary || '' }}
+        run: |
+          set -euo pipefail
+
+          TODAY=$(date -u +%Y-%m-%d)
+
+          # -----------------------------------------------------------
+          # 1. Determine change details
+          # -----------------------------------------------------------
+          if [ -n "$MANUAL_TITLE" ]; then
+            # Manual workflow_dispatch
+            TITLE="$MANUAL_TITLE"
+            CHANGE_CLASS="$MANUAL_CLASS"
+            VERSION_IMPACT="$MANUAL_IMPACT"
+            SUMMARY="$MANUAL_SUMMARY"
+            AFFECTED_AREA="Manual entry"
+            PR_REF=""
+          else
+            # Auto from merged PR
+            TITLE="$PR_TITLE"
+            PR_REF=" (PR #$PR_NUMBER)"
+
+            # -----------------------------------------------------------
+            # 2. Auto-classify from labels
+            # -----------------------------------------------------------
+            CHANGE_CLASS=""
+            VERSION_IMPACT=""
+
+            IFS=',' read -ra LABEL_ARRAY <<< "$PR_LABELS"
+            for label in "${LABEL_ARRAY[@]}"; do
+              label_lower=$(echo "$label" | tr '[:upper:]' '[:lower:]' | xargs)
+              case "$label_lower" in
+                feature|enhancement) CHANGE_CLASS="feature"; VERSION_IMPACT="${VERSION_IMPACT:-minor}" ;;
+                bugfix|bug|fix) CHANGE_CLASS="bugfix"; VERSION_IMPACT="${VERSION_IMPACT:-patch}" ;;
+                refactor|refactoring) CHANGE_CLASS="refactor"; VERSION_IMPACT="${VERSION_IMPACT:-patch}" ;;
+                docs|documentation) CHANGE_CLASS="docs"; VERSION_IMPACT="${VERSION_IMPACT:-none}" ;;
+                governance) CHANGE_CLASS="governance"; VERSION_IMPACT="${VERSION_IMPACT:-governance-only}" ;;
+                metadata) CHANGE_CLASS="metadata"; VERSION_IMPACT="${VERSION_IMPACT:-none}" ;;
+                breaking|breaking-change) CHANGE_CLASS="breaking-change"; VERSION_IMPACT="major" ;;
+                patch) VERSION_IMPACT="patch" ;;
+                minor) VERSION_IMPACT="minor" ;;
+                major) VERSION_IMPACT="major" ;;
+              esac
+            done
+
+            # -----------------------------------------------------------
+            # 3. Fallback: classify from PR title (conventional commits)
+            # -----------------------------------------------------------
+            if [ -z "$CHANGE_CLASS" ]; then
+              TITLE_LOWER=$(echo "$PR_TITLE" | tr '[:upper:]' '[:lower:]')
+              if echo "$TITLE_LOWER" | grep -qE "^feat(\(|:|\!)"; then
+                CHANGE_CLASS="feature"
+                VERSION_IMPACT="${VERSION_IMPACT:-minor}"
+              elif echo "$TITLE_LOWER" | grep -qE "^fix(\(|:)"; then
+                CHANGE_CLASS="bugfix"
+                VERSION_IMPACT="${VERSION_IMPACT:-patch}"
+              elif echo "$TITLE_LOWER" | grep -qE "^refactor(\(|:)"; then
+                CHANGE_CLASS="refactor"
+                VERSION_IMPACT="${VERSION_IMPACT:-patch}"
+              elif echo "$TITLE_LOWER" | grep -qE "^docs(\(|:)"; then
+                CHANGE_CLASS="docs"
+                VERSION_IMPACT="${VERSION_IMPACT:-none}"
+              elif echo "$TITLE_LOWER" | grep -qE "^chore(\(|:)"; then
+                CHANGE_CLASS="metadata"
+                VERSION_IMPACT="${VERSION_IMPACT:-none}"
+              else
+                CHANGE_CLASS="feature"
+                VERSION_IMPACT="${VERSION_IMPACT:-patch}"
+              fi
+            fi
+
+            # Check for breaking change markers
+            if echo "$PR_TITLE" | grep -qE "!:"; then
+              CHANGE_CLASS="breaking-change"
+              VERSION_IMPACT="major"
+            fi
+            if echo "$PR_BODY" | grep -qiE "BREAKING CHANGE"; then
+              CHANGE_CLASS="breaking-change"
+              VERSION_IMPACT="major"
+            fi
+
+            # -----------------------------------------------------------
+            # 4. Extract summary from PR body
+            # -----------------------------------------------------------
+            # Try to extract a summary section from the PR body
+            SUMMARY=$(echo "$PR_BODY" | awk '/^## Summary/,/^## /' | grep -v '^## ' | head -5 | tr '\n' ' ' | sed 's/[[:space:]]*$//' || true)
+
+            if [ -z "$SUMMARY" ] || [ ${#SUMMARY} -lt 30 ]; then
+              # Fallback: use PR title as summary
+              SUMMARY="$PR_TITLE"
+            fi
+
+            # Trim to reasonable length
+            if [ ${#SUMMARY} -gt 500 ]; then
+              SUMMARY="${SUMMARY:0:497}..."
+            fi
+
+            # -----------------------------------------------------------
+            # 5. Determine affected area from changed files
+            # -----------------------------------------------------------
+            CHANGED_FILES=$(git diff --name-only HEAD~1 2>/dev/null | head -20 || echo "unknown")
+
+            # Categorize by top-level directories
+            AREAS=""
+            if echo "$CHANGED_FILES" | grep -q "^agents/"; then AREAS="${AREAS}agents, "; fi
+            if echo "$CHANGED_FILES" | grep -q "^policies/"; then AREAS="${AREAS}policies, "; fi
+            if echo "$CHANGED_FILES" | grep -q "^schemas/"; then AREAS="${AREAS}schemas, "; fi
+            if echo "$CHANGED_FILES" | grep -q "^contracts/"; then AREAS="${AREAS}contracts, "; fi
+            if echo "$CHANGED_FILES" | grep -q "^standards/"; then AREAS="${AREAS}standards, "; fi
+            if echo "$CHANGED_FILES" | grep -q "^scripts/"; then AREAS="${AREAS}scripts, "; fi
+            if echo "$CHANGED_FILES" | grep -q "^wiki/"; then AREAS="${AREAS}wiki, "; fi
+            if echo "$CHANGED_FILES" | grep -q "^\.github/"; then AREAS="${AREAS}workflows, "; fi
+            if echo "$CHANGED_FILES" | grep -q "^changelog/"; then AREAS="${AREAS}changelog, "; fi
+            if echo "$CHANGED_FILES" | grep -qE "^(README|AGENTS|.*POLICY|FORSETTI|VISION|CONTRIBUTING|CODE_OF_DELIVERY|LICENSE)\.md$"; then
+              AREAS="${AREAS}governance docs, "
+            fi
+
+            AFFECTED_AREA="${AREAS%, }"
+            if [ -z "$AFFECTED_AREA" ]; then
+              AFFECTED_AREA="general"
+            fi
+          fi
+
+          echo "Title:          $TITLE"
+          echo "Change Class:   $CHANGE_CLASS"
+          echo "Version Impact: $VERSION_IMPACT"
+          echo "Summary:        $SUMMARY"
+          echo "Affected Area:  $AFFECTED_AREA"
+
+          # -----------------------------------------------------------
+          # 6. Read current version for entry header
+          # -----------------------------------------------------------
+          if [ -f VERSION ]; then
+            CURRENT_VERSION=$(cat VERSION | tr -d '[:space:]')
+          else
+            CURRENT_VERSION="Unreleased"
+          fi
+
+          # -----------------------------------------------------------
+          # 7. Build changelog entry
+          # -----------------------------------------------------------
+          CATEGORY_LABEL=$(echo "$CHANGE_CLASS" | sed 's/^./\U&/' | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+
+          ENTRY="## [Unreleased] — $TODAY
+
+          ### $CATEGORY_LABEL
+
+          **Title**: ${TITLE}${PR_REF}
+          **Change Class**: $CHANGE_CLASS
+          **Version Impact**: $VERSION_IMPACT
+          **Summary**: $SUMMARY
+          **Affected Area**: $AFFECTED_AREA"
+
+          # Add migration note for breaking changes
+          if [ "$CHANGE_CLASS" = "breaking-change" ]; then
+            MIGRATION_NOTE=$(echo "$PR_BODY" | awk '/^## Migration/,/^## /' | grep -v '^## ' | head -5 | tr '\n' ' ' | sed 's/[[:space:]]*$//' || true)
+            if [ -z "$MIGRATION_NOTE" ]; then
+              MIGRATION_NOTE="Review the breaking changes and update dependent configurations accordingly."
+            fi
+            ENTRY="$ENTRY
+          **Migration Note**: $MIGRATION_NOTE"
+          fi
+
+          # -----------------------------------------------------------
+          # 8. Prepend entry to changelog
+          # -----------------------------------------------------------
+          if [ ! -f changelog/CHANGELOG.md ]; then
+            mkdir -p changelog
+            echo "# Changelog
+
+          All notable changes to the Forsetti Agentic Edition governance framework are documented in this file.
+
+          The changelog is a governance record. Entries must be accurate, specific, and traceable.
+
+          $ENTRY" > changelog/CHANGELOG.md
+          else
+            # Insert after the header block (first blank line after opening comments)
+            HEADER_END=$(awk '/^## \[/{print NR-1; exit}' changelog/CHANGELOG.md)
+
+            if [ -z "$HEADER_END" ] || [ "$HEADER_END" -lt 1 ]; then
+              # No existing entries — append after header
+              HEADER_END=$(wc -l < changelog/CHANGELOG.md)
+            fi
+
+            {
+              head -n "$HEADER_END" changelog/CHANGELOG.md
+              echo ""
+              echo "$ENTRY"
+              echo ""
+              tail -n +"$((HEADER_END + 1))" changelog/CHANGELOG.md
+            } > changelog/CHANGELOG.md.tmp
+
+            mv changelog/CHANGELOG.md.tmp changelog/CHANGELOG.md
+          fi
+
+          echo ""
+          echo "Changelog entry generated successfully."
+
+      - name: Commit changelog update
+        run: |
+          if git diff --quiet changelog/CHANGELOG.md 2>/dev/null; then
+            echo "No changelog changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add changelog/CHANGELOG.md
+          git commit -m "docs(changelog): auto-generate entry for merged changes [automated]"
+          git push
+
+          echo "Changelog entry committed and pushed."

@@ -1,0 +1,229 @@
+name: Version Agent
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'changelog/CHANGELOG.md'
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type (patch, minor, major)'
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+concurrency:
+  group: version-agent-main
+  cancel-in-progress: false
+
+jobs:
+  assign-version:
+    name: Assign Version and Tag Release
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine version bump
+        id: bump
+        run: |
+          set -euo pipefail
+
+          # -----------------------------------------------------------
+          # 1. Manual override via workflow_dispatch
+          # -----------------------------------------------------------
+          MANUAL_BUMP="${{ github.event.inputs.bump_type }}"
+          if [ -n "$MANUAL_BUMP" ]; then
+            echo "Manual bump requested: $MANUAL_BUMP"
+            echo "bump_type=$MANUAL_BUMP" >> "$GITHUB_OUTPUT"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # -----------------------------------------------------------
+          # 2. Extract Version Impact from newest changelog entry
+          # -----------------------------------------------------------
+          if [ ! -f changelog/CHANGELOG.md ]; then
+            echo "No changelog found. Skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          ENTRY=$(awk '/^## \[/{if(found) exit; found=1} found{print}' changelog/CHANGELOG.md)
+          VERSION_IMPACT=$(echo "$ENTRY" | grep -oP '(?<=\*\*Version Impact\*\*:\s).*' | head -1 | tr -d '[:space:]' || true)
+
+          if [ -n "$VERSION_IMPACT" ]; then
+            echo "Changelog Version Impact: $VERSION_IMPACT"
+            case "$VERSION_IMPACT" in
+              none|governance-only)
+                echo "No version bump needed for impact '$VERSION_IMPACT'."
+                echo "skip=true" >> "$GITHUB_OUTPUT"
+                exit 0
+                ;;
+              patch|minor|major)
+                echo "bump_type=$VERSION_IMPACT" >> "$GITHUB_OUTPUT"
+                echo "skip=false" >> "$GITHUB_OUTPUT"
+                exit 0
+                ;;
+            esac
+          fi
+
+          # -----------------------------------------------------------
+          # 3. Fallback: parse recent commit messages (conventional commits)
+          # -----------------------------------------------------------
+          echo "No Version Impact in changelog. Checking commit messages..."
+
+          BUMP="patch"
+          COMMITS=$(git log --format="%s" HEAD~5..HEAD 2>/dev/null || git log --format="%s" -5)
+
+          while IFS= read -r msg; do
+            if echo "$msg" | grep -qiE "BREAKING CHANGE|^.*!:"; then
+              BUMP="major"
+              break
+            elif echo "$msg" | grep -qiE "^feat(\(.*\))?:"; then
+              BUMP="minor"
+            fi
+          done <<< "$COMMITS"
+
+          echo "Detected bump from commits: $BUMP"
+          echo "bump_type=$BUMP" >> "$GITHUB_OUTPUT"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - name: Compute and assign version
+        if: steps.bump.outputs.skip != 'true'
+        id: version
+        run: |
+          set -euo pipefail
+
+          BUMP_TYPE="${{ steps.bump.outputs.bump_type }}"
+
+          # -----------------------------------------------------------
+          # Read current version
+          # -----------------------------------------------------------
+          if [ -f VERSION ]; then
+            CURRENT_VERSION=$(cat VERSION | tr -d '[:space:]')
+          else
+            CURRENT_VERSION=$(grep -oP '(?<=## \[)[0-9]+\.[0-9]+\.[0-9]+' changelog/CHANGELOG.md | head -1 || echo "0.0.0")
+          fi
+
+          echo "Current version: $CURRENT_VERSION"
+
+          if ! echo "$CURRENT_VERSION" | grep -qP '^\d+\.\d+\.\d+$'; then
+            echo "::error::Current version '$CURRENT_VERSION' is not valid SemVer (X.Y.Z)."
+            exit 1
+          fi
+
+          MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
+          MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
+          PATCH=$(echo "$CURRENT_VERSION" | cut -d. -f3)
+
+          # -----------------------------------------------------------
+          # Compute next version
+          # -----------------------------------------------------------
+          case "$BUMP_TYPE" in
+            patch) NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))" ;;
+            minor) NEW_VERSION="$MAJOR.$((MINOR + 1)).0" ;;
+            major) NEW_VERSION="$((MAJOR + 1)).0.0" ;;
+            *)
+              echo "::error::Unknown bump type: '$BUMP_TYPE'"
+              exit 1
+              ;;
+          esac
+
+          echo "New version: $NEW_VERSION"
+          echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
+          # -----------------------------------------------------------
+          # Check idempotency
+          # -----------------------------------------------------------
+          if [ -f VERSION ] && [ "$(cat VERSION | tr -d '[:space:]')" = "$NEW_VERSION" ]; then
+            echo "VERSION file already at $NEW_VERSION. Skipping write."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # -----------------------------------------------------------
+          # Write VERSION file
+          # -----------------------------------------------------------
+          echo "$NEW_VERSION" > VERSION
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+          echo ""
+          echo "==============================="
+          echo "  Version Assignment"
+          echo "==============================="
+          echo "  Previous: $CURRENT_VERSION"
+          echo "  Bump:     $BUMP_TYPE"
+          echo "  New:      $NEW_VERSION"
+          echo "==============================="
+
+      - name: Commit version bump
+        if: steps.bump.outputs.skip != 'true' && steps.version.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add VERSION
+          git commit -m "chore(version): bump to v${{ steps.version.outputs.new_version }} [automated]"
+          git push
+
+      - name: Create git tag
+        if: steps.bump.outputs.skip != 'true' && steps.version.outputs.new_version != ''
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+
+          # Check if tag already exists
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists. Skipping."
+            exit 0
+          fi
+
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+          echo "Created and pushed tag: $TAG"
+
+      - name: Create GitHub Release
+        if: steps.bump.outputs.skip != 'true' && steps.version.outputs.new_version != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+
+          # Check if release already exists
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists. Skipping."
+            exit 0
+          fi
+
+          # Extract release notes from changelog
+          NOTES=$(awk -v ver="${{ steps.version.outputs.new_version }}" '
+            /^## \[/ {
+              if (found) exit
+              if (index($0, "[" ver "]") || index($0, "[Unreleased]")) found=1
+            }
+            found { print }
+          ' changelog/CHANGELOG.md)
+
+          if [ -z "$NOTES" ]; then
+            NOTES="Release $TAG"
+          fi
+
+          echo "$NOTES" > /tmp/release-notes.md
+
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes-file /tmp/release-notes.md
+
+          echo "Created GitHub Release: $TAG"
