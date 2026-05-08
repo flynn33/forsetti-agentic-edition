@@ -4,6 +4,18 @@ All notable changes to the Forsetti Agentic Edition governance framework are doc
 
 The changelog is a governance record. Entries must be accurate, specific, and traceable.
 
+## [Unreleased]
+
+### Bugfixes
+
+**Title**: Fix Windows validator repository-root resolution
+**Change Class**: bugfix
+**Version Impact**: patch
+**Summary**: Corrected `scripts/validate-repo.ps1` so it resolves the Forsetti repository root as the parent of the `scripts/` directory instead of the parent workspace. This prevents false missing-file errors and unrelated JSON parsing failures when validating from the Windows project folder.
+**Affected Area**: scripts, changelog, contracts
+**Task Reference**: FAE-BUG-2026-05-08-001
+**Approval Class**: standard
+
 ## [1.0.0] — 2026-03-16
 
 ### Initial Release

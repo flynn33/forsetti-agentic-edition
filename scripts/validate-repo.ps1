@@ -2,8 +2,17 @@
 # Analogous to verify-forsetti-guardrails.ps1 (Windows Forsetti Framework)
 
 $ErrorActionPreference = "Stop"
-$RepoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-if (-not $RepoRoot) { $RepoRoot = Split-Path -Parent $PSScriptRoot }
+$ScriptRoot = if ($PSScriptRoot) {
+    $PSScriptRoot
+} elseif ($MyInvocation.MyCommand.Path) {
+    Split-Path -Parent $MyInvocation.MyCommand.Path
+} else {
+    (Get-Location).Path
+}
+$RepoRoot = [System.IO.Path]::GetFullPath((Join-Path $ScriptRoot ".."))
+if (-not (Test-Path (Join-Path $RepoRoot "FORSETTI_CONSTITUTION.md"))) {
+    throw "Unable to resolve Forsetti repository root from script path: $ScriptRoot"
+}
 $Errors = 0
 $Warnings = 0
 
@@ -22,8 +31,8 @@ $RequiredFiles = @(
     ".github/CODEOWNERS", ".github/labels.json", ".github/pull_request_template.md",
     ".github/ISSUE_TEMPLATE/feature_request.md", ".github/ISSUE_TEMPLATE/bug_report.md",
     ".github/ISSUE_TEMPLATE/governance_change.md", ".github/ISSUE_TEMPLATE/agent_task.md",
-    ".github/workflows/policy-check.yml", ".github/workflows/changelog-check.yml",
-    ".github/workflows/docs-sync-check.yml", ".github/workflows/version-guard.yml",
+    ".github/workflows/policy-check.yml", ".github/workflows/changelog-validation.yml",
+    ".github/workflows/docs-sync-agent.yml", ".github/workflows/version-guard.yml",
     ".github/workflows/protected-path-check.yml",
     "agents/architect.md", "agents/builder.md", "agents/validator.md",
     "agents/release-manager.md", "agents/docs-manager.md",

@@ -1,0 +1,74 @@
+{
+  "taskId": "FAE-BUG-2026-05-08-001",
+  "branch": "fix/v3-windows-validator-root",
+  "changeClass": "bugfix",
+  "approvalClass": "standard",
+  "result": "pass",
+  "filesChanged": [
+    "contracts/FAE-BUG-2026-05-08-001-validator-root.md",
+    "scripts/validate-repo.ps1",
+    "changelog/CHANGELOG.md",
+    ".forsetti/remediation-v3/validator-root-repair-report.md",
+    ".forsetti/remediation-v3/validator-root-repair.json"
+  ],
+  "problem": "scripts/validate-repo.ps1 resolved the repository root as A:\\Codex instead of the project folder. After that defect was corrected, the script still referenced two stale workflow filenames.",
+  "fix": "Resolve the repository root as the parent of the scripts directory, fail fast if FORSETTI_CONSTITUTION.md is not found, and align required workflow filenames with the current repository.",
+  "verification": [
+    {
+      "check": "Windows PowerShell validator run",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
+      "result": "pass",
+      "evidence": "PASSED - Repository validation successful. Errors: 0. Warnings: 0."
+    },
+    {
+      "check": "PowerShell 7 validator run",
+      "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
+      "result": "pass",
+      "evidence": "PASSED - Repository validation successful. Errors: 0. Warnings: 0."
+    },
+    {
+      "check": "Visual Studio Developer Command environment validator run",
+      "command": "VsDevCmd.bat -no_logo && powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
+      "result": "pass",
+      "evidence": "PASSED - Repository validation successful. Errors: 0. Warnings: 0."
+    },
+    {
+      "check": "Absolute script path from parent workspace",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File A:\\Codex\\Forsetti-Framwork-Agentic-Edition\\scripts\\validate-repo.ps1",
+      "result": "pass",
+      "evidence": "Independent review reported pass with 0 errors and 0 warnings."
+    },
+    {
+      "check": "VS Code workspace/tooling check",
+      "command": "code -r .; code --goto scripts\\validate-repo.ps1:5; code --status",
+      "result": "pass",
+      "evidence": "VS Code 1.115.0 opened the workspace and script; workspace stats showed 103 files."
+    },
+    {
+      "check": "Visual Studio MSBuild availability",
+      "command": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe -version -nologo",
+      "result": "pass",
+      "evidence": "MSBuild 18.4.0.7901."
+    },
+    {
+      "check": "Visual Studio Python JSON parse",
+      "command": "py -m json.tool .forsetti\\remediation-v3\\validator-root-repair.json",
+      "result": "pass",
+      "evidence": "Exit code 0."
+    },
+    {
+      "check": "Bundled local Python JSON parse",
+      "command": "C:\\Users\\james\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -m json.tool .forsetti\\remediation-v3\\validator-root-repair.json",
+      "result": "pass",
+      "evidence": "Exit code 0."
+    }
+  ],
+  "knownIssues": [
+    "Prior untracked remediation evidence remains in the working tree and is excluded from this repair scope."
+  ],
+  "documentationStatus": "Changelog entry added; README and wiki updates not required.",
+  "releaseImpact": "patch",
+  "scopeCompliance": "Only contract, validator, changelog, and repair evidence files are in scope. Prior Phase 00/00A/00B and v2 evidence files are excluded from this repair change set.",
+  "dockerStatus": "not_required_for_windows_validation",
+  "wslStatus": "not_required_for_windows_validation"
+}
