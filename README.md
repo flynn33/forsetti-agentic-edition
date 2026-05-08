@@ -42,7 +42,9 @@ Forsetti Agentic Edition exists to prevent these failures through explicit gover
 - Versioning discipline and release integrity
 - Changelog requirements and release traceability
 - Documentation synchronization and drift prevention
-- GitHub workflow enforcement
+- Portable core boundaries
+- Optional host adapters
+- Platform overlays
 
 ## What It Does Not Govern
 
@@ -53,6 +55,22 @@ Forsetti Agentic Edition exists to prevent these failures through explicit gover
 - Deployment platform internals
 
 These concerns belong to downstream repositories and their own governance models.
+
+---
+
+## Portable Architecture
+
+Forsetti Agentic Edition is organized around a portable governance core, optional adapters, and platform overlays.
+
+| Layer | Path | Purpose |
+|---|---|---|
+| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, and future validation interfaces. |
+| Adapters | `adapters/` | Optional host integrations that translate local or hosted platform context into portable validation inputs. |
+| Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning while documenting local expectations. |
+
+The portable core must not depend on adapters, overlays, hosted workflow runners, IDEs, local MCP servers, container runtimes, or provider-specific tooling. Those tools may support evidence collection in a governed task, but they are not core product dependencies.
+
+GitHub Actions support belongs in `adapters/github-actions/` as an optional adapter surface. It does not define canonical compliance rules.
 
 ---
 
@@ -69,6 +87,8 @@ Authority flows downward. Higher-ranked documents override lower-ranked document
 | 5 | `policies/*.json` | Machine-readable policy manifests for CI enforcement. |
 | 6 | `agents/*.md` | Role-specific agent instructions. |
 | 7 | `wiki/*.md` | Derived summary content. Not canonical. |
+
+Portable scaffold documents under `core/`, `adapters/`, and `overlays/` are subordinate documentation surfaces introduced for portability. They do not amend the root authority hierarchy.
 
 ### Policy Documents (Rank 2)
 
@@ -132,6 +152,9 @@ This framework operates with a **strict default posture**.
 ├── RELEASE_POLICY.md
 ├── VERSION
 ├── VISION.md
+├── adapters/
+  ├── github-actions/
+    ├── README.md
 ├── agents/
   ├── architect.md
   ├── builder.md
@@ -146,6 +169,17 @@ This framework operates with a **strict default posture**.
   ├── governance-change-template.md
   ├── release-contract-template.md
   ├── task-contract-template.md
+├── core/
+  ├── AGENTS.md
+  ├── FORSETTI_AGENTIC_CONSTITUTION.md
+  ├── README.md
+├── overlays/
+  ├── forsetti-apple/
+    ├── README.md
+  ├── forsetti-windows/
+    ├── README.md
+  ├── generic/
+    ├── README.md
 ├── policies/
   ├── agent-roles.json
   ├── changelog-rules.json
@@ -173,6 +207,7 @@ This framework operates with a **strict default posture**.
   ├── Constitution.md
   ├── Glossary.md
   ├── Home.md
+  ├── Overview.md
   ├── Releases.md
   ├── Workflow.md
 ```

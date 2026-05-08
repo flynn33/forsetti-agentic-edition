@@ -1,8 +1,13 @@
 # Glossary
 
+> **Canonical sources**: repository governance documents and Phase 01 scaffold documents referenced by each term
+> **Last synced**: 2026-05-08, Phase 01 portable scaffold
+
 Key terms used throughout the Forsetti Agentic Edition governance framework.
 
 **Approval Class**: The required authority level for a change (standard, sensitive, governance-class, emergency, release-critical). Defined in `CHANGE_CONTROL_POLICY.md`.
+
+**Adapter**: An optional host integration that translates platform-specific context into portable Forsetti validation inputs without defining canonical governance rules.
 
 **Blocking Violation**: A compliance failure that prevents a change from being merged. Defined in `COMPLIANCE_POLICY.md`.
 
@@ -15,6 +20,8 @@ Key terms used throughout the Forsetti Agentic Edition governance framework.
 **Compliance Report**: A structured assessment of whether work meets governance requirements, rendered by the Validator. Defined in `COMPLIANCE_POLICY.md`.
 
 **Constitutional Amendment**: A formal change to `FORSETTI_CONSTITUTION.md` requiring governance-class approval and a standalone governance change process.
+
+**Core**: The portable governance layer that contains host-neutral Forsetti doctrine, interfaces, and validation concepts.
 
 **Derived Content**: Content that summarizes or references a canonical source (e.g., wiki pages). Not authoritative.
 
@@ -29,6 +36,10 @@ Key terms used throughout the Forsetti Agentic Edition governance framework.
 **Governance Steward**: An elevated authority role for constitutional amendments and governance-class changes.
 
 **Governance-Only**: A version impact classification for constitutional/compliance changes tracked in the changelog but not in semantic versioning.
+
+**Platform Overlay**: Platform-specific guidance that narrows local execution expectations while preserving portable core governance meaning.
+
+**Portable Core**: The host-neutral Forsetti layer under `core/`. It must not depend on adapters, overlays, hosted workflows, IDEs, local MCP servers, container runtimes, or provider-specific tooling.
 
 **Interpretation Debt**: The cost created when documentation is ambiguous enough that readers must guess or assume meaning.
 

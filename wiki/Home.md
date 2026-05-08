@@ -1,73 +1,50 @@
 # Forsetti Agentic Edition
 
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
-
-> Constitutional governance for AI-led software delivery
-
----
+> **Canonical source**: `README.md`
+> **Last synced**: 2026-05-08, Phase 01 portable scaffold
 
 ## Welcome
 
-This wiki provides comprehensive documentation for the Forsetti Agentic Edition governance framework. All content is derived from canonical repository documents and kept in sync automatically.
+This wiki provides navigational documentation for the Forsetti Agentic Edition governance framework. Repository markdown files are canonical. Wiki pages are derived orientation surfaces.
 
-**Canonical sources are authoritative.** If a wiki page conflicts with a repository markdown file, the repository file is correct.
+## Portable Architecture
 
----
+| Layer | Path | Purpose |
+|:-----|:-----|:--------|
+| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, and future validation interfaces. |
+| Adapters | `adapters/` | Optional host integrations that translate platform context into portable validation inputs. |
+| Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning. |
 
 ## Quick Navigation
 
 | Page | Description | Source |
 |:-----|:------------|:-------|
+| [Overview](Overview) | Repository overview, structure, and portable architecture | `README.md` |
 | [Constitution](Constitution) | Foundational principles, authority hierarchy, and governance doctrine | `FORSETTI_CONSTITUTION.md` |
-| [Agent Roles](Agent-Roles) | The 5 governed roles, their authorities and boundaries | `AGENTS.md`, `agents/*.md` |
+| [Agent Roles](Agent-Roles) | The governed roles, their authorities, and boundaries | `AGENTS.md`, `agents/*.md` |
 | [Workflow](Workflow) | Change control lifecycle, approval classes, and documentation policy | `CHANGE_CONTROL_POLICY.md`, `DOCUMENTATION_POLICY.md` |
 | [Compliance](Compliance) | Evidence-based compliance model and blocking violations | `COMPLIANCE_POLICY.md` |
 | [Releases](Releases) | Versioning model, release readiness, and impact classification | `RELEASE_POLICY.md` |
 | [Changelog](Changelog) | Version history and change records | `changelog/CHANGELOG.md` |
 | [Glossary](Glossary) | Key terms and definitions | Various |
 
----
-
 ## Core Principles
 
-1. **Contract Before Action** — No work begins without a governing contract
-2. **Scope Is Binding** — Stay within defined boundaries
-3. **Truthfulness Is Mandatory** — Report status honestly
-4. **Governance Overrides Convenience** — Process exists for a reason
-5. **Documentation Is Part of Delivery** — Undocumented work is incomplete
-6. **Compliance Must Be Measurable** — Evidence over assertions
-7. **Release Integrity Is Non-Negotiable** — Quality gates cannot be bypassed
-
----
-
-## Document Authority Hierarchy
-
-```
-Level 1: FORSETTI_CONSTITUTION.md        (supreme authority)
-Level 2: *_POLICY.md documents            (binding policy)
-Level 3: standards/*.md                    (implementation standards)
-Level 4: contracts/*.md                    (task-level governance)
-Level 5: policies/*.json                   (machine-readable manifests)
-Level 6: AGENTS.md + agents/*.md           (role instructions)
-Level 7: wiki/ pages                       (derived, non-authoritative)
-```
-
----
+1. **Contract Before Action** - No meaningful work begins without a governing contract.
+2. **Scope Is Binding** - Work stays within defined boundaries.
+3. **Truthfulness Is Mandatory** - Status claims must match evidence.
+4. **Governance Overrides Convenience** - Required process is not optional.
+5. **Documentation Is Part of Delivery** - Documentation drift is a compliance issue.
+6. **Compliance Must Be Measurable** - Evidence determines compliance.
+7. **Release Integrity Is Non-Negotiable** - Release claims require validation.
 
 ## Getting Started
 
-1. Read the [Constitution](Constitution) to understand governance principles
-2. Review [Agent Roles](Agent-Roles) to understand the role model
-3. Study the [Workflow](Workflow) for change control procedures
-4. Check [Compliance](Compliance) for blocking violation rules
+1. Read [Constitution](Constitution) to understand governance principles.
+2. Review [Agent Roles](Agent-Roles) to understand role boundaries.
+3. Study [Workflow](Workflow) for change control procedures.
+4. Check [Compliance](Compliance) for blocking violation rules.
 
+## Navigation
 
----
-
-<sub>
-
-**Navigation**: [Home](Home) | [Constitution](Constitution) | [Agent Roles](Agent-Roles) | [Workflow](Workflow) | [Compliance](Compliance) | [Releases](Releases) | [Changelog](Changelog) | [Glossary](Glossary)
-
-*Auto-generated by the Wiki Designer Agent — v1.0.0 `4cfdb2b`*
-
-</sub>
+[Home](Home) | [Overview](Overview) | [Constitution](Constitution) | [Agent Roles](Agent-Roles) | [Workflow](Workflow) | [Compliance](Compliance) | [Releases](Releases) | [Changelog](Changelog) | [Glossary](Glossary)

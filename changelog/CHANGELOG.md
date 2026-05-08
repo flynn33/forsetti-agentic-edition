@@ -6,6 +6,17 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ## [Unreleased]
 
+### Features
+
+**Title**: Add portable core, adapter, and overlay scaffold
+**Change Class**: feature
+**Version Impact**: minor
+**Summary**: Added the Phase 01 portable scaffold for `core/`, `adapters/`, and `overlays/` so host-neutral governance doctrine is separated from optional host integrations and platform-specific execution guidance.
+**Affected Area**: core, adapters, overlays, README, wiki, changelog, contracts
+**PR Reference**: pending pull request for `fix/v3-portable-core-scaffold`
+**Task Reference**: FAE-TASK-2026-05-08-002
+**Approval Class**: sensitive
+
 ### Bugfixes
 
 **Title**: Fix Windows validator repository-root resolution
@@ -13,6 +24,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: patch
 **Summary**: Corrected `scripts/validate-repo.ps1` so it resolves the Forsetti repository root as the parent of the `scripts/` directory instead of the parent workspace. This prevents false missing-file errors and unrelated JSON parsing failures when validating from the Windows project folder.
 **Affected Area**: scripts, changelog, contracts
+**PR Reference**: pending pull request for `fix/v3-portable-core-scaffold`
 **Task Reference**: FAE-BUG-2026-05-08-001
 **Approval Class**: standard
 

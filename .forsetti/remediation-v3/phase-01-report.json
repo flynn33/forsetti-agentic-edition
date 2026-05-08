@@ -1,0 +1,207 @@
+{
+  "phase_id": "01",
+  "phase_name": "Portable Core, Adapter, and Overlay Scaffold",
+  "phase_result": "pass",
+  "branch": "fix/v3-portable-core-scaffold",
+  "task_contract": "contracts/FAE-TASK-2026-05-08-002-portable-core-scaffold.md",
+  "change_class": "feature",
+  "approval_class": "sensitive",
+  "release_impact": "minor",
+  "files_changed": [
+    "contracts/FAE-TASK-2026-05-08-002-portable-core-scaffold.md",
+    "core/AGENTS.md",
+    "core/README.md",
+    "core/FORSETTI_AGENTIC_CONSTITUTION.md",
+    "adapters/github-actions/README.md",
+    "overlays/generic/README.md",
+    "overlays/forsetti-apple/README.md",
+    "overlays/forsetti-windows/README.md",
+    "README.md",
+    "wiki/Overview.md",
+    "wiki/Home.md",
+    "wiki/Glossary.md",
+    "wiki/Changelog.md",
+    "wiki/_Footer.md",
+    "wiki/Agent-Roles.md",
+    "wiki/Compliance.md",
+    "wiki/Constitution.md",
+    "wiki/Releases.md",
+    "wiki/Workflow.md",
+    "changelog/CHANGELOG.md",
+    ".forsetti/remediation-v3/phase-01-report.md",
+    ".forsetti/remediation-v3/phase-01-report.json"
+  ],
+  "commands_run": [
+    {
+      "command": "git switch -c fix/v3-portable-core-scaffold",
+      "result": "pass"
+    },
+    {
+      "command": "code -r .; code --goto core\\README.md:1; code --goto overlays\\forsetti-windows\\README.md:1; code --status",
+      "result": "pass"
+    },
+    {
+      "command": "codex mcp list",
+      "result": "pass"
+    },
+    {
+      "command": "rg --files and targeted rg scans",
+      "result": "pass"
+    },
+    {
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
+      "result": "pass: 0 errors, 0 warnings"
+    },
+    {
+      "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
+      "result": "pass: 0 errors, 0 warnings"
+    },
+    {
+      "command": "Visual Studio Developer Command environment plus PowerShell repository validator",
+      "result": "pass: 0 errors, 0 warnings"
+    },
+    {
+      "command": "git diff --check",
+      "result": "pass: no whitespace errors; Git line-ending warnings only"
+    },
+    {
+      "command": "git status --short --untracked-files=all and git ls-files --others --exclude-standard",
+      "result": "pass: Phase 01 payload separated from pre-existing untracked evidence"
+    },
+    {
+      "command": "py -m json.tool .forsetti\\remediation-v3\\phase-01-report.json",
+      "result": "pass"
+    },
+    {
+      "command": "Get-Content -Raw .forsetti\\remediation-v3\\phase-01-report.json | ConvertFrom-Json",
+      "result": "pass"
+    }
+  ],
+  "tooling_used": {
+    "filesystem": "PowerShell, apply_patch, Visual Studio Code workspace inspection",
+    "local_git": "Git CLI branch, diff, status, and scope evidence",
+    "file_search": "ripgrep",
+    "local_indexer": "rg --files, git ls-files, Visual Studio Code workspace indexing",
+    "knowledge_graph": "repository instruction hierarchy, task contract, and role-review trace as local governance graph",
+    "local_linter": "repository validator, git diff --check, JSON parsing, and targeted source-line scans"
+  },
+  "provider_decisions": [
+    "No non-local third-party provider was used.",
+    "No product dependency on MCP servers, OpenAI tooling, GitHub Actions, sub-agents, Docker, WSL, Visual Studio, Visual Studio Code, or any local IDE was introduced.",
+    "Configured local MCP entries were inspected with codex mcp list; equivalent local-first tooling was used when separate MCP namespaces were not exposed in the running thread.",
+    "Docker and WSL were not used because Phase 01 is a documentation scaffold and does not require them."
+  ],
+  "sub_agents_used": [
+    "architect",
+    "documenter",
+    "backend-developer",
+    "architect-reviewer",
+    "code-reviewer",
+    "Documentation Manager",
+    "Release Manager"
+  ],
+  "sub_agent_findings": [
+    {
+      "role": "architect",
+      "finding": "feature/sensitive/minor classification is appropriate for an additive scaffold.",
+      "reconciliation": "Applied in the task contract."
+    },
+    {
+      "role": "documenter",
+      "finding": "README, wiki, glossary, and changelog updates were required.",
+      "reconciliation": "Updated README, wiki overview/home/changelog/glossary, wiki footer source lines, and changelog."
+    },
+    {
+      "role": "backend-developer",
+      "finding": "Phase 01 should remain scaffold-only and preserve one-way dependency direction.",
+      "reconciliation": "Kept implementation, validator, registry, and workflow conversion out of scope."
+    },
+    {
+      "role": "architect-reviewer",
+      "finding": "Contract needed clearer reviewer authority and core constitution boundary.",
+      "reconciliation": "Updated contract to require Architect and Validator review and state subordinate authority."
+    },
+    {
+      "role": "code-reviewer",
+      "finding": "Phase 01 reports were missing, scope evidence needed untracked-aware handling, and wiki changelog sync omitted a canonical block.",
+      "reconciliation": "Added reports, amended scope validation wording, excluded pre-existing untracked evidence, and restored the wiki changelog block."
+    },
+    {
+      "role": "Documentation Manager",
+      "finding": "Wiki traceability headers and PR reference fields were incomplete.",
+      "reconciliation": "Added headers and pending branch PR references; after re-review, corrected the glossary header to reference repository governance and Phase 01 scaffold canonical sources instead of the wiki page itself."
+    },
+    {
+      "role": "Release Manager",
+      "finding": "feature/minor release classification is accurate.",
+      "reconciliation": "No change required."
+    },
+    {
+      "role": "architect-reviewer",
+      "finding": "Final re-review passed.",
+      "reconciliation": "No change required."
+    },
+    {
+      "role": "Documentation Manager",
+      "finding": "Final re-review found documentation compliant.",
+      "reconciliation": "No change required."
+    },
+    {
+      "role": "code-reviewer",
+      "finding": "Final re-review passed with no issues in the staged Phase 01 payload.",
+      "reconciliation": "No change required."
+    }
+  ],
+  "validation_results": [
+    {
+      "name": "required_outputs",
+      "status": "pass_after_report_creation"
+    },
+    {
+      "name": "windows_powershell_validator",
+      "status": "pass",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "name": "powershell_7_validator",
+      "status": "pass",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "name": "visual_studio_developer_command_validator",
+      "status": "pass",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "name": "dependency_leak_check",
+      "status": "pass"
+    },
+    {
+      "name": "limited_wiki_scope_check",
+      "status": "pass"
+    },
+    {
+      "name": "phase_01_report_json_parse",
+      "status": "pass"
+    },
+    {
+      "name": "source_line_scan",
+      "status": "pass"
+    }
+  ],
+  "known_issues": [
+    "Pre-existing untracked evidence under .forsetti/remediation-v2/ and earlier .forsetti/remediation-v3/ phase files remains unstaged and excluded from the Phase 01 payload.",
+    "Pre-existing documentation sync drift remains in policies/docs-sync-rules.json and is out of scope for Phase 01."
+  ],
+  "acceptance_gates": {
+    "all_required_outputs_exist": "pass",
+    "json_outputs_parse": "pass",
+    "work_in_scope": "pass_for_intended_staged_payload",
+    "no_unapproved_non_local_provider": "pass",
+    "no_product_dependency_on_mcp_openai_github_actions_or_subagents": "pass",
+    "reviewer_findings_reconciled": "pass"
+  }
+}
