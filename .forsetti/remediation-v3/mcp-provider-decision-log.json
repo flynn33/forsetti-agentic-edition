@@ -1,0 +1,187 @@
+{
+  "phaseId": "00B",
+  "branch": "audit/v3-mcp-subagent-governance",
+  "result": "pass",
+  "decisions": [
+    {
+      "need": "filesystem",
+      "selectedProviderType": "existing_local_mcp_or_tooling",
+      "selectedProviderName": "PowerShell filesystem access",
+      "decision": "allow",
+      "localFirstEvidence": "PowerShell path checks and evidence writes succeeded.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "Configured filesystem MCP is scoped separately and not active in this session."
+    },
+    {
+      "need": "terminal-shell",
+      "selectedProviderType": "existing_local_mcp_or_tooling",
+      "selectedProviderName": "PowerShell",
+      "decision": "allow",
+      "localFirstEvidence": "Shell commands ran locally.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "None for Phase 00B."
+    },
+    {
+      "need": "file-search",
+      "selectedProviderType": "existing_local_mcp_or_tooling",
+      "selectedProviderName": "rg.exe and Select-String",
+      "decision": "allow",
+      "localFirstEvidence": "Local search commands ran successfully.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "None for Phase 00B."
+    },
+    {
+      "need": "local-git",
+      "selectedProviderType": "existing_local_mcp_or_tooling",
+      "selectedProviderName": "git.exe",
+      "decision": "allow",
+      "localFirstEvidence": "Local Git branch/status/diff commands ran successfully.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "Configured package-backed Git MCP is restricted; local git.exe is preferred."
+    },
+    {
+      "need": "persistent-context",
+      "selectedProviderType": "locally_created_mcp_or_wrapper",
+      "selectedProviderName": ".forsetti/remediation-v3 evidence files",
+      "decision": "allow",
+      "localFirstEvidence": "Phase evidence files persist context locally.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "Memory MCP configured but active namespace unavailable."
+    },
+    {
+      "need": "knowledge-graph",
+      "selectedProviderType": "locally_created_mcp_or_wrapper",
+      "selectedProviderName": "structured local JSON catalogs and cross-references",
+      "decision": "allow_for_phase_00b",
+      "localFirstEvidence": "MCP catalog, provider policy, phase JSON, and subagent roster parsed locally.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "No live graph server was verified; do not claim one."
+    },
+    {
+      "need": "configured filesystem MCP",
+      "selectedProviderType": "package_backed_local_stdio_entry",
+      "selectedProviderName": "@modelcontextprotocol/server-filesystem",
+      "decision": "restricted_allow_scoped",
+      "localFirstEvidence": "codex mcp get filesystem succeeded; package version 2026.1.14 and package.json hash captured.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "Configured scope omits v3 package path and includes v2 package path."
+    },
+    {
+      "need": "configured memory MCP",
+      "selectedProviderType": "package_backed_local_stdio_entry",
+      "selectedProviderName": "@modelcontextprotocol/server-memory",
+      "decision": "restricted_until_active_namespace_and_scope_logged",
+      "localFirstEvidence": "codex mcp get memory succeeded; package version 2026.1.26 and package.json hash captured.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "Active namespace unavailable in this session."
+    },
+    {
+      "need": "configured sequential-thinking MCP",
+      "selectedProviderType": "package_backed_local_stdio_entry",
+      "selectedProviderName": "@modelcontextprotocol/server-sequential-thinking",
+      "decision": "restricted_until_active_namespace_and_scope_logged",
+      "localFirstEvidence": "codex mcp get sequential-thinking succeeded; package version 2025.12.18 and package.json hash captured.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "Active namespace unavailable in this session."
+    },
+    {
+      "need": "configured Playwright MCP",
+      "selectedProviderType": "package_backed_local_stdio_entry",
+      "selectedProviderName": "@playwright/mcp",
+      "decision": "restricted_to_browser_validation_phases",
+      "localFirstEvidence": "codex mcp get playwright succeeded; local package versions 0.0.75 and 0.0.70 found.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "Browser state and screenshots can expose local data."
+    },
+    {
+      "need": "configured Chrome DevTools MCP",
+      "selectedProviderType": "package_backed_local_stdio_entry",
+      "selectedProviderName": "chrome-devtools-mcp",
+      "decision": "restricted_to_browser_debug_phases",
+      "localFirstEvidence": "codex mcp get chrome-devtools succeeded; local package versions 0.21.0 and 0.25.0 found.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "DOM, console, network, and page state can expose local data."
+    },
+    {
+      "need": "configured computer-use MCP",
+      "selectedProviderType": "package_backed_local_stdio_entry",
+      "selectedProviderName": "@github/computer-use-mcp",
+      "decision": "restricted_to_when_shell_file_browser_paths_are_insufficient",
+      "localFirstEvidence": "codex mcp get computer-use succeeded; package version 0.1.26 and package.json hash captured.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "Desktop context can expose broad local data."
+    },
+    {
+      "need": "configured desktop commander MCP",
+      "selectedProviderType": "package_backed_local_stdio_entry_mutable_selector",
+      "selectedProviderName": "@wonderwhy-er/desktop-commander@latest",
+      "decision": "deny_until_pinned_or_explicitly_approved",
+      "localFirstEvidence": "codex mcp get desktop-commander succeeded; local package version 0.2.40 found.",
+      "fallbackUsed": false,
+      "approvalRequired": true,
+      "riskNotes": "Command uses @latest and has broad desktop/filesystem capability."
+    },
+    {
+      "need": "configured Git MCP",
+      "selectedProviderType": "package_backed_local_stdio_entry",
+      "selectedProviderName": "@cyanheads/git-mcp-server",
+      "decision": "prefer_local_git_restrict_mcp_entry",
+      "localFirstEvidence": "codex mcp get git succeeded; package version 2.15.1 and package.json hash captured.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "Local git.exe is available and preferred."
+    },
+    {
+      "need": "configured SQLite MCP",
+      "selectedProviderType": "package_backed_local_stdio_entry",
+      "selectedProviderName": "mcp-sqlite",
+      "decision": "restricted_to_explicit_local_evidence_database_needs",
+      "localFirstEvidence": "codex mcp get sqlite succeeded; package version 1.0.9 and package.json hash captured.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "sqlite3 CLI is not on PATH; configured MCP targets a local Codex SQLite file."
+    },
+    {
+      "need": "configured Docker MCP",
+      "selectedProviderType": "package_backed_local_stdio_entry",
+      "selectedProviderName": "mcp-docker-server",
+      "decision": "deny_until_docker_available_and_phase_scope_requires_it",
+      "localFirstEvidence": "codex mcp get docker succeeded; package version 1.0.1 and package.json hash captured; Docker CLI/Desktop absent.",
+      "fallbackUsed": false,
+      "approvalRequired": false,
+      "riskNotes": "Docker capability cannot function on this host as currently installed."
+    },
+    {
+      "need": "non-local third-party provider",
+      "selectedProviderType": "non_local_third_party",
+      "selectedProviderName": "any",
+      "decision": "deny_without_explicit_human_approval",
+      "localFirstEvidence": "Policy requires local-first discovery and approval for exceptions.",
+      "fallbackUsed": false,
+      "approvalRequired": true,
+      "riskNotes": "Approval must record provider identity, purpose, data exposure, duration, rollback path, and risk acceptance."
+    },
+    {
+      "need": "unknown provider",
+      "selectedProviderType": "unknown",
+      "selectedProviderName": "unknown",
+      "decision": "deny",
+      "localFirstEvidence": "Provider identity cannot be verified.",
+      "fallbackUsed": false,
+      "approvalRequired": true,
+      "riskNotes": "Stop condition if required for phase."
+    }
+  ]
+}

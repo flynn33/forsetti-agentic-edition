@@ -1,0 +1,100 @@
+{
+  "phaseId": "00B",
+  "branch": "audit/v3-mcp-subagent-governance",
+  "result": "pass",
+  "rosterSource": "A:\\Codex\\forsetti-codex-mcp-subagent-remediation-plan-v3\\forsetti-codex-mcp-subagent-remediation-plan-v3\\subagents\\subagent-roster.json",
+  "rosterCount": 27,
+  "requiredSubagents": [
+    {
+      "id": "multi-agent-coordinator",
+      "sessionAgentId": "019e080f-4830-7aa1-9287-2956dbc27baf",
+      "status": "completed",
+      "allowedUse": "phase coordination and reconciliation findings",
+      "scopeLimit": "advisory only",
+      "reconciled": true
+    },
+    {
+      "id": "security-auditor",
+      "sessionAgentId": "019e080f-5c15-72b3-8606-b380b9746c0e",
+      "status": "completed",
+      "allowedUse": "provider and data-exposure risk findings",
+      "scopeLimit": "advisory only",
+      "reconciled": true
+    },
+    {
+      "id": "security-guardian",
+      "sessionAgentId": "019e080f-729b-7672-8d28-d802b1700611",
+      "status": "completed",
+      "allowedUse": "allow/deny rule findings",
+      "scopeLimit": "advisory only",
+      "reconciled": true
+    },
+    {
+      "id": "prompt-engineer",
+      "sessionAgentId": "019e080f-8ac5-7383-8a72-d089af94bd3f",
+      "status": "completed",
+      "allowedUse": "handoff prompt and scope-control findings",
+      "scopeLimit": "advisory only",
+      "reconciled": true
+    },
+    {
+      "id": "documenter",
+      "sessionAgentId": "019e080f-a870-70d1-83c5-61eb32c17078",
+      "status": "completed",
+      "allowedUse": "evidence structure findings",
+      "scopeLimit": "advisory only",
+      "reconciled": true
+    }
+  ],
+  "availableSubagents": [
+    "multi-agent-coordinator",
+    "architect",
+    "architect-reviewer",
+    "microservices-architect",
+    "graphql-architect",
+    "api-designer",
+    "security-auditor",
+    "sentinel",
+    "security-guardian",
+    "code-reviewer",
+    "security-reviewer",
+    "test-writer",
+    "tdd-guide",
+    "performance-engineer",
+    "performance-profiler",
+    "refactorer",
+    "backend-developer",
+    "frontend-developer",
+    "devops-engineer",
+    "data-engineer",
+    "mlops-engineer",
+    "documenter",
+    "prompt-engineer",
+    "git-workflow-manager",
+    "build-error-resolver",
+    "ux-researcher",
+    "fintech-engineerer"
+  ],
+  "allowlist": [
+    "repo/package-defined helper roles from the v3 roster",
+    "in-session helper agents spawned for a concrete phase task",
+    "read-only advisory helpers",
+    "scoped implementation helpers with explicit file ownership"
+  ],
+  "scopeLimits": [
+    "may not approve policy",
+    "may not validate own work",
+    "may not override controlling documents",
+    "may not silently expand scope",
+    "may not introduce product dependency on helper orchestration"
+  ],
+  "requiresApproval": [
+    "non-local helper provider",
+    "third-party helper provider",
+    "helper access to secrets, browser sessions, desktop control, or external services beyond phase scope"
+  ],
+  "unresolvedIssues": [
+    "Helper roster is package-defined, not repository product runtime.",
+    "Thread/session helper capacity is limited; use rotating helper waves when needed."
+  ]
+}

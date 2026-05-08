@@ -1,0 +1,237 @@
+{
+  "phaseId": "00",
+  "phaseName": "Baseline Remediation Evidence Capture",
+  "branch": "audit/v3-baseline-evidence",
+  "result": "pass",
+  "filesChanged": [
+    ".forsetti/remediation-v3/phase-00-baseline-report.md",
+    ".forsetti/remediation-v3/phase-00-baseline.json"
+  ],
+  "commandsRun": [
+    {
+      "command": "git switch -c audit/v3-baseline-evidence",
+      "result": "succeeded",
+      "summary": "Created and switched to v3 Phase 00 branch."
+    },
+    {
+      "command": "git status --short --branch",
+      "result": "succeeded",
+      "summary": "Branch is audit/v3-baseline-evidence; .forsetti/ is untracked."
+    },
+    {
+      "command": "git remote -v; git log -1 --oneline; git branch --show-current",
+      "result": "succeeded",
+      "summary": "Remote origin is https://github.com/flynn33/forsetti-agentic-edition; latest commit cbaadf6; branch audit/v3-baseline-evidence."
+    },
+    {
+      "command": "PowerShell path inventory for repository indicators and required architecture paths",
+      "result": "succeeded",
+      "summary": "README.md, AGENTS.md, policies/, schemas/, contracts/, and .github/ are present; core/, adapters/, and overlays/ are missing."
+    },
+    {
+      "command": "Get-Command git,rg,powershell,py,node,npm,code,dotnet",
+      "result": "succeeded",
+      "summary": "Local tools found."
+    },
+    {
+      "command": "codex mcp list",
+      "result": "succeeded",
+      "summary": "Configured MCP entries listed; active chat tool schema did not expose the new namespaces after configuration."
+    },
+    {
+      "command": "Get-ChildItem -Force .forsetti -Recurse -File",
+      "result": "succeeded",
+      "summary": "Historical remediation-v2 evidence exists; remediation-v3 evidence did not exist before this phase output."
+    },
+    {
+      "command": "powershell -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
+      "result": "failed",
+      "exitCode": 1,
+      "summary": "Existing PowerShell validator reports 57 errors because it resolves the repository root as A:\\Codex."
+    },
+    {
+      "command": "bash .\\scripts\\validate-repo.sh",
+      "result": "failed",
+      "exitCode": 1,
+      "summary": "WSL has no installed distributions."
+    },
+    {
+      "command": "rg --files --hidden -g '!/.git/*'",
+      "result": "succeeded",
+      "summary": "Repository files inventoried, including hidden .github paths."
+    },
+    {
+      "command": "Repository searches for orchestration language, GitHub workflow enforcement, contributor metadata guardrails, stale paths, compliance rule drift, workflow hard-coded logic, version/changelog state, and local validator entry points",
+      "result": "succeeded",
+      "summary": "Baseline failures confirmed."
+    },
+    {
+      "command": "py -m json.tool selected policy JSON files",
+      "result": "succeeded",
+      "summary": "Selected policy JSON parses."
+    }
+  ],
+  "mcpToolingUsed": [
+    {
+      "toolOrServer": "filesystem via PowerShell",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "allow",
+      "purpose": "Read package/repo files and create v3 evidence files.",
+      "result": "used"
+    },
+    {
+      "toolOrServer": "local-git via git.exe",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "allow",
+      "purpose": "Branch/status/remote/history evidence.",
+      "result": "used"
+    },
+    {
+      "toolOrServer": "file-search via rg.exe and Select-String",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "allow",
+      "purpose": "Repository inventory and drift searches.",
+      "result": "used"
+    },
+    {
+      "toolOrServer": "terminal-shell via PowerShell",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "allow",
+      "purpose": "Run validation, discovery, and evidence commands.",
+      "result": "used"
+    },
+    {
+      "toolOrServer": "persistent context via .forsetti/remediation-v3 files",
+      "providerType": "locally_created_mcp_or_wrapper",
+      "localFirstDecision": "allow",
+      "purpose": "Persist phase decision and evidence locally.",
+      "result": "used"
+    },
+    {
+      "toolOrServer": "configured MCP list from codex mcp list",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "record_only",
+      "purpose": "Record configured MCP state.",
+      "result": "configured entries recorded, not claimed as active callable namespaces"
+    }
+  ],
+  "subagentsUsed": [
+    {
+      "subagentId": "multi-agent-coordinator",
+      "task": "Phase 00 pass/fail and evidence reconciliation.",
+      "findings": [
+        "Do not reuse v2 evidence as v3 evidence.",
+        "Fresh v3 outputs required.",
+        "Task-scope clarity should be recorded."
+      ],
+      "reconciled": true
+    },
+    {
+      "subagentId": "git-workflow-manager",
+      "task": "Read-only Git state review.",
+      "findings": [
+        "Current branch has no upstream.",
+        "v2 evidence is untracked and not v3.",
+        "Avoid broad staging."
+      ],
+      "reconciled": true
+    },
+    {
+      "subagentId": "documenter",
+      "task": "Report requirements review.",
+      "findings": [
+        "Required v3 outputs were missing.",
+        "Report must include commands, tooling, sub-agents, validation, unresolved issues, and gates."
+      ],
+      "reconciled": true
+    },
+    {
+      "subagentId": "sentinel",
+      "task": "Forbidden-shortcut review.",
+      "findings": [
+        "Phase 00 should not pass until fresh v3 evidence exists.",
+        "v2 evidence cannot satisfy v3.",
+        "No functional remediation should occur."
+      ],
+      "reconciled": true
+    }
+  ],
+  "validation": [
+    {
+      "check": "Required Markdown output created",
+      "result": "pass",
+      "evidence": ".forsetti/remediation-v3/phase-00-baseline-report.md"
+    },
+    {
+      "check": "Required JSON output created",
+      "result": "pass",
+      "evidence": ".forsetti/remediation-v3/phase-00-baseline.json"
+    },
+    {
+      "check": "Phase 00 JSON parses",
+      "result": "pass",
+      "evidence": "py -m json.tool .forsetti\\remediation-v3\\phase-00-baseline.json"
+    },
+    {
+      "check": "Phase 00 JSON required schema keys",
+      "result": "pass",
+      "evidence": "Local Python check confirmed all required keys from schemas/phase-report.schema.json and result enum are present."
+    },
+    {
+      "check": "Selected policy JSON parses",
+      "result": "pass",
+      "evidence": "py -m json.tool policies\\compliance-rules.json and selected policy JSON checks"
+    },
+    {
+      "check": "Existing PowerShell validator",
+      "result": "fail",
+      "evidence": "Failed with 57 errors due to repository-root resolution defect."
+    },
+    {
+      "check": "Existing Bash validator",
+      "result": "fail",
+      "evidence": "WSL has no installed distributions."
+    }
+  ],
+  "acceptanceGates": [
+    {
+      "gate": "All required outputs exist",
+      "status": "pass",
+      "evidence": ".forsetti/remediation-v3/phase-00-baseline-report.md and .forsetti/remediation-v3/phase-00-baseline.json created."
+    },
+    {
+      "gate": "JSON outputs parse",
+      "status": "pass",
+      "evidence": "py -m json.tool .forsetti\\remediation-v3\\phase-00-baseline.json succeeded; required schema keys were confirmed with local Python."
+    },
+    {
+      "gate": "Work is in scope for Phase 00",
+      "status": "pass",
+      "evidence": "Only remediation-v3 evidence files created."
+    },
+    {
+      "gate": "No non-local third-party provider used without approval",
+      "status": "pass",
+      "evidence": "Commands used local tooling and configured local/stdio MCP inventory only."
+    },
+    {
+      "gate": "No product dependency introduced",
+      "status": "pass",
+      "evidence": "No product files modified."
+    },
+    {
+      "gate": "Reviewer findings reconciled",
+      "status": "pass",
+      "evidence": "Sub-agent findings included and reconciled in report."
+    }
+  ],
+  "remainingIssues": [
+    "Phase 00A and Phase 00B are not complete; Phase 01 must not start until both gates pass.",
+    "Existing v2 evidence is untracked and historical; it should not be staged as v3 evidence unless explicitly requested.",
+    "No instantiated repository task contract file was found. For Phase 00, the v3 phase Markdown/JSON were used as the governing scope definition.",
+    "The PowerShell validator root calculation is defective.",
+    "WSL is unavailable, but v3 explicitly does not require WSL.",
+    "Core remediation remains untouched and incomplete by design."
+  ],
+  "completionStatement": "Files changed: .forsetti/remediation-v3/phase-00-baseline-report.md and .forsetti/remediation-v3/phase-00-baseline.json. Validation evidence: baseline commands were run, required evidence was captured, selected policy JSON parses, the Phase 00 JSON parses, and required JSON schema keys are present. Known issues: Phase 00A/00B remain required gates, v2 evidence is historical/untracked, existing validators are not reliable on this host, and functional remediation has not begun. Documentation status: no canonical documentation changed. Release impact: none. Scope compliance: Phase 00 evidence-only scope was maintained."
+}

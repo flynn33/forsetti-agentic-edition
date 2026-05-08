@@ -1,0 +1,223 @@
+{
+  "phaseId": "00B",
+  "branch": "audit/v3-mcp-subagent-governance",
+  "result": "pass",
+  "catalogCount": 23,
+  "configuredMcpCount": 10,
+  "activeSessionNamespacesAvailable": false,
+  "requiredCoverage": [
+    {
+      "id": "filesystem",
+      "required": true,
+      "localCapability": "PowerShell filesystem access",
+      "configuredMcp": "filesystem",
+      "activeNamespace": false,
+      "phaseGateClassification": "local_existing",
+      "decision": "allow_local_equivalent_restrict_configured_entry",
+      "evidence": "codex mcp get filesystem; direct PowerShell path checks and evidence file writes"
+    },
+    {
+      "id": "terminal-shell",
+      "required": true,
+      "localCapability": "PowerShell shell",
+      "configuredMcp": null,
+      "activeNamespace": true,
+      "phaseGateClassification": "local_existing",
+      "decision": "allow",
+      "evidence": "PowerShell commands executed successfully"
+    },
+    {
+      "id": "file-search",
+      "required": true,
+      "localCapability": "rg.exe and PowerShell search",
+      "configuredMcp": null,
+      "activeNamespace": true,
+      "phaseGateClassification": "local_existing",
+      "decision": "allow",
+      "evidence": "rg and Select-String used for discovery"
+    },
+    {
+      "id": "persistent-context",
+      "required": true,
+      "localCapability": ".forsetti/remediation-v3 evidence files",
+      "configuredMcp": "memory",
+      "activeNamespace": false,
+      "phaseGateClassification": "local_created_possible",
+      "decision": "allow_file_backed_context_restrict_memory_entry",
+      "evidence": "local evidence files created under .forsetti/remediation-v3"
+    },
+    {
+      "id": "knowledge-graph",
+      "required": true,
+      "localCapability": "structured local JSON catalogs and evidence cross-references",
+      "configuredMcp": null,
+      "activeNamespace": false,
+      "phaseGateClassification": "local_created_possible",
+      "decision": "allow_structured_local_substitute_for_phase_00b",
+      "evidence": "mcp-server-catalog.json, subagent-roster.json, provider policy JSON parsed"
+    },
+    {
+      "id": "local-git",
+      "required": true,
+      "localCapability": "git.exe",
+      "configuredMcp": "git",
+      "activeNamespace": false,
+      "phaseGateClassification": "local_existing",
+      "decision": "allow_local_git_restrict_configured_entry",
+      "evidence": "git status, branch, remote, and diff commands executed locally"
+    }
+  ],
+  "configuredServers": [
+    {
+      "id": "filesystem",
+      "command": "npx -y @modelcontextprotocol/server-filesystem A:\\Codex\\Forsetti-Framwork-Agentic-Edition A:\\Codex\\forsetti-codex-remediation-package-v2",
+      "package": "@modelcontextprotocol/server-filesystem",
+      "versionsFound": ["2026.1.14"],
+      "packageJsonSha256": ["a7fb83c2a8000d1d69e632f6c7ce150db8ea615df9e605bc8a14ac78832cab9e"],
+      "providerClassification": "package_backed_local_stdio_entry",
+      "phaseGateClassification": "third_party_local",
+      "status": "configured_not_active_in_session",
+      "dataExposure": "repository and v2 remediation package filesystem paths",
+      "decision": "restricted_allow_scoped"
+    },
+    {
+      "id": "memory",
+      "command": "npx -y @modelcontextprotocol/server-memory",
+      "package": "@modelcontextprotocol/server-memory",
+      "versionsFound": ["2026.1.26"],
+      "packageJsonSha256": ["04d82390b45f06533a9fd2ab3a7d973125618f55c70d3b69f8442144c9d4de01"],
+      "providerClassification": "package_backed_local_stdio_entry",
+      "phaseGateClassification": "third_party_local",
+      "status": "configured_not_active_in_session",
+      "dataExposure": "persistent context",
+      "decision": "restricted_until_active_namespace_and_scope_logged"
+    },
+    {
+      "id": "sequential-thinking",
+      "command": "npx -y @modelcontextprotocol/server-sequential-thinking",
+      "package": "@modelcontextprotocol/server-sequential-thinking",
+      "versionsFound": ["2025.12.18"],
+      "packageJsonSha256": ["75f1b3d71af33bcab50defcb70cb14866f1a86a6f1cec84680a32d069ab68987"],
+      "providerClassification": "package_backed_local_stdio_entry",
+      "phaseGateClassification": "third_party_local",
+      "status": "configured_not_active_in_session",
+      "dataExposure": "phase planning context",
+      "decision": "restricted_until_active_namespace_and_scope_logged"
+    },
+    {
+      "id": "playwright",
+      "command": "npx -y @playwright/mcp --browser chrome --caps vision pdf devtools --isolated --headless",
+      "package": "@playwright/mcp",
+      "versionsFound": ["0.0.75", "0.0.70"],
+      "packageJsonSha256": ["1c17184520ff99f7c0e051490e6f346b5958924b78056a230139e6d6402d558f", "4b2d893170fd9cb7a5016428d53c84c98ca15a3702e5c8d89683e221027e2e44"],
+      "providerClassification": "package_backed_local_stdio_entry",
+      "phaseGateClassification": "third_party_local",
+      "status": "configured_not_active_in_session",
+      "dataExposure": "browser state, screenshots, local downloads",
+      "decision": "restricted_to_browser_validation_phases"
+    },
+    {
+      "id": "chrome-devtools",
+      "command": "npx -y chrome-devtools-mcp --headless --isolated --no-usage-statistics --slim",
+      "package": "chrome-devtools-mcp",
+      "versionsFound": ["0.21.0", "0.25.0"],
+      "packageJsonSha256": ["7d1e900dc813820ab2803f4897a14ebb838c0008457a2d1455538f927fb21cd7", "c8b5af717597d5c21d24dcce1179c93ed40e28171905b0405562c481f9f1f062"],
+      "providerClassification": "package_backed_local_stdio_entry",
+      "phaseGateClassification": "third_party_local",
+      "status": "configured_not_active_in_session",
+      "dataExposure": "browser DOM, console, network, page state",
+      "decision": "restricted_to_browser_debug_phases"
+    },
+    {
+      "id": "computer-use",
+      "command": "npx -y @github/computer-use-mcp",
+      "package": "@github/computer-use-mcp",
+      "versionsFound": ["0.1.26"],
+      "packageJsonSha256": ["4a230fe340cd2dfcb02cd184b89fe7e36a328c56e879bc938dfeba7c89e687a8"],
+      "providerClassification": "package_backed_local_stdio_entry",
+      "phaseGateClassification": "third_party_local",
+      "status": "configured_not_active_in_session",
+      "dataExposure": "desktop and screen context",
+      "decision": "restricted_to_when_shell_file_browser_paths_are_insufficient"
+    },
+    {
+      "id": "desktop-commander",
+      "command": "npx -y @wonderwhy-er/desktop-commander@latest",
+      "package": "@wonderwhy-er/desktop-commander",
+      "versionsFound": ["0.2.40"],
+      "packageJsonSha256": ["78559cac7d6815e6d9e59f2c50c0ead96d6f0ecd0eea2a7888d3a8525cab395e"],
+      "providerClassification": "package_backed_local_stdio_entry_mutable_selector",
+      "phaseGateClassification": "third_party_local",
+      "status": "configured_not_active_in_session",
+      "dataExposure": "broad desktop and filesystem control",
+      "decision": "block_until_pinned_or_explicitly_approved"
+    },
+    {
+      "id": "git",
+      "command": "npx -y @cyanheads/git-mcp-server",
+      "package": "@cyanheads/git-mcp-server",
+      "versionsFound": ["2.15.1"],
+      "packageJsonSha256": ["341eb22f2e452869916f86538454a81645d3629b6e32958ce6932d726af5adb3"],
+      "providerClassification": "package_backed_local_stdio_entry",
+      "phaseGateClassification": "third_party_local",
+      "status": "configured_not_active_in_session",
+      "dataExposure": "repository history and working tree",
+      "decision": "prefer_local_git_restrict_mcp_entry"
+    },
+    {
+      "id": "sqlite",
+      "command": "npx -y mcp-sqlite C:\\Users\\james\\.codex\\sqlite\\forsetti-agentic-edition.sqlite",
+      "package": "mcp-sqlite",
+      "versionsFound": ["1.0.9"],
+      "packageJsonSha256": ["5e3342051ddb34f42a3bc5dc278437530d8c8cc69b33b3d042b24ba65cdfba8d"],
+      "providerClassification": "package_backed_local_stdio_entry",
+      "phaseGateClassification": "third_party_local",
+      "status": "configured_not_active_in_session",
+      "dataExposure": "local SQLite file",
+      "decision": "restricted_to_explicit_local_evidence_database_needs"
+    },
+    {
+      "id": "docker",
+      "command": "npx -y mcp-docker-server",
+      "package": "mcp-docker-server",
+      "versionsFound": ["1.0.1"],
+      "packageJsonSha256": ["e29959d9b82c67562b85d9a50a7f3b48f295b9cd9ae2cfc107794f432dfbda53"],
+      "providerClassification": "package_backed_local_stdio_entry",
+      "phaseGateClassification": "third_party_local",
+      "status": "configured_not_active_in_session",
+      "dataExposure": "container control",
+      "decision": "block_until_docker_available_and_phase_scope_requires_it"
+    }
+  ],
+  "allowlist": [
+    "PowerShell filesystem and terminal operations",
+    "local git.exe",
+    "local rg.exe and Select-String",
+    "local .forsetti/remediation-v3 evidence files",
+    "local Python/PowerShell JSON parsing",
+    "local Visual Studio, MSBuild, dotnet, Node, npm/npx, VS Code, Chrome, Edge, and Playwright when phase scope requires them and evidence is logged"
+  ],
+  "requiresApprovalOrExtraConditions": [
+    "non-local provider",
+    "package-backed MCP command that would fetch from network at runtime",
+    "unversioned or mutable package-backed MCP command",
+    "browser, desktop, keyboard/mouse, or computer-control tooling with screen, DOM, browser, or GUI data exposure",
+    "Docker control involving image pulls or third-party images",
+    "mutation to user-level Codex config"
+  ],
+  "denied": [
+    "unknown provider identity",
+    "skipping local-first discovery",
+    "using a recommendation as approval",
+    "writing secrets into evidence",
+    "introducing product dependency on MCP servers, hosted tooling, GitHub Actions, or helper roles"
+  ],
+  "unresolvedIssues": [
+    "Configured npx MCP commands are not pinned in Codex config.",
+    "The filesystem MCP configured scope includes the v2 remediation package path but not the v3 package path.",
+    "Active MCP namespaces are not available in this already-running session.",
+    "Docker MCP is configured but Docker CLI/Desktop is not installed."
+    ,
+    "A secondary Phase 00B acceptance-gate reference under the remediation package still names remediation-v2 output paths; the controlling Phase 00B file and phase-00b.json name remediation-v3 outputs."
+  ]
+}

@@ -1,0 +1,12 @@
+Phase 00 changed-files baseline
+Generated: 2026-05-08
+Branch: audit/remediation-v2-baseline
+
+Command:
+git status --short
+
+Observed output:
+(no output)
+
+Interpretation:
+The working tree was clean before Phase 00 evidence files were created.

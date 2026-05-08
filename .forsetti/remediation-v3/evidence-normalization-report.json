@@ -1,0 +1,62 @@
+{
+  "task_id": "FAE-META-2026-05-08-003",
+  "task_name": "Remediation evidence normalization",
+  "result": "pass",
+  "branch": "fix/v3-known-issues-cleanup",
+  "change_class": "metadata",
+  "approval_class": "standard",
+  "release_impact": "none",
+  "files_changed": [
+    "contracts/FAE-META-2026-05-08-003-remediation-evidence-normalization.md",
+    ".forsetti/remediation-v2/baseline-report.json",
+    ".forsetti/remediation-v2/baseline-report.md",
+    ".forsetti/remediation-v2/changed-files-baseline.txt",
+    ".forsetti/remediation-v2/phase-00-completion.json",
+    ".forsetti/remediation-v2/phase-00-completion.md",
+    ".forsetti/remediation-v3/local-mcp-inventory-report.md",
+    ".forsetti/remediation-v3/local-mcp-inventory.json",
+    ".forsetti/remediation-v3/local-subagent-inventory-report.md",
+    ".forsetti/remediation-v3/local-subagent-inventory.json",
+    ".forsetti/remediation-v3/mcp-provider-decision-log.json",
+    ".forsetti/remediation-v3/mcp-subagent-execution-policy.json",
+    ".forsetti/remediation-v3/mcp-subagent-execution-policy.md",
+    ".forsetti/remediation-v3/phase-00-baseline-report.md",
+    ".forsetti/remediation-v3/phase-00-baseline.json",
+    ".forsetti/remediation-v3/phase-00b-report.md",
+    ".forsetti/remediation-v3/tool-discovery-report.md",
+    ".forsetti/remediation-v3/tool-discovery.json",
+    ".forsetti/remediation-v3/evidence-normalization-report.md",
+    ".forsetti/remediation-v3/evidence-normalization-report.json"
+  ],
+  "validation_results": [
+    {
+      "name": "source_line_scan",
+      "status": "pass"
+    },
+    {
+      "name": "py_json_tool",
+      "status": "pass"
+    },
+    {
+      "name": "powershell_convert_from_json",
+      "status": "pass"
+    },
+    {
+      "name": "windows_powershell_repo_validator",
+      "status": "pass",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "name": "powershell_7_repo_validator",
+      "status": "pass",
+      "errors": 0,
+      "warnings": 0
+    }
+  ],
+  "known_issues": [
+    "policies/docs-sync-rules.json drift is reserved for a separate governance-class cleanup task."
+  ],
+  "documentation_status": "No README, wiki, or glossary update required.",
+  "scope_compliance": "All intended files are listed in the task contract. Protected policy manifests were not modified."
+}

@@ -1,0 +1,70 @@
+{
+  "phaseId": "00B",
+  "branch": "audit/v3-mcp-subagent-governance",
+  "result": "pass",
+  "productDependencyAllowed": false,
+  "providerPolicy": {
+    "defaultDecision": "deny_unknown",
+    "localFirstRequired": true,
+    "localExistingDecision": "allow",
+    "localWrapperDecision": "allow_when_scoped",
+    "openaiFallbackDecision": "allow_after_local_first_evidence",
+    "thirdPartyDecision": "deny_without_explicit_human_approval",
+    "unknownProviderDecision": "deny"
+  },
+  "configuredMcpPolicy": {
+    "packageBackedNpxEntriesAllowedByDefault": false,
+    "requiresProviderIdentity": true,
+    "requiresVersionOrPinEvidence": true,
+    "requiresDataExposureNotes": true,
+    "requiresScopeAndDuration": true,
+    "mutableSelectorsBlocked": true,
+    "runtimeNetworkFetchRequiresApproval": true
+  },
+  "subagentPolicy": {
+    "allowedRosterSource": "v3 package subagents/subagent-roster.json",
+    "helpersMayApprovePolicy": false,
+    "helpersMayValidateOwnWork": false,
+    "helpersMayOverrideControllingDocs": false,
+    "helpersMayCreateProductDependency": false,
+    "helpersMustLogEvidence": true,
+    "handoffRequiresPhaseScopeFilesOutputsAndStopConditions": true
+  },
+  "approvalExceptionRequiredFields": [
+    "provider identity",
+    "server or helper name",
+    "purpose",
+    "data exposure",
+    "command or configuration",
+    "duration",
+    "rollback path",
+    "risk acceptance"
+  ],
+  "allowedWithoutExtraApproval": [
+    "PowerShell filesystem and terminal commands inside authorized scope",
+    "local git.exe",
+    "local rg.exe and PowerShell search",
+    "local JSON parsing",
+    ".forsetti/remediation-v3 evidence files",
+    "repo/package-defined helper roles from the v3 roster as scoped helpers"
+  ],
+  "restricted": [
+    "package-backed npx MCP entries",
+    "browser automation",
+    "desktop control",
+    "keyboard and mouse control",
+    "computer control",
+    "Docker control",
+    "user-level Codex config mutations"
+  ],
+  "stopConditions": [
+    "required outputs cannot be produced",
+    "JSON evidence cannot be parsed",
+    "provider identity cannot be verified for a required tool",
+    "non-local provider approval is required but absent",
+    "helper attempts to approve its own work",
+    "scope would expand beyond the phase contract",
+    "product dependency would be introduced"
+  ],
+  "secretsRedactionRequired": true
+}

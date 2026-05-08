@@ -1,0 +1,104 @@
+{
+  "schema_version": "2.0.0",
+  "phase_id": "00",
+  "phase_name": "Failed Remediation Baseline and Guardrails",
+  "generated": "2026-05-08",
+  "branch": "audit/remediation-v2-baseline",
+  "files_changed": [
+    ".forsetti/remediation-v2/baseline-report.md",
+    ".forsetti/remediation-v2/baseline-report.json",
+    ".forsetti/remediation-v2/changed-files-baseline.txt",
+    ".forsetti/remediation-v2/phase-00-completion.md",
+    ".forsetti/remediation-v2/phase-00-completion.json"
+  ],
+  "commands_run": [
+    {
+      "command": "git status --short --branch",
+      "result": "succeeded"
+    },
+    {
+      "command": "git switch -c audit/remediation-v2-baseline",
+      "result": "succeeded"
+    },
+    {
+      "command": "powershell -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
+      "result": "failed",
+      "exit_code": 1,
+      "summary": "Reported 57 errors due to apparent repository root miscalculation."
+    },
+    {
+      "command": "bash .\\scripts\\validate-repo.sh",
+      "result": "failed",
+      "exit_code": 1,
+      "summary": "WSL has no installed distributions."
+    },
+    {
+      "command": "PowerShell path inventory and Select-String evidence searches",
+      "result": "succeeded"
+    },
+    {
+      "command": "Test-Path .forsetti\\remediation-v2\\baseline-report.md",
+      "result": "succeeded",
+      "summary": "baseline-report.md exists."
+    },
+    {
+      "command": "python3 -m json.tool .forsetti\\remediation-v2\\baseline-report.json",
+      "result": "failed",
+      "exit_code": 1,
+      "summary": "python3 resolves to the Microsoft Store app execution alias on this host."
+    },
+    {
+      "command": "python3 -m json.tool .forsetti\\remediation-v2\\phase-00-completion.json",
+      "result": "failed",
+      "exit_code": 1,
+      "summary": "python3 resolves to the Microsoft Store app execution alias on this host."
+    },
+    {
+      "command": "py --version",
+      "result": "succeeded",
+      "summary": "Python 3.9.13"
+    },
+    {
+      "command": "py -m json.tool .forsetti\\remediation-v2\\baseline-report.json",
+      "result": "succeeded",
+      "summary": "baseline-report.json parsed successfully."
+    },
+    {
+      "command": "py -m json.tool .forsetti\\remediation-v2\\phase-00-completion.json",
+      "result": "succeeded",
+      "summary": "phase-00-completion.json parsed successfully."
+    },
+    {
+      "command": "Get-Content .forsetti\\remediation-v2\\baseline-report.json -Raw | ConvertFrom-Json",
+      "result": "succeeded",
+      "summary": "baseline-report.json parsed successfully."
+    },
+    {
+      "command": "Get-Content .forsetti\\remediation-v2\\phase-00-completion.json -Raw | ConvertFrom-Json",
+      "result": "succeeded",
+      "summary": "phase-00-completion.json parsed successfully."
+    }
+  ],
+  "commands_skipped": [
+    {
+      "command": "python3 core/validator/forsetti_validate.py --repo-root . --mode all --strict",
+      "reason": "core/validator/forsetti_validate.py does not exist."
+    },
+    {
+      "command": "Final remediation acceptance validation",
+      "reason": "Phase 00 is baseline-only and later phase artifacts do not exist."
+    }
+  ],
+  "acceptance_criteria_status": {
+    "baseline_states_not_remediated": "pass",
+    "lists_p0_p1_findings": "pass",
+    "no_policy_or_source_remediation": "pass",
+    "commands_outputs_and_skips_recorded": "pass"
+  },
+  "residual_risks": [
+    "P0 remediation gates remain unsatisfied.",
+    "PowerShell validator has an apparent root-path defect.",
+    "Bash validator is unavailable without WSL on this host."
+  ],
+  "next_phase_ready": true
+}

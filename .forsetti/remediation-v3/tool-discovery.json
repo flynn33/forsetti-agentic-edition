@@ -1,0 +1,322 @@
+{
+  "phaseId": "00A",
+  "phaseName": "Windows Native Host Tool Discovery",
+  "branch": "audit/v3-windows-tool-discovery",
+  "result": "pass",
+  "filesChanged": [
+    ".forsetti/remediation-v3/tool-discovery-report.md",
+    ".forsetti/remediation-v3/tool-discovery.json"
+  ],
+  "commandsRun": [
+    {
+      "command": "git switch -c audit/v3-windows-tool-discovery",
+      "result": "succeeded",
+      "summary": "Created and switched to the Phase 00A branch."
+    },
+    {
+      "command": "git status --short --branch",
+      "result": "succeeded",
+      "summary": "Branch is audit/v3-windows-tool-discovery; .forsetti/ remains untracked."
+    },
+    {
+      "command": "Get-Date, $PSVersionTable, OS runtime checks",
+      "result": "succeeded",
+      "summary": "Captured Windows 10.0.26200 x64 host and PowerShell 7.5.5 shell."
+    },
+    {
+      "command": "Get-Command inventory for shell/editor/build/runtime/browser/search/package tools",
+      "result": "succeeded",
+      "summary": "Found PowerShell, pwsh, VS Code, dotnet, git, node, npm, npx, py, bash, wsl, gh, and rg; did not find PATH devenv, msbuild, docker, chrome, msedge, sqlite3, fd, fzf, make, or just."
+    },
+    {
+      "command": "Direct Program Files, LocalAppData, and bundled runtime path checks",
+      "result": "succeeded",
+      "summary": "Found VS Code, Visual Studio, MSBuild, Chrome, Edge, bundled Python, and bundled Node by direct path."
+    },
+    {
+      "command": "vswhere -all -products * -requires Microsoft.Component.MSBuild -format json",
+      "result": "succeeded",
+      "summary": "Found Visual Studio Community 2026, Visual Studio Build Tools 2022, and Visual Studio Community 2022."
+    },
+    {
+      "command": "vswhere -all -products * -find **\\MSBuild.exe and **\\devenv.exe",
+      "result": "succeeded",
+      "summary": "Found direct MSBuild and Visual Studio IDE paths."
+    },
+    {
+      "command": "code --version",
+      "result": "succeeded",
+      "summary": "VS Code 1.115.0."
+    },
+    {
+      "command": "dotnet --info and dotnet msbuild -version",
+      "result": "succeeded",
+      "summary": ".NET SDK 10.0.201 present; dotnet msbuild version 18.3.0.15422."
+    },
+    {
+      "command": "Direct MSBuild -version checks",
+      "result": "succeeded",
+      "summary": "MSBuild 18.4.0.7901 and 17.14.40.60911 found by direct path."
+    },
+    {
+      "command": "git --version, git remote -v, git log -1 --oneline, git branch --show-current",
+      "result": "succeeded",
+      "summary": "Git 2.53.0.windows.1; remote origin configured; branch audit/v3-windows-tool-discovery."
+    },
+    {
+      "command": "gh --version and gh auth status",
+      "result": "succeeded",
+      "summary": "GitHub CLI 2.88.0 authenticated for HTTPS Git operations."
+    },
+    {
+      "command": "node --version, npm --version, npx --version",
+      "result": "succeeded",
+      "summary": "Node 24.13.1, npm 11.8.0, npx 11.8.0."
+    },
+    {
+      "command": "py --version, py -0p, py -m pip --version",
+      "result": "succeeded",
+      "summary": "py launcher works with Visual Studio Python 3.9.13 and pip 22.0.4."
+    },
+    {
+      "command": "python --version and python3 --version",
+      "result": "failed",
+      "exitCode": 9009,
+      "summary": "Both commands resolve to Microsoft Store aliases and are not usable interpreters."
+    },
+    {
+      "command": "Bundled Python and Node version checks",
+      "result": "succeeded",
+      "summary": "Bundled Python 3.12.13 and bundled Node 24.14.0 found."
+    },
+    {
+      "command": "docker --version, docker info, and direct Docker Desktop path checks",
+      "result": "not_found",
+      "summary": "Docker CLI/Desktop not found."
+    },
+    {
+      "command": "Chrome and Edge direct path checks",
+      "result": "succeeded",
+      "summary": "Chrome and Edge executables found by direct path and file version."
+    },
+    {
+      "command": "npx --no-install playwright --version",
+      "result": "succeeded",
+      "summary": "Local Playwright version 1.59.1."
+    },
+    {
+      "command": "winget --version, choco lookup, scoop lookup",
+      "result": "partial",
+      "summary": "winget 1.28.240 exists; choco and scoop not found."
+    },
+    {
+      "command": "wsl --status and wsl --list --verbose",
+      "result": "partial",
+      "summary": "WSL exists with default version 2, but no Linux distributions are installed."
+    },
+    {
+      "command": "powershell -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
+      "result": "failed",
+      "exitCode": 1,
+      "summary": "Existing PowerShell validator reports 57 errors due to repository-root resolution defect."
+    },
+    {
+      "command": "bash .\\scripts\\validate-repo.sh",
+      "result": "failed",
+      "exitCode": 1,
+      "summary": "Existing Bash validator cannot run because WSL has no installed distribution."
+    },
+    {
+      "command": "Repository build/test manifest search",
+      "result": "succeeded",
+      "summary": "Only scripts/validate-repo.ps1 and scripts/validate-repo.sh were found."
+    },
+    {
+      "command": "System.Windows.Forms.Screen display enumeration",
+      "result": "succeeded",
+      "summary": "One primary display found at 3413x960."
+    },
+    {
+      "command": "Direct screenshot capture check",
+      "result": "blocked",
+      "summary": "Host security blocked the screenshot capture script."
+    },
+    {
+      "command": "codex mcp list",
+      "result": "succeeded",
+      "summary": "Configured MCP entries recorded; not claimed as active callable namespaces."
+    },
+    {
+      "command": "load_workspace_dependencies",
+      "result": "succeeded",
+      "summary": "Bundled Python and Node runtime paths captured."
+    }
+  ],
+  "mcpToolingUsed": [
+    {
+      "toolOrServer": "terminal-shell via PowerShell",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "allow",
+      "purpose": "Execute Windows-native discovery commands.",
+      "result": "used"
+    },
+    {
+      "toolOrServer": "local-build-tool via Visual Studio, MSBuild, .NET, Node, Python, Playwright",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "allow",
+      "purpose": "Discover build, test, and runtime capability.",
+      "result": "used"
+    },
+    {
+      "toolOrServer": "filesystem via PowerShell",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "allow",
+      "purpose": "Inspect paths and create Phase 00A evidence outputs.",
+      "result": "used"
+    },
+    {
+      "toolOrServer": "screen-capture-vision via Windows display APIs",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "allow",
+      "purpose": "Check display and screenshot capability.",
+      "result": "limited: display enumeration passed; direct screenshot capture blocked by host security"
+    },
+    {
+      "toolOrServer": "persistent context via .forsetti/remediation-v3 files",
+      "providerType": "locally_created_mcp_or_wrapper",
+      "localFirstDecision": "allow",
+      "purpose": "Persist Phase 00A decision and evidence.",
+      "result": "used"
+    },
+    {
+      "toolOrServer": "workspace dependency locator",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "allow",
+      "purpose": "Find bundled Python and Node runtime paths.",
+      "result": "used"
+    },
+    {
+      "toolOrServer": "configured MCP list from codex mcp list",
+      "providerType": "existing_local_mcp_or_tooling",
+      "localFirstDecision": "record_only",
+      "purpose": "Record configured MCP state.",
+      "result": "configured entries recorded, not claimed as active callable namespaces"
+    }
+  ],
+  "subagentsUsed": [
+    {
+      "subagentId": "devops-engineer",
+      "task": "Review Phase 00A Windows-native discovery checklist.",
+      "findings": [
+        "Capture PATH and direct path checks.",
+        "Do not mark a tool unavailable after one discovery path.",
+        "Record required outputs and provider categories."
+      ],
+      "reconciled": true
+    },
+    {
+      "subagentId": "build-error-resolver",
+      "task": "Review build/test/validator risks from discovered tooling.",
+      "findings": [
+        "Existing PowerShell validator fails with 57 errors.",
+        "Bash validator is unavailable because WSL has no distribution.",
+        "No broader build/test manifests were discovered.",
+        "Docker and direct screenshot capture are unavailable.",
+        "Python is usable through py and bundled runtime, not python/python3 aliases."
+      ],
+      "reconciled": true,
+      "reconciliation": "Recorded as remediation validation blockers and remaining issues; Phase 00A discovery acceptance still passes because outputs, parsing, provider disclosure, scope control, and reconciliation are satisfied."
+    },
+    {
+      "subagentId": "git-workflow-manager",
+      "task": "Review Phase 00A branch and staging boundaries.",
+      "findings": [
+        "Current branch is audit/v3-windows-tool-discovery.",
+        ".forsetti/ remains untracked.",
+        "Avoid broad staging and stage only Phase 00A outputs if staging occurs."
+      ],
+      "reconciled": true
+    },
+    {
+      "subagentId": "documenter",
+      "task": "Review Phase 00A report and JSON evidence requirements.",
+      "findings": [
+        "Markdown and JSON must include phase fields, files changed, commands, tooling, provider decisions, helper findings, validation, acceptance gates, and remaining issues."
+      ],
+      "reconciled": true
+    }
+  ],
+  "validation": [
+    {
+      "check": "Required Markdown output created",
+      "result": "pass",
+      "evidence": ".forsetti/remediation-v3/tool-discovery-report.md"
+    },
+    {
+      "check": "Required JSON output created",
+      "result": "pass",
+      "evidence": ".forsetti/remediation-v3/tool-discovery.json"
+    },
+    {
+      "check": "Windows-native tool categories checked",
+      "result": "pass",
+      "evidence": "PowerShell command inventory, direct path checks, vswhere, version commands, manifest search, and display enumeration."
+    },
+    {
+      "check": "Existing PowerShell validator",
+      "result": "fail_with_plan",
+      "evidence": "Failed with 57 errors due to repository-root defect; repair or replace root discovery before using as acceptance evidence."
+    },
+    {
+      "check": "Existing Bash validator",
+      "result": "unavailable_with_plan",
+      "evidence": "WSL has no installed distribution; v3 remediation should not require WSL."
+    },
+    {
+      "check": "Helper findings reconciled",
+      "result": "pass",
+      "evidence": "Findings recorded and reconciled in report and JSON."
+    }
+  ],
+  "acceptanceGates": [
+    {
+      "gate": "All required outputs exist",
+      "status": "pass",
+      "evidence": ".forsetti/remediation-v3/tool-discovery-report.md and .forsetti/remediation-v3/tool-discovery.json created."
+    },
+    {
+      "gate": "JSON outputs parse",
+      "status": "pass",
+      "evidence": "py -m json.tool .forsetti\\remediation-v3\\tool-discovery.json succeeds."
+    },
+    {
+      "gate": "Work is in scope for Phase 00A",
+      "status": "pass",
+      "evidence": "Only Phase 00A evidence files were created."
+    },
+    {
+      "gate": "No non-local third-party provider used without approval",
+      "status": "pass",
+      "evidence": "Commands used local Windows tooling, bundled local runtime paths, and local evidence files."
+    },
+    {
+      "gate": "No product dependency introduced",
+      "status": "pass",
+      "evidence": "No product files were modified."
+    },
+    {
+      "gate": "Reviewer findings reconciled",
+      "status": "pass",
+      "evidence": "Required helper findings are included and reconciled."
+    }
+  ],
+  "remainingIssues": [
+    "The PowerShell validator root calculation must be fixed before it can serve as reliable validation evidence.",
+    "The Bash validator cannot run until WSL has a Linux distribution, but v3 remediation should not require WSL.",
+    "Docker workflows are unavailable unless Docker Desktop/CLI is installed or the workflow is made Docker-optional.",
+    "Scripts that call python or python3 directly will fail on this host; they should use py, interpreter discovery, or bundled runtime paths.",
+    "Desktop screenshot capture through direct .NET APIs is blocked by host security; browser or app-level verification should use Playwright or an approved local browser path.",
+    "Phase 00B remains required before Phase 01 may begin."
+  ],
+  "completionStatement": "Files changed: .forsetti/remediation-v3/tool-discovery-report.md and .forsetti/remediation-v3/tool-discovery.json. Validation evidence: Windows-native discovery commands were run, required evidence was captured, required tool categories were checked, helper findings were reconciled, and the JSON output parses with required schema keys. Known issues: PowerShell validator root defect, unavailable WSL distribution, unavailable Docker, Store-alias Python commands, blocked direct screenshot capture, and pending Phase 00B. Documentation status: no canonical documentation changed. Release impact: none. Scope compliance: Phase 00A evidence-only scope was maintained."
+}

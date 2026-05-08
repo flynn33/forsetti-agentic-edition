@@ -1,0 +1,205 @@
+{
+  "schema_version": "2.0.0",
+  "phase_id": "00",
+  "generated": "2026-05-08",
+  "branch": "audit/remediation-v2-baseline",
+  "repository_root": "A:\\Codex\\Forsetti-Framwork-Agentic-Edition",
+  "remediation_package": "A:\\Codex\\forsetti-codex-remediation-package-v2",
+  "status": "not_remediated",
+  "phase_scope": "evidence_only",
+  "root_indicators_present": [
+    "README.md",
+    "AGENTS.md",
+    "policies/",
+    "schemas/",
+    "contracts/",
+    ".github/"
+  ],
+  "failed_p0_findings": [
+    "No portable architecture: missing core/, adapters/, and overlays/.",
+    "README still used orchestration/GitHub workflow enforcement language.",
+    "No portable local validator exists.",
+    "Compliance rule IDs still conflict between JSON and Markdown surfaces; FAE-C011/C012 missing.",
+    "Task contracts remain templates/schemas only and are not enforced."
+  ],
+  "failed_p1_findings": [
+    "GitHub workflows remain core enforcement and hard-code policy.",
+    "Contributor guard still rejects prohibited source-line language and requires human authorship only.",
+    "Path and documentation policies still reference stale paths.",
+    "No Apple, Windows, or generic overlays are present.",
+    "Remediation is not reflected accurately in version/changelog evidence."
+  ],
+  "missing_architecture_paths": [
+    "core/",
+    "adapters/",
+    "overlays/",
+    "overlays/generic/",
+    "overlays/forsetti-apple/",
+    "overlays/forsetti-windows/"
+  ],
+  "validator_results": [
+    {
+      "command": "powershell -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
+      "exit_code": 1,
+      "result": "failed",
+      "observed_output_summary": "Reported 57 errors, including many present repository files as missing, invalid JSON at A:\\Codex\\package-lock.json, and labels sync missing. The script appears to compute the repository root as A:\\Codex instead of the cloned repository."
+    },
+    {
+      "command": "bash .\\scripts\\validate-repo.sh",
+      "exit_code": 1,
+      "result": "not_runnable",
+      "observed_output_summary": "Windows Subsystem for Linux has no installed distributions."
+    }
+  ],
+  "dependency_language_occurrences": [
+    {
+      "path": "README.md",
+      "line": 9,
+      "text": "Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems."
+    },
+    {
+      "path": "README.md",
+      "line": 45,
+      "text": "- GitHub workflow enforcement"
+    },
+    {
+      "path": "wiki/Changelog.md",
+      "line": 19,
+      "text": "Initial release summary includes GitHub workflow enforcement."
+    },
+    {
+      "path": "wiki/Releases.md",
+      "line": 34,
+      "text": "References workflow enforcement as part of breaking-change impact."
+    },
+    {
+      "path": "wiki/Releases.md",
+      "line": 74,
+      "text": "References modifying workflow enforcement."
+    }
+  ],
+  "source_line_rejection_occurrences": [
+    {
+      "path": ".github/workflows/ai-contributor-guard.yml",
+      "line": 1,
+      "text": "contributor guard workflow title"
+    },
+    {
+      "path": ".github/workflows/ai-contributor-guard.yml",
+      "line": 11,
+      "text": "source-line rejection job title"
+    },
+    {
+      "path": ".github/workflows/ai-contributor-guard.yml",
+      "line": 213,
+      "text": "source-line rejection error message requiring human authorship"
+    }
+  ],
+  "compliance_rule_mismatches": {
+    "missing_rules": [
+      "FAE-C011",
+      "FAE-C012"
+    ],
+    "markdown_titles": {
+      "FAE-C001": "No Task Contract or Governing Scope",
+      "FAE-C002": "Unauthorized Scope Expansion",
+      "FAE-C003": "Protected Governance Asset Modification Without Authority",
+      "FAE-C004": "False Completion Claim",
+      "FAE-C005": "Silent Breaking Change",
+      "FAE-C006": "Missing Required Changelog Entry",
+      "FAE-C007": "Missing Required Documentation Update",
+      "FAE-C008": "Hidden Known Failure",
+      "FAE-C009": "Assumptions Presented as Confirmed Facts",
+      "FAE-C010": "Contradiction Between Delivered Summary and Evidence"
+    },
+    "json_titles": {
+      "FAE-C001": "Task Contract Required Before Execution",
+      "FAE-C002": "Scope Boundary Enforcement",
+      "FAE-C003": "Role Separation Enforcement",
+      "FAE-C004": "Protected Asset Governance Gate",
+      "FAE-C005": "Changelog Entry Required for Substantive Changes",
+      "FAE-C006": "Breaking Change Disclosure Mandate",
+      "FAE-C007": "Completion Summary Truthfulness",
+      "FAE-C008": "Documentation Sync Compliance",
+      "FAE-C009": "Version Classification Accuracy",
+      "FAE-C010": "Governance Change Isolation"
+    }
+  },
+  "stale_path_references": [
+    "policies/repo-boundaries.json: CONSTITUTION.md",
+    "policies/repo-boundaries.json: CHANGELOG.md",
+    "policies/repo-boundaries.json: docs/wiki/**",
+    "policies/repo-boundaries.json: RELEASE_NOTES.md",
+    "policies/repo-boundaries.json: src/**",
+    "policies/repo-boundaries.json: docs/**",
+    "policies/docs-sync-rules.json: CONSTITUTION.md",
+    "policies/docs-sync-rules.json: docs/architecture.md",
+    "policies/docs-sync-rules.json: docs/glossary.md",
+    "policies/docs-sync-rules.json: docs/agent-roles.md",
+    "policies/docs-sync-rules.json: docs/compliance-guide.md",
+    "policies/docs-sync-rules.json: docs/versioning.md",
+    "policies/docs-sync-rules.json: docs/changelog-guide.md",
+    "policies/docs-sync-rules.json: CHANGELOG.md"
+  ],
+  "local_validator_search": {
+    "patterns": [
+      "forsetti_validate",
+      "forsetti-validate",
+      "validate.py"
+    ],
+    "matches": []
+  },
+  "version_changelog_evidence": {
+    "version": "1.0.0",
+    "changelog_status": "Only 1.0.0 foundation release entry exists; it still references GitHub workflow enforcement."
+  },
+  "commands_not_run": [
+    {
+      "command": "python3 core/validator/forsetti_validate.py --repo-root . --mode all --strict",
+      "reason": "core/validator/forsetti_validate.py does not exist."
+    }
+  ],
+  "phase_verification": [
+    {
+      "command": "Test-Path .forsetti\\remediation-v2\\baseline-report.md",
+      "result": "passed"
+    },
+    {
+      "command": "python3 -m json.tool .forsetti\\remediation-v2\\baseline-report.json",
+      "result": "failed",
+      "reason": "python3 resolves to the Microsoft Store app execution alias on this host."
+    },
+    {
+      "command": "py --version",
+      "result": "passed",
+      "output": "Python 3.9.13"
+    },
+    {
+      "command": "py -m json.tool .forsetti\\remediation-v2\\baseline-report.json",
+      "result": "passed"
+    },
+    {
+      "command": "py -m json.tool .forsetti\\remediation-v2\\phase-00-completion.json",
+      "result": "passed"
+    },
+    {
+      "command": "Get-Content .forsetti\\remediation-v2\\baseline-report.json -Raw | ConvertFrom-Json",
+      "result": "passed"
+    },
+    {
+      "command": "Get-Content .forsetti\\remediation-v2\\phase-00-completion.json -Raw | ConvertFrom-Json",
+      "result": "passed"
+    }
+  ],
+  "acceptance_criteria": {
+    "states_repository_not_remediated": "pass",
+    "lists_all_p0_p1_failed_findings": "pass",
+    "no_policy_or_source_remediation_attempted": "pass",
+    "includes_commands_outputs_and_skips": "pass"
+  },
+  "residual_risks": [
+    "PowerShell validator evidence is distorted by a root-path bug.",
+    "Bash validator could not run because WSL has no installed distro.",
+    "P0 acceptance gates remain unsatisfied until later phases remediate architecture, policy registry, local validator, and contract enforcement."
+  ]
+}
