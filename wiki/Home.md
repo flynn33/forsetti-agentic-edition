@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-08, Phase 01 portable scaffold
+> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-005 canonical policy registry
 
 ## Welcome
 
@@ -11,7 +11,7 @@ This wiki provides navigational documentation for the Forsetti Agentic Edition g
 
 | Layer | Path | Purpose |
 |:-----|:-----|:--------|
-| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, and future validation interfaces. |
+| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and future validation interfaces. |
 | Adapters | `adapters/` | Optional host integrations that translate platform context into portable validation inputs. |
 | Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning. |
 
@@ -23,7 +23,7 @@ This wiki provides navigational documentation for the Forsetti Agentic Edition g
 | [Constitution](Constitution) | Foundational principles, authority hierarchy, and governance doctrine | `FORSETTI_CONSTITUTION.md` |
 | [Agent Roles](Agent-Roles) | The governed roles, their authorities, and boundaries | `AGENTS.md`, `agents/*.md` |
 | [Workflow](Workflow) | Change control lifecycle, approval classes, and documentation policy | `CHANGE_CONTROL_POLICY.md`, `DOCUMENTATION_POLICY.md` |
-| [Compliance](Compliance) | Evidence-based compliance model and blocking violations | `COMPLIANCE_POLICY.md` |
+| [Compliance](Compliance) | Canonical compliance registry, evidence requirements, and outcomes | `COMPLIANCE_POLICY.md`, `core/policies/compliance-rules.json` |
 | [Releases](Releases) | Versioning model, release readiness, and impact classification | `RELEASE_POLICY.md` |
 | [Changelog](Changelog) | Version history and change records | `changelog/CHANGELOG.md` |
 | [Glossary](Glossary) | Key terms and definitions | Various |

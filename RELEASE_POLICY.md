@@ -75,7 +75,7 @@ A change is **breaking** if it:
 
 Every breaking change must satisfy all of the following:
 
-1. **Explicit classification.** The change must be classified as `breaking-change` in the task contract and changelog. Silent reclassification is a blocking violation (FAE-C005).
+1. **Explicit classification.** The change must be classified as `breaking-change` in the task contract and changelog. Silent reclassification is a blocking violation (FAE-C006).
 
 2. **Elevated review.** Breaking changes require Sensitive approval at minimum. Breaking changes to governance content require Governance-Class approval.
 
@@ -91,7 +91,7 @@ Every breaking change must satisfy all of the following:
 
 ### When a Changelog Entry Is Required
 
-Every meaningful change (any change class except `none` and `metadata`) must have a changelog entry. This is a compliance requirement — missing changelog entries are blocking violations (FAE-C006).
+Every meaningful change (any change class except `none` and `metadata`) must have a changelog entry. This is a compliance requirement — missing changelog entries are blocking violations (FAE-C005).
 
 ### Required Changelog Fields
 
@@ -133,7 +133,7 @@ A release is ready **only when all of the following conditions are satisfied**:
 
 3. **Version classification is consistent.** The aggregate version impact is consistent across all included changes. No change is classified in a way that contradicts its actual impact.
 
-4. **No unresolved blocking violations exist.** No FAE-C001 through FAE-C010 violations are open against any included change.
+4. **No unresolved blocking violations exist.** No blocking FAE-C001 through FAE-C012 violations are open against any included change.
 
 5. **Documentation is synchronized.** All documentation artifacts are current and reflect the state of the release. No documentation drift exists.
 

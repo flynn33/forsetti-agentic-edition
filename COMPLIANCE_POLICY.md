@@ -8,13 +8,23 @@
 
 ## Compliance Doctrine
 
-Compliance is determined by **evidence**, not by confidence, assertion, or intent.
+Compliance is determined by evidence, not by confidence, assertion, or intent.
 
 A change is compliant only when:
-- All required policy conditions for the change class and scope are satisfied, **AND**
-- All required evidence is present and verifiable.
+- all required policy conditions for the change class and scope are satisfied, and
+- all required evidence is present, current, and verifiable.
 
 A claim of compliance without supporting evidence is itself a compliance violation. The burden of proof rests on the party claiming compliance, not on the party evaluating it.
+
+---
+
+## Canonical Rule Registry
+
+The canonical machine-readable compliance registry is `core/policies/compliance-rules.json`.
+
+The root file `policies/compliance-rules.json` is a compatibility mirror and must remain byte-for-byte identical to the core registry until the constitutional policy hierarchy is amended.
+
+Markdown policy text, wiki summaries, workflow wrappers, adapter logic, and validator output must use the same rule identifiers, titles, decisions, and meanings as the canonical registry.
 
 ---
 
@@ -24,68 +34,91 @@ Every compliance evaluation produces exactly one of three outcomes:
 
 ### Pass
 
-All required conditions are met. All required evidence is present. No unresolved issues exist. The work may proceed to the next stage (merge, release, or closure).
+All required conditions are met. All required evidence is present. No unresolved issues exist. The work may proceed to the next stage.
 
 ### Request Changes
 
-One or more conditions are partially met or evidence is incomplete, but the issues are fixable without architectural rework or scope restructuring. The work is returned to the Builder with specific, actionable feedback. Work may not proceed until the requested changes are made and re-evaluated.
+One or more conditions are unmet, incomplete, or inaccurate, but the issue can be fixed within the current scope and does not invalidate the work as a whole. Work may not proceed until the requested changes are made and re-evaluated.
 
 ### Block
 
-A fundamental violation has been identified. Blocking violations include:
-- False completion claims
-- Unauthorized scope expansion
-- Protected asset violations
-- Hidden failures
-- Truthfulness violations
-
-Blocked work **may not proceed** until the blocking violation is resolved and the work is re-evaluated from the beginning of the compliance check. A block is not a request for changes — it is a determination that the work violated a hard governance constraint.
+A fundamental violation has been identified. Blocked work must not proceed until the blocking violation is resolved and the work is re-evaluated from the beginning of the compliance check.
 
 ---
 
-## Blocking Violations
+## Compliance Rules
 
-The following violations result in an immediate **Block** determination. Each violation has a unique identifier for traceability.
+### FAE-C001: Task Contract Required Before Execution
 
-### FAE-C001: No Task Contract or Governing Scope
+Meaningful implementation work must not begin without a governing task contract that identifies the task, change class, approval class, authorized scope, required outputs, documentation impact, release impact, validation gates, and reviewer roles.
 
-Meaningful work was performed without a task contract or other governing scope document. Work without a contract is ungoverned and cannot be evaluated for compliance. All meaningful work requires a contract before execution.
+Decision: block.
 
-### FAE-C002: Unauthorized Scope Expansion
+### FAE-C002: Scope Boundary Enforcement
 
-Files were changed that are not authorized by the governing task contract. This includes drive-by edits, opportunistic cleanup, and any modification outside the contracted file list. If additional scope is needed, the contract must be amended before the work is performed.
+Changed files must stay within the authorized scope defined by the task contract. If additional files are required, the contract must be amended before those files are modified.
 
-### FAE-C003: Protected Governance Asset Modification Without Authority
+Decision: block.
 
-A protected governance asset (as defined in `CHANGE_CONTROL_POLICY.md`) was modified without the required approval class. Protected assets include constitutional documents, policy documents, role definitions, schemas, and other governance infrastructure. Modifications require governance-class or sensitive approval depending on the asset.
+### FAE-C003: Role Separation Enforcement
 
-### FAE-C004: False Completion Claim
+A role must not perform actions assigned to another role. Builders must not validate their own work. Validators must not implement fixes. Release Managers must not waive compliance gates. Role authority boundaries must match the repository role model.
 
-Work was claimed as complete when required validation was not run, validation failed, required outputs were not delivered, or required documentation was not updated. "Done" means all contracted outputs are delivered and all required checks have passed. Anything less is partial completion and must be stated as such.
+Decision: block.
 
-### FAE-C005: Silent Breaking Change
+### FAE-C004: Protected Asset Governance Gate
 
-A change that alters the meaning, structure, or enforcement of existing governance rules was not classified as a breaking change. Breaking changes require explicit classification, elevated review, and migration guidance. Presenting a breaking change as non-breaking to avoid the required process is a blocking violation.
+Protected governance assets must not be modified without the required approval class and Governance Steward authorization when governance-class authority is required.
 
-### FAE-C006: Missing Required Changelog Entry
+Decision: block.
 
-A meaningful change (any change class except `none` and `metadata`) was delivered without a corresponding changelog entry. The changelog is a governance record. Every meaningful change must be recorded with its title, change class, version impact, summary, and affected area.
+### FAE-C005: Changelog Entry Required for Substantive Changes
 
-### FAE-C007: Missing Required Documentation Update
+Every meaningful change must include a changelog entry with the required fields, accurate change class, accurate version impact, affected area, task reference, approval class, and migration guidance when the change is breaking.
 
-A change that affects documented behavior, policy, process, or interface was delivered without updating the corresponding documentation. Documentation drift — where the system changes but documentation does not — is a compliance failure, not a low-priority follow-up.
+Decision: request changes.
 
-### FAE-C008: Hidden Known Failure
+### FAE-C006: Breaking Change Disclosure Mandate
 
-A known defect, test failure, unresolved edge case, or open risk was omitted from the deliverable summary or review materials. All known issues must be disclosed. Hiding failures to achieve a cleaner review is a truthfulness violation.
+A change that alters existing governance rules, required fields, default behavior, schemas, workflow enforcement, or consumer obligations must be explicitly classified as breaking-change with major version impact unless the Release Manager documents a higher-authority exception.
 
-### FAE-C009: Assumptions Presented as Confirmed Facts
+Decision: block.
 
-Unverified assumptions, estimates, or unconfirmed information was presented as validated truth. Assumptions must be labeled as assumptions. Estimates must be labeled as estimates. Only verified, evidence-backed claims may be presented as facts.
+### FAE-C007: Completion Summary Truthfulness
 
-### FAE-C010: Contradiction Between Delivered Summary and Evidence
+Completion summaries must accurately describe files changed, validation results, known issues, documentation status, release impact, and scope compliance. Claims of done, tested, reviewed, or no issues must be supported by evidence.
 
-The completion summary, PR description, or status report contradicts the observable evidence (test results, file changes, validation output, review feedback). The summary must accurately reflect what was done, what was found, and what remains unresolved.
+Decision: block.
+
+### FAE-C008: Documentation Sync Compliance
+
+Changes that affect documented behavior, policy, process, public interfaces, release history, or canonical documentation must update the corresponding documentation surfaces or explicitly track the sync obligation under the documentation policy.
+
+Decision: request changes.
+
+### FAE-C009: Version Classification Accuracy
+
+Version impact must match the actual effect of the change. Breaking changes require major impact unless a documented higher-authority exception applies. Governance-only impact must not be used to hide consumer-facing breaking changes.
+
+Decision: request changes.
+
+### FAE-C010: Governance Change Isolation
+
+Governance changes must be standalone. A governance or protected policy change must not be bundled with unrelated feature, bugfix, refactor, release, adapter, or implementation work.
+
+Decision: block.
+
+### FAE-C011: Evidence and Validation Integrity
+
+Validation evidence must be real, specific, current, and traceable to commands, tools, reports, or reviewer decisions that actually ran. Failed, skipped, partial, stale, or unavailable validation must be disclosed.
+
+Decision: block.
+
+### FAE-C012: AI Assistance Disclosure and Human Accountability
+
+Automated assistance must never replace accountable human or governed role ownership. Repository policy may require contract and evidence disclosure for automated assistance, but source, commit, footer, or contributor attribution to automation is not permitted unless a higher-authority policy explicitly allows it.
+
+Decision: request changes.
 
 ---
 
@@ -94,30 +127,27 @@ The completion summary, PR description, or status report contradicts the observa
 ### Completion Evidence
 
 Every completion claim must reference:
-- Specific validation results (test output, lint results, build results)
-- The list of files changed, demonstrating scope compliance
-- Confirmation that required documentation was updated
-- Confirmation that changelog was updated (if applicable)
-- Disclosure of any known issues, risks, or deferred items
+- specific validation results,
+- the list of files changed,
+- confirmation that required documentation was updated,
+- confirmation that the changelog was updated when required,
+- disclosure of known issues, risks, deferred items, skipped checks, or partial completion.
 
 ### Scope Evidence
 
-Scope compliance must be demonstrable by comparing the actual file change list against the contracted scope. Every changed file must be traceable to the task contract. Files changed outside the contract are unauthorized.
+Scope compliance must be demonstrable by comparing actual changed files against the contracted in-scope file list.
 
 ### Documentation Evidence
 
-Documentation compliance must be demonstrable by:
-- Identifying which documentation artifacts were required to change based on the scope
-- Confirming those artifacts were updated
-- Confirming no documentation drift was introduced
+Documentation compliance must identify which documentation artifacts were required to change, confirm those artifacts were updated, and confirm no documentation drift was introduced.
 
 ### Release Evidence
 
-Release compliance must be demonstrable by:
-- Version impact classification for each included change
-- Complete changelog entries for all meaningful changes
-- Migration guidance for any breaking changes
-- Confirmation that all compliance gates passed
+Release compliance must include version impact classification, complete changelog entries, migration guidance for breaking changes, and confirmation that required compliance gates passed.
+
+### Governance Evidence
+
+Governance compliance must include approval class verification for governance-touching changes, role authority confirmation, Governance Steward authorization when required, and evidence that governance changes are isolated.
 
 ---
 
@@ -125,51 +155,50 @@ Release compliance must be demonstrable by:
 
 ### 1. Scope Compliance
 
-The work stayed within the authorized boundaries defined by the task contract. No files outside the contracted scope were modified. No unauthorized scope expansion occurred.
+The work stayed within the authorized boundaries defined by the task contract.
 
-**Required evidence**: File change list compared against contract scope.
+Required evidence: changed file list compared against contract scope.
 
 ### 2. Documentation Compliance
 
-All required documentation was updated to reflect the changes made. No documentation drift was introduced. README, wiki, inline documentation, and any contract-specified documentation artifacts are current.
+All required documentation was updated to reflect the changes made.
 
-**Required evidence**: List of documentation artifacts updated, confirmation of no drift.
+Required evidence: documentation impact declaration, updated documentation artifacts, and documentation sync confirmation.
 
 ### 3. Release Compliance
 
-Version impact was correctly classified. Changelog entries are complete and accurate. Breaking changes (if any) are explicitly classified and include migration guidance. Release readiness conditions are satisfied.
+Version impact was correctly classified. Changelog entries are complete and accurate. Breaking changes include migration guidance.
 
-**Required evidence**: Version impact classification, changelog entries, migration notes (if applicable).
+Required evidence: version impact classification, changelog entry, release review when required, and migration guidance when applicable.
 
 ### 4. Truthfulness Compliance
 
-All claims in the deliverable summary, PR description, review materials, and status reports are accurate and supported by evidence. Known issues are disclosed. Assumptions are labeled. Partial completion is stated as partial.
+All claims in completion summaries, PR descriptions, review materials, and status reports are accurate and supported by evidence.
 
-**Required evidence**: Summary compared against actual validation results, file changes, and test output.
+Required evidence: summary compared against validation results, file changes, tests, and review output.
 
 ### 5. Governance Compliance
 
-Protected governance assets were handled with the required authority level. Role boundaries were respected. Governance changes (if any) followed the governance-class approval process. No governance content was modified as a side-effect of non-governance work.
+Protected governance assets were handled with the required authority level, and governance changes were isolated from unrelated work.
 
-**Required evidence**: Approval class verification for any governance-touching changes, role authority confirmation.
+Required evidence: approval class verification, Governance Steward authorization when required, protected path review, and governance isolation review.
+
+### 6. Evidence Integrity
+
+Evidence is current, specific, and traceable to actual checks or reviewer decisions.
+
+Required evidence: commands run, tool outputs, report paths, reviewer decisions, failure notes, and skipped-check rationale.
 
 ---
 
 ## Truthfulness Standard
 
-Truthfulness is a foundational principle (Principle 3 of the Forsetti Constitution). This section defines the operational standard for truthfulness in compliance evaluation.
-
-- **"Done"** means all required outputs are delivered, all required validations have passed, and all required documentation is updated. If any of these are incomplete, the work is not done.
-
-- **"Tested"** means tests were actually executed and results are available for review. If tests were not run, the work is not tested.
-
-- **"Reviewed"** means a qualified reviewer evaluated the work against applicable compliance criteria. Self-review does not satisfy review requirements unless the policy explicitly permits it.
-
-- **"No issues"** means no issues were found. It does not mean issues were not looked for. If evaluation was not performed, the correct statement is "not evaluated," not "no issues."
-
-- **Partial completion** must be stated as partial completion. Delivering 3 of 5 contracted outputs is partial completion, not completion. The summary must identify what was delivered, what was not, and why.
-
-- **Assumptions** must be identified as assumptions. If a decision was made based on an assumption rather than verified evidence, the assumption must be disclosed.
+- "Done" means all required outputs were delivered, all required validations passed, and all required documentation was updated.
+- "Tested" means tests or validations were actually executed and results are available for review.
+- "Reviewed" means a qualified reviewer evaluated the work against applicable compliance criteria.
+- "No issues" means no issues were found during an actual evaluation.
+- Partial completion must be stated as partial completion.
+- Failed, skipped, stale, or unavailable checks must be disclosed.
 
 ---
 
@@ -180,40 +209,47 @@ Truthfulness is a foundational principle (Principle 3 of the Forsetti Constituti
 - Ensures task contracts define clear, measurable compliance criteria.
 - Defines acceptance criteria that map to specific compliance categories.
 - Identifies which compliance categories are required for each task.
-- Reviews sensitive changes for architectural compliance.
+- Reviews sensitive and breaking changes for architectural impact.
 
 ### Builder
 
-- Produces evidence of scope compliance during execution (file change tracking, scope verification).
-- Updates required documentation as part of delivery, not as a follow-up.
+- Produces evidence of scope compliance during execution.
+- Updates required documentation as part of delivery.
 - Creates changelog entries for meaningful changes.
-- Reports completion status accurately, including any known issues or partial completion.
+- Reports completion status accurately.
 - Does not claim completion without required evidence.
 
 ### Validator
 
 - Evaluates compliance across all applicable categories.
-- Renders one of three outcomes: pass, request changes, or block.
-- Identifies specific violations by code (FAE-C001 through FAE-C010).
-- Verifies that evidence supports the claims made in the deliverable summary.
-- Does not pass work that lacks required evidence, regardless of apparent quality.
+- Renders pass, request-changes, or block decisions.
+- Identifies violations by canonical rule ID.
+- Verifies that evidence supports the claims made.
+- Does not pass work that lacks required evidence.
 
 ### Release Manager
 
-- Confirms version impact classification is accurate.
-- Verifies changelog entries are complete and correctly classified.
+- Confirms version impact classification.
+- Verifies changelog integrity.
 - Confirms breaking changes have migration guidance.
-- Verifies release readiness conditions are satisfied.
+- Verifies release readiness conditions.
 - Does not authorize release with unresolved blocking violations.
 
 ### Documentation Manager
 
 - Confirms required documentation was updated.
-- Identifies documentation drift introduced by the change.
+- Identifies documentation drift.
 - Verifies README integrity and wiki synchronization.
-- Confirms documentation artifacts match the current state of the governed content.
+- Confirms documentation artifacts match the current state of governed content.
 - Does not approve documentation compliance when drift exists.
+
+### Governance Steward
+
+- Authorizes governance-class changes.
+- Resolves governance ambiguities.
+- Confirms protected governance assets have required authority.
+- Does not waive evidence, scope, documentation, or truthfulness requirements.
 
 ---
 
-*Compliance is not a gate to pass through — it is a standard to meet. Evidence is the only currency accepted.*
+*Compliance is not a gate to pass through. It is a standard to meet. Evidence is the only currency accepted.*

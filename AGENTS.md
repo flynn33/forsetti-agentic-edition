@@ -51,6 +51,7 @@ No agent may:
 - Bundle governance changes with unrelated work
 - Bypass role boundaries for convenience
 - Approve or validate own work
+- Add source, contributor, generated-by, or co-author attribution to automation unless a higher-authority policy explicitly allows it
 
 ## Role Model
 Five governed roles operate in this repository:
@@ -104,4 +105,4 @@ Every completion summary must include:
 - **Release impact**: Confirmed version impact classification
 - **Scope compliance**: Confirmation that all changes were within contract scope
 
-A completion statement that omits any of these fields is incomplete. A completion statement that misrepresents any of these fields is a blocking violation (FAE-C004).
+A completion statement that omits any of these fields is incomplete. A completion statement that misrepresents any of these fields is a blocking violation (FAE-C007).

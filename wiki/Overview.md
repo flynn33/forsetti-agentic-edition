@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition Overview
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-08, Phase 01 portable scaffold
+> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-005 canonical policy registry
 
 Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems.
 
@@ -13,7 +13,7 @@ Forsetti Agentic Edition is organized around three layers:
 
 | Layer | Path | Purpose |
 |---|---|---|
-| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, and future validation interfaces. |
+| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and future validation interfaces. |
 | Adapters | `adapters/` | Optional host integrations that translate local or hosted platform context into portable validation inputs. |
 | Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning while documenting local expectations. |
 
@@ -29,24 +29,24 @@ Authority flows downward:
 | 2 | Policy documents | Binding operational policy. |
 | 3 | `standards/*.md` | Operational standards. |
 | 4 | `contracts/*.md` | Task contract templates and task contracts. |
-| 5 | `policies/*.json` | Machine-readable policy manifests. |
+| 5 | `core/policies/*.json`, `policies/*.json` | Machine-readable policy manifests. `core/policies/` contains canonical portable registries where present; matching root `policies/` files are compatibility mirrors unless a higher-authority policy says otherwise. |
 | 6 | `agents/*.md` | Role-specific instructions. |
 | 7 | `wiki/*.md` | Derived summary content. Not canonical. |
 
-Portable scaffold documents under `core/`, `adapters/`, and `overlays/` are subordinate documentation surfaces introduced for portability. They do not amend the root authority hierarchy.
+Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate documentation surfaces introduced for portability, except for canonical portable policy registries explicitly designated under `core/policies/`. They do not amend the constitutional authority hierarchy.
 
 ## Repository Structure
 
 The repository now includes:
 
-- `core/` for portable governance scaffold documents.
+- `core/` for portable governance documents and canonical policy manifests.
 - `adapters/github-actions/` for optional GitHub Actions integration documentation.
 - `overlays/generic/`, `overlays/forsetti-apple/`, and `overlays/forsetti-windows/` for platform overlay scaffolds.
 - Root governance, policy, standards, contracts, schemas, scripts, changelog, and wiki documentation.
 
 ## Operating Model
 
-Every meaningful change must operate under a task contract, remain within authorized scope, update required documentation, include changelog evidence when required, and provide validation evidence before completion is claimed.
+Every meaningful change must operate under a task contract, remain within authorized scope, update required documentation, include changelog evidence when required, and provide validation evidence before completion is claimed. Canonical compliance rule identifiers are defined in `core/policies/compliance-rules.json` and mirrored at `policies/compliance-rules.json`.
 
 ## Navigation
 

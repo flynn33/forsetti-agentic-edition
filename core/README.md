@@ -13,6 +13,7 @@ The core owns:
 - contract-first execution
 - role authority boundaries
 - scope binding
+- canonical compliance policy registry
 - compliance evidence requirements
 - release impact classification
 - documentation integrity
@@ -35,7 +36,7 @@ Later implementation phases may add concrete files under this directory. Phase 0
 | Interface | Purpose |
 |---|---|
 | `TaskContract` | Defines scope, change class, approval class, required outputs, validation gates, and completion evidence. |
-| `PolicyRegistry` | Provides canonical rule identifiers, severities, evidence requirements, and remediation guidance. |
+| `PolicyRegistry` | Provides canonical rule identifiers, severities, evidence requirements, and remediation guidance. Phase 02 implements the canonical compliance registry at `core/policies/compliance-rules.json`. |
 | `ValidationRequest` | Carries repository root, changed files, contract path, policy registry path, and optional environment metadata into validation. |
 | `ValidationResult` | Reports pass, request-changes, or block decisions with findings, evidence paths, and unresolved issues. |
 | `Adapter` | Translates host-specific context into a portable validation request. |
@@ -51,6 +52,20 @@ overlays/*  -> core
 core        -> no adapters, no overlays, no hosted workflow dependency
 ```
 
-## Phase 01 Status
+## Policy Registry Files
 
-This directory is a scaffold. It does not yet contain the canonical policy registry, portable validator engine, or executable enforcement code. Those are reserved for later remediation phases.
+Phase 02 establishes host-neutral policy manifests under `core/policies/`:
+
+| File | Purpose |
+|---|---|
+| `core/policies/compliance-rules.json` | Canonical registry for `FAE-C001` through `FAE-C012`. |
+| `core/policies/repo-boundaries.json` | Portable repository boundary and approval-class manifest. |
+| `core/policies/docs-sync-rules.json` | Portable copy of documentation sync requirements. |
+| `core/policies/versioning-rules.json` | Portable copy of version impact rules. |
+| `core/policies/changelog-rules.json` | Portable copy of changelog entry requirements. |
+
+The root `policies/compliance-rules.json` and `policies/repo-boundaries.json` files are compatibility mirrors and must remain byte-for-byte identical to their `core/policies/` counterparts until a future governance change amends the hierarchy.
+
+## Phase 02 Status
+
+This directory now contains the canonical compliance policy registry and portable policy manifests. It does not yet contain a portable validator engine or executable enforcement code. Those are reserved for later remediation phases.

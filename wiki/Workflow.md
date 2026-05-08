@@ -1,7 +1,7 @@
 # Workflow
 
 > **Canonical sources**: [`AGENTS.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/AGENTS.md), [`CHANGE_CONTROL_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CHANGE_CONTROL_POLICY.md)
-> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-004 docs sync rules drift repair
+> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-005 canonical policy registry
 
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
 
@@ -93,7 +93,9 @@ Unauthorized scope expansion is a blocking violation.
 
 Protected assets require the approval class defined by `CHANGE_CONTROL_POLICY.md`. Examples include constitutional files, root policy documents, agent instructions, policy manifests, schemas, CODEOWNERS, and GitHub workflows.
 
-Policy manifests under `policies/*.json` require governance-class handling when they encode constitutional, compliance, or policy rules.
+Policy manifests under `core/policies/*.json` are canonical portable policy registries and require governance-class handling. Policy manifests under `policies/*.json` require governance-class handling when they encode constitutional, compliance, or policy rules; root files that mirror `core/policies/*.json` are compatibility mirrors and must not redefine canonical rule meaning.
+
+Protected asset handling is enforced by `FAE-C004` in the canonical compliance registry. Role separation is enforced separately by `FAE-C003`.
 
 ---
 

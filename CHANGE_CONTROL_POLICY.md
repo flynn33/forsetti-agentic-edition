@@ -112,7 +112,7 @@ Cleaning up code, formatting, or documentation outside the contracted scope is n
 
 ### Hidden Scope Expansion Is a Blocking Violation
 
-If a review reveals files changed outside the contracted scope, the change is blocked under FAE-C002 (Unauthorized Scope Expansion). This is not a request-changes condition — it is a block. The unauthorized changes must be removed, and if the expanded scope is needed, the contract must be amended.
+If a review reveals files changed outside the contracted scope, the change is blocked under FAE-C002 (Scope Boundary Enforcement). This is not a request-changes condition — it is a block. The unauthorized changes must be removed, and if the expanded scope is needed, the contract must be amended.
 
 ### Scope Amendment Process
 
@@ -129,7 +129,7 @@ Scope amendments must be documented in the task contract. Verbal or implicit sco
 
 ## Protected Assets
 
-The following governance paths require elevated handling. Modifications to these assets without the specified approval class are blocking violations (FAE-C003).
+The following governance paths require elevated handling. Modifications to these assets without the specified approval class are blocking violations (FAE-C004).
 
 | Protected Asset | Required Approval Class |
 |---|---|
@@ -139,6 +139,7 @@ The following governance paths require elevated handling. Modifications to these
 | `RELEASE_POLICY.md` | Governance-Class |
 | `DOCUMENTATION_POLICY.md` | Governance-Class |
 | `AGENTS.md` | Governance-Class |
+| `core/policies/*.json` | Governance-Class |
 | `policies/*.json` | Sensitive or Governance-Class (depending on content) |
 | `schemas/*.json` | Sensitive |
 | `agents/*.md` | Sensitive |
@@ -147,9 +148,13 @@ The following governance paths require elevated handling. Modifications to these
 
 ### Policy Manifest Classification
 
+Files in `core/policies/*.json` are canonical portable policy registries and require **Governance-Class** approval.
+
 Files in `policies/*.json` require:
 - **Governance-Class** if the manifest encodes constitutional, compliance, or policy rules.
 - **Sensitive** if the manifest encodes operational configuration, label definitions, or workflow parameters.
+
+When a root `policies/*.json` file mirrors a `core/policies/*.json` file, the root file is a compatibility mirror and must not redefine the canonical rule meaning.
 
 When in doubt, apply the higher classification.
 
@@ -228,21 +233,21 @@ A change **must be rejected** (blocked or returned for changes) if any of the fo
 
 2. **Files outside contract scope were modified.** Unauthorized files appear in the change set. (FAE-C002)
 
-3. **Required documentation was not updated.** The change affects documented behavior but documentation was not updated. (FAE-C007)
+3. **Required documentation was not updated.** The change affects documented behavior but documentation was not updated. (FAE-C008)
 
-4. **Required changelog entry is missing.** A meaningful change was delivered without a changelog entry. (FAE-C006)
+4. **Required changelog entry is missing.** A meaningful change was delivered without a changelog entry. (FAE-C005)
 
-5. **Release impact was not classified.** The change has version implications but no version impact classification was provided.
+5. **Release impact was not classified.** The change has version implications but no version impact classification was provided. (FAE-C009)
 
-6. **Protected asset was modified without required authority.** A governance or sensitive asset was changed without the appropriate approval class. (FAE-C003)
+6. **Protected asset was modified without required authority.** A governance or sensitive asset was changed without the appropriate approval class. (FAE-C004)
 
-7. **Completion summary contradicts evidence.** The delivered summary does not match the observable file changes, test results, or validation output. (FAE-C010)
+7. **Completion summary contradicts evidence.** The delivered summary does not match the observable file changes, test results, or validation output. (FAE-C007)
 
-8. **Known failures are not disclosed.** The deliverable omits known defects, test failures, or unresolved issues. (FAE-C008)
+8. **Known failures are not disclosed.** The deliverable omits known defects, test failures, or unresolved issues. (FAE-C011)
 
-9. **Breaking change was not classified as such.** A change that alters existing governance rules for consumers was not classified as `breaking-change`. (FAE-C005)
+9. **Breaking change was not classified as such.** A change that alters existing governance rules for consumers was not classified as `breaking-change`. (FAE-C006)
 
-10. **Governance change was bundled with non-governance work.** A governance modification was included in a task contract scoped to non-governance work.
+10. **Governance change was bundled with non-governance work.** A governance modification was included in a task contract scoped to non-governance work. (FAE-C010)
 
 Rejection is not punitive. Rejection protects the integrity of the governance framework. Every rejection must include specific, actionable feedback referencing the applicable violation code.
 

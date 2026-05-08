@@ -64,7 +64,7 @@ Forsetti Agentic Edition is organized around a portable governance core, optiona
 
 | Layer | Path | Purpose |
 |---|---|---|
-| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, and future validation interfaces. |
+| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and future validation interfaces. |
 | Adapters | `adapters/` | Optional host integrations that translate local or hosted platform context into portable validation inputs. |
 | Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning while documenting local expectations. |
 
@@ -84,15 +84,15 @@ Authority flows downward. Higher-ranked documents override lower-ranked document
 | 2 | Policy documents | Binding governance policies. |
 | 3 | `standards/*.md` | Operational standards for naming, versioning, changelog, documentation, review. |
 | 4 | `contracts/*.md` | Task contract templates that bind agent scope. |
-| 5 | `policies/*.json` | Machine-readable policy manifests for CI enforcement. |
+| 5 | `core/policies/*.json`, `policies/*.json` | Machine-readable policy manifests. `core/policies/` contains canonical portable registries where present; matching root `policies/` files are compatibility mirrors unless a higher-authority policy says otherwise. |
 | 6 | `agents/*.md` | Role-specific agent instructions. |
 | 7 | `wiki/*.md` | Derived summary content. Not canonical. |
 
-Portable scaffold documents under `core/`, `adapters/`, and `overlays/` are subordinate documentation surfaces introduced for portability. They do not amend the root authority hierarchy.
+Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate documentation surfaces introduced for portability, except for canonical portable policy registries explicitly designated under `core/policies/`. They do not amend the constitutional authority hierarchy.
 
 ### Policy Documents (Rank 2)
 
-- `COMPLIANCE_POLICY.md` — Compliance model, evidence requirements, blocking violations
+- `COMPLIANCE_POLICY.md` — Canonical compliance registry, evidence requirements, and compliance outcomes
 - `CHANGE_CONTROL_POLICY.md` — Change classification, approval workflows, scope control
 - `RELEASE_POLICY.md` — Versioning discipline, changelog requirements, release readiness
 - `DOCUMENTATION_POLICY.md` — Canonical sources, wiki role, synchronization rules
@@ -173,6 +173,12 @@ This framework operates with a **strict default posture**.
   ├── AGENTS.md
   ├── FORSETTI_AGENTIC_CONSTITUTION.md
   ├── README.md
+  ├── policies/
+    ├── changelog-rules.json
+    ├── compliance-rules.json
+    ├── docs-sync-rules.json
+    ├── repo-boundaries.json
+    ├── versioning-rules.json
 ├── overlays/
   ├── forsetti-apple/
     ├── README.md

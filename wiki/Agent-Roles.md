@@ -3,7 +3,7 @@
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
 
 > **Canonical sources**: [`AGENTS.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/AGENTS.md), [`agents/*.md`](https://github.com/flynn33/forsetti-agentic-edition/tree/main/agents)
-> **Last synced**: v1.0.0 `4cfdb2b` — 2026-03-27
+> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-005 canonical policy registry
 
 ---
 
@@ -74,6 +74,7 @@ No agent may:
 - Bundle governance changes with unrelated work
 - Bypass role boundaries for convenience
 - Approve or validate own work
+- Add source, contributor, generated-by, or co-author attribution to automation unless a higher-authority policy explicitly allows it
 
 ## Role Model
 Five governed roles operate in this repository:
@@ -127,7 +128,7 @@ Every completion summary must include:
 - **Release impact**: Confirmed version impact classification
 - **Scope compliance**: Confirmation that all changes were within contract scope
 
-A completion statement that omits any of these fields is incomplete. A completion statement that misrepresents any of these fields is a blocking violation (FAE-C004).
+A completion statement that omits any of these fields is incomplete. A completion statement that misrepresents any of these fields is a blocking violation (FAE-C007).
 
 ---
 

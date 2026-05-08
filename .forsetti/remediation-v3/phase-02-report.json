@@ -1,0 +1,185 @@
+{
+  "phase": "02",
+  "title": "Canonical Policy Registry",
+  "task_id": "FAE-GOV-2026-05-08-005",
+  "branch": "fix/v3-canonical-policy-registry",
+  "phase_result": "implemented_reviewer_remediations_applied_local_validation_passed_final_rechecks_passed",
+  "change_class": "breaking-change",
+  "approval_class": "governance-class",
+  "release_impact": "major",
+  "governance_steward_authorization": {
+    "authorized_by": "Flynn33",
+    "date": "2026-05-08",
+    "scope": "Phase 02 governance-class work"
+  },
+  "files_changed": [
+    ".forsetti/remediation-v3/phase-02-report.json",
+    ".forsetti/remediation-v3/phase-02-report.md",
+    "AGENTS.md",
+    "CHANGE_CONTROL_POLICY.md",
+    "COMPLIANCE_POLICY.md",
+    "README.md",
+    "RELEASE_POLICY.md",
+    "changelog/CHANGELOG.md",
+    "contracts/FAE-GOV-2026-05-08-005-canonical-policy-registry.md",
+    "core/README.md",
+    "core/policies/changelog-rules.json",
+    "core/policies/compliance-rules.json",
+    "core/policies/docs-sync-rules.json",
+    "core/policies/repo-boundaries.json",
+    "core/policies/versioning-rules.json",
+    "policies/compliance-rules.json",
+    "policies/docs-sync-rules.json",
+    "policies/repo-boundaries.json",
+    "wiki/Agent-Roles.md",
+    "wiki/Changelog.md",
+    "wiki/Compliance.md",
+    "wiki/Home.md",
+    "wiki/Overview.md",
+    "wiki/Releases.md",
+    "wiki/Workflow.md"
+  ],
+  "commands_run": [
+    "git status --short --branch",
+    "rg drift scans for old FAE rule meanings, stale repo-root policy paths, and prohibited attribution-style source lines",
+    "py -m json.tool on all changed JSON files, including the Phase 02 report JSON",
+    "PowerShell ConvertFrom-Json on all changed JSON files, including the Phase 02 report JSON",
+    "PowerShell canonical ID check for exactly FAE-C001 through FAE-C012",
+    "PowerShell SHA-256 mirror check for core/root compliance, repo-boundary, and docs-sync registries",
+    "Python Markdown alignment check comparing registry titles against COMPLIANCE_POLICY.md and wiki/Compliance.md",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-repo.ps1",
+    "pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/validate-repo.ps1",
+    "Visual Studio Developer Command environment followed by powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-repo.ps1"
+  ],
+  "mcp_and_tooling_used": [
+    "local filesystem operations through the shared Windows workspace",
+    "local file search with rg",
+    "local Git for branch/status/diff evidence",
+    "local code execution with py and PowerShell",
+    "Visual Studio Developer Command environment for repository validation",
+    "VS Code CLI discovery confirmed local IDE availability"
+  ],
+  "local_first_and_provider_fallback_decisions": {
+    "local_first": true,
+    "provider_fallback_used": false,
+    "notes": "All implementation and validation used local repository files and local machine tooling."
+  },
+  "subagents": [
+    {
+      "role": "architect-reviewer",
+      "timing": "pre-implementation",
+      "finding": "Phase 02 needed a canonical core registry, byte-identical root mirror, breaking-change classification, migration guidance, and expanded documentation scope."
+    },
+    {
+      "role": "security-auditor",
+      "timing": "pre-implementation",
+      "finding": "Markdown/JSON rule drift and stale repo-boundary paths needed correction; later contributor-guard behavior stayed out of Phase 02."
+    },
+    {
+      "role": "post-implementation-reviewers",
+      "timing": "post-implementation",
+      "finding": "Documentation Manager blocked for protected-path/documentation drift; Validator blocked for pending reviewer evidence and incomplete report fields; Architect requested changelog breaking-field changes; Security requested docs-sync canonical path and executor/authorizer clarifications. All findings were remediated before final recheck."
+    },
+    {
+      "role": "final-post-remediation-reviewers",
+      "timing": "post-remediation",
+      "finding": "passed for architect-reviewer, security-auditor, Documentation Manager, and Validator; no remaining remediation required"
+    }
+  ],
+  "validation_results": [
+    {
+      "name": "py json.tool",
+      "status": "passed",
+      "details": "All changed JSON files parsed cleanly, including .forsetti/remediation-v3/phase-02-report.json."
+    },
+    {
+      "name": "ConvertFrom-Json",
+      "status": "passed",
+      "details": "All changed JSON files parsed cleanly, including .forsetti/remediation-v3/phase-02-report.json."
+    },
+    {
+      "name": "canonical compliance IDs",
+      "status": "passed",
+      "details": "Exactly FAE-C001 through FAE-C012 with no duplicates."
+    },
+    {
+      "name": "compliance mirror hash",
+      "status": "passed",
+      "details": "core/policies/compliance-rules.json and policies/compliance-rules.json share SHA-256 857647C342552A7650DCCD8ADA1ACA4AB8490EA5EE2F532F326966270B075DEB."
+    },
+    {
+      "name": "repo-boundary mirror hash",
+      "status": "passed",
+      "details": "core/policies/repo-boundaries.json and policies/repo-boundaries.json share SHA-256 5CA12376D81EAC8E77C862FBEB68A0537B4B11567DEE25A0CD5D9399EB5CDEAD."
+    },
+    {
+      "name": "docs-sync mirror hash",
+      "status": "passed",
+      "details": "core/policies/docs-sync-rules.json and policies/docs-sync-rules.json share SHA-256 12980F238C4E145F91BDF93D1F3DB2070AE3E50B5C3D4CCBDFD1E2FBB8C0F46C."
+    },
+    {
+      "name": "Markdown registry title alignment",
+      "status": "passed",
+      "details": "COMPLIANCE_POLICY.md and wiki/Compliance.md match canonical registry titles."
+    },
+    {
+      "name": "old FAE meaning drift scan",
+      "status": "passed",
+      "details": "No stale rule assignments found in contracted policy and wiki surfaces."
+    },
+    {
+      "name": "stale repo-root path scan",
+      "status": "passed",
+      "details": "No stale CONSTITUTION.md, docs/wiki, root CHANGELOG.md, or RELEASE_NOTES.md paths found in policies/ or core/policies/."
+    },
+    {
+      "name": "attribution-style source-line scan",
+      "status": "passed",
+      "details": "No prohibited generated-by, co-author, or assistant source lines found in changed surfaces."
+    },
+    {
+      "name": "changelog breaking-entry required fields",
+      "status": "passed",
+      "details": "Phase 02 changelog entry includes breaking_change: true and migration_note in canonical and wiki changelogs."
+    },
+    {
+      "name": "Windows PowerShell repository validator",
+      "status": "passed",
+      "details": "0 errors, 0 warnings."
+    },
+    {
+      "name": "PowerShell 7 repository validator",
+      "status": "passed",
+      "details": "0 errors, 0 warnings."
+    },
+    {
+      "name": "Visual Studio Developer Command repository validator",
+      "status": "passed",
+      "details": "0 errors, 0 warnings."
+    }
+  ],
+  "completion_summary": {
+    "files_changed": "Listed in files_changed and in the amended task contract scope.",
+    "evidence_of_validation": "JSON parsing, mirror checks, canonical ID checks, Markdown alignment, drift scans, source-line scan, and repository validator results are listed in validation_results.",
+    "known_issues": [
+      "Portable validator engine implementation remains out of scope for Phase 02.",
+      "GitHub workflow conversion remains out of scope for Phase 02."
+    ],
+    "documentation_status": "Required README, core README, policy, changelog, wiki, and docs-sync updates were completed.",
+    "release_impact": "major",
+    "scope_compliance": "All changed files are listed in the amended Phase 02 contract scope."
+  },
+  "unresolved_issues": [
+    "Portable validator engine implementation remains out of scope for Phase 02 and is reserved for later remediation phases.",
+    "GitHub workflow conversion remains out of scope for Phase 02 and is reserved for later remediation phases."
+  ],
+  "acceptance_gate_status": {
+    "required_phase_outputs": "passed",
+    "canonical_compliance_registry": "passed",
+    "root_compatibility_mirror": "passed",
+    "markdown_and_wiki_alignment": "passed",
+    "changelog_and_migration_guidance": "passed",
+    "local_validation": "passed",
+    "reviewer_handoff": "passed"
+  }
+}

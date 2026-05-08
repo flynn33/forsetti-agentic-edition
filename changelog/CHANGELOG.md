@@ -6,6 +6,21 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ## [Unreleased]
 
+### Breaking Changes
+
+**Title**: Breaking: Establish canonical compliance rule registry
+**Change Class**: breaking-change
+**Version Impact**: major
+**Summary**: Established `core/policies/compliance-rules.json` as the canonical registry for `FAE-C001` through `FAE-C012`, mirrored the compatibility registry at `policies/compliance-rules.json`, aligned repository boundary manifests, and updated policy and wiki references so Markdown and JSON use the same compliance rule meanings.
+**Affected Area**: compliance, policies, core, documentation, changelog, contracts
+**PR Reference**: pending pull request for `fix/v3-canonical-policy-registry`
+**Task Reference**: FAE-GOV-2026-05-08-005
+**Approval Class**: governance-class
+**breaking_change**: true
+**migration_note**: Consumers that referenced old Markdown rule meanings must update to the canonical registry: `FAE-C003` is Role Separation Enforcement, `FAE-C004` is Protected Asset Governance Gate, `FAE-C005` is Changelog Entry Required for Substantive Changes, `FAE-C006` is Breaking Change Disclosure Mandate, `FAE-C007` is Completion Summary Truthfulness, `FAE-C008` is Documentation Sync Compliance, `FAE-C009` is Version Classification Accuracy, `FAE-C010` is Governance Change Isolation, `FAE-C011` is Evidence and Validation Integrity, and `FAE-C012` is AI Assistance Disclosure and Human Accountability.
+**Migration Guidance**: Consumers that referenced old Markdown rule meanings must update to the canonical registry: `FAE-C003` is Role Separation Enforcement, `FAE-C004` is Protected Asset Governance Gate, `FAE-C005` is Changelog Entry Required for Substantive Changes, `FAE-C006` is Breaking Change Disclosure Mandate, `FAE-C007` is Completion Summary Truthfulness, `FAE-C008` is Documentation Sync Compliance, `FAE-C009` is Version Classification Accuracy, `FAE-C010` is Governance Change Isolation, `FAE-C011` is Evidence and Validation Integrity, and `FAE-C012` is AI Assistance Disclosure and Human Accountability.
+**Affected Consumers**: Validators, policy readers, documentation sync checks, workflow adapters, contract authors, and release reviewers that consume compliance rule identifiers or policy manifests.
+
 ### Governance
 
 **Title**: Repair docs sync policy manifest paths
