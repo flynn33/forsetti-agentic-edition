@@ -1,102 +1,211 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "canonical_source": "repository_markdown",
-  "canonical_source_description": "The single source of truth for all documentation is the markdown files committed to the repository. Wiki pages, external documentation sites, and generated outputs are derived surfaces that must stay synchronized with the canonical repository markdown.",
+  "canonical_source_description": "Repository markdown files are the canonical documentation source. Wiki pages are derived publishing surfaces and must stay aligned with the repository markdown they summarize.",
   "sync_pairs": [
+    {
+      "canonical": "FORSETTI_CONSTITUTION.md",
+      "derived": "wiki/Constitution.md",
+      "description": "Root constitution and derived wiki constitution page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary_or_copy"
+    },
+    {
+      "canonical": "AGENTS.md",
+      "derived": "wiki/Agent-Roles.md",
+      "description": "Root agent operating rules and derived role overview.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "AGENTS.md",
+      "derived": "wiki/Workflow.md",
+      "description": "Root agent operating rules and derived workflow page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "agents/architect.md",
+      "derived": "wiki/Agent-Roles.md",
+      "description": "Architect role definition and derived role overview.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "agents/builder.md",
+      "derived": "wiki/Agent-Roles.md",
+      "description": "Builder role definition and derived role overview.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "agents/docs-manager.md",
+      "derived": "wiki/Agent-Roles.md",
+      "description": "Documentation Manager role definition and derived role overview.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "agents/release-manager.md",
+      "derived": "wiki/Agent-Roles.md",
+      "description": "Release Manager role definition and derived role overview.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "agents/validator.md",
+      "derived": "wiki/Agent-Roles.md",
+      "description": "Validator role definition and derived role overview.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "COMPLIANCE_POLICY.md",
+      "derived": "wiki/Compliance.md",
+      "description": "Compliance policy and derived wiki compliance page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary_or_copy"
+    },
+    {
+      "canonical": "CHANGE_CONTROL_POLICY.md",
+      "derived": "wiki/Workflow.md",
+      "description": "Change control policy and derived workflow page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary_or_copy"
+    },
+    {
+      "canonical": "DOCUMENTATION_POLICY.md",
+      "derived": "wiki/Documentation.md",
+      "description": "Documentation policy and derived documentation page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "RELEASE_POLICY.md",
+      "derived": "wiki/Releases.md",
+      "description": "Release policy and derived releases page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary_or_copy"
+    },
+    {
+      "canonical": "README.md",
+      "derived": "wiki/Overview.md",
+      "description": "Repository README and derived overview page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
     {
       "canonical": "README.md",
       "derived": "wiki/Home.md",
-      "description": "Repository README is the canonical source for the project overview. The wiki home page must reflect the same content and structure.",
-      "sync_direction": "canonical_to_derived"
+      "description": "Repository README and wiki home navigation page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
     },
     {
-      "canonical": "CONSTITUTION.md",
-      "derived": "wiki/Constitution.md",
-      "description": "The constitutional governance document. The wiki copy must be an exact reproduction with no editorial additions.",
-      "sync_direction": "canonical_to_derived"
-    },
-    {
-      "canonical": "docs/architecture.md",
-      "derived": "wiki/Architecture.md",
-      "description": "Architecture documentation. Wiki version must match canonical with no divergence in diagrams, descriptions, or constraints.",
-      "sync_direction": "canonical_to_derived"
-    },
-    {
-      "canonical": "docs/glossary.md",
-      "derived": "wiki/Glossary.md",
-      "description": "Project glossary defining all governance and technical terms. Wiki version must be an exact copy to prevent definition drift.",
-      "sync_direction": "canonical_to_derived"
-    },
-    {
-      "canonical": "docs/agent-roles.md",
-      "derived": "wiki/Agent-Roles.md",
-      "description": "Human-readable documentation of agent roles. Must reflect the machine-readable policies/agent-roles.json accurately.",
-      "sync_direction": "canonical_to_derived"
-    },
-    {
-      "canonical": "docs/compliance-guide.md",
-      "derived": "wiki/Compliance-Guide.md",
-      "description": "Compliance guide explaining rules and enforcement. Must stay aligned with policies/compliance-rules.json.",
-      "sync_direction": "canonical_to_derived"
-    },
-    {
-      "canonical": "docs/versioning.md",
-      "derived": "wiki/Versioning.md",
-      "description": "Versioning documentation. Must reflect policies/versioning-rules.json accurately.",
-      "sync_direction": "canonical_to_derived"
-    },
-    {
-      "canonical": "docs/changelog-guide.md",
-      "derived": "wiki/Changelog-Guide.md",
-      "description": "Guide for producing changelog entries. Must reflect policies/changelog-rules.json accurately.",
-      "sync_direction": "canonical_to_derived"
-    },
-    {
-      "canonical": "CHANGELOG.md",
+      "canonical": "changelog/CHANGELOG.md",
       "derived": "wiki/Changelog.md",
-      "description": "Project changelog. Wiki version must be a faithful copy with no omissions or additions.",
-      "sync_direction": "canonical_to_derived"
+      "description": "Project changelog and derived wiki changelog page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "faithful_copy_with_navigation"
+    },
+    {
+      "canonical": "VISION.md",
+      "derived": "wiki/Home.md",
+      "description": "Repository vision and wiki entry-point summary.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "CONTRIBUTING.md",
+      "derived": "wiki/Workflow.md",
+      "description": "Contributor guidance and derived workflow page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "standards/documentation-standard.md",
+      "derived": "wiki/Workflow.md",
+      "description": "Documentation standard and derived workflow page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "standards/review-standard.md",
+      "derived": "wiki/Workflow.md",
+      "description": "Review standard and derived workflow page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "standards/versioning-standard.md",
+      "derived": "wiki/Releases.md",
+      "description": "Versioning standard and derived releases page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "standards/changelog-standard.md",
+      "derived": "wiki/Changelog.md",
+      "description": "Changelog standard and derived changelog page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
     },
     {
       "canonical": "policies/agent-roles.json",
-      "derived": "docs/agent-roles.md",
-      "description": "The machine-readable role definitions are canonical for role authority. The human-readable docs must accurately describe them without contradiction.",
-      "sync_direction": "canonical_to_derived"
+      "derived": "wiki/Agent-Roles.md",
+      "description": "Machine-readable role policy and derived role overview.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
     },
     {
       "canonical": "policies/compliance-rules.json",
-      "derived": "docs/compliance-guide.md",
-      "description": "The machine-readable compliance rules are canonical. The human-readable guide must accurately describe them without contradiction.",
-      "sync_direction": "canonical_to_derived"
+      "derived": "wiki/Compliance.md",
+      "description": "Machine-readable compliance rules and derived compliance page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "policies/versioning-rules.json",
+      "derived": "wiki/Releases.md",
+      "description": "Machine-readable versioning rules and derived releases page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
+    },
+    {
+      "canonical": "policies/changelog-rules.json",
+      "derived": "wiki/Changelog.md",
+      "description": "Machine-readable changelog rules and derived changelog page.",
+      "sync_direction": "canonical_to_derived",
+      "sync_mode": "summary"
     }
   ],
   "sync_rules": {
     "timing": {
-      "same_pr_sync": "When a canonical source is modified, the corresponding derived surface should be updated in the same pull request whenever feasible.",
-      "follow_up_tolerance": "If same-PR sync is not feasible, a follow-up task contract must be created and linked before the original PR merges. The follow-up must be completed within the next release cycle.",
-      "maximum_drift_age": "No derived surface may be more than one release behind its canonical source. Drift older than one release cycle is a compliance violation."
+      "same_pr_sync": "When a canonical source is modified, the corresponding derived surface must be updated in the same pull request unless a docs:needs-sync label or linked follow-up task contract is explicitly used.",
+      "follow_up_tolerance": "Follow-up sync work must be traceable and completed under DOCUMENTATION_POLICY.md timing requirements.",
+      "maximum_drift_age": "Drift older than the tolerance defined in DOCUMENTATION_POLICY.md is a compliance violation."
     },
     "tolerance": {
-      "formatting_differences": "Minor formatting differences between canonical and derived are acceptable if they do not alter meaning. Examples: heading level adjustments for wiki navigation, addition of wiki-specific navigation links at the top or bottom of the page.",
-      "content_divergence": "No content divergence is permitted. Definitions, descriptions, constraints, rules, enum values, and factual statements must match exactly between canonical and derived.",
-      "addition_policy": "Derived surfaces must not contain substantive content that does not exist in the canonical source. Wiki-specific navigation aids and cross-reference links are the only permitted additions."
+      "formatting_differences": "Minor formatting differences are acceptable when they do not alter meaning. Wiki-specific navigation is permitted.",
+      "content_divergence": "Derived pages must not contradict their canonical sources.",
+      "addition_policy": "Derived surfaces may add navigation and cross-references but must not introduce new binding requirements."
     },
     "format": {
-      "canonical_format": "GitHub-flavored Markdown (GFM)",
+      "canonical_format": "GitHub-flavored Markdown or JSON",
       "derived_wiki_format": "GitHub Wiki Markdown",
-      "json_to_markdown_rendering": "When the canonical source is JSON, the derived markdown must accurately represent all fields, values, and relationships without omission or editorial interpretation."
+      "json_to_markdown_rendering": "When a canonical source is JSON, the derived markdown must summarize current fields, values, and relationships without contradiction."
     }
   },
   "review_requirements": {
     "who_reviews": "documentation_manager",
     "review_scope": [
-      "Verify all modified canonical sources have corresponding derived surface updates or linked follow-up task contracts.",
-      "Verify no content divergence exists between canonical and derived surfaces.",
-      "Verify wiki-specific additions are limited to permitted navigation aids.",
-      "Verify JSON-to-markdown derived documents accurately reflect the current JSON canonical source.",
-      "Flag any drift older than the maximum_drift_age tolerance."
+      "Verify modified canonical sources have corresponding derived surface updates or documented follow-up tracking.",
+      "Verify derived wiki pages do not contradict canonical sources.",
+      "Verify wiki-specific additions are limited to navigation, orientation, and cross-reference aids.",
+      "Verify JSON-to-markdown derived documents accurately summarize the current JSON canonical source.",
+      "Flag stale or missing paths as documentation drift."
     ],
-    "review_timing": "Documentation sync review must occur before the validator renders a final compliance decision on any PR that modifies canonical sources.",
+    "review_timing": "Documentation sync review must occur before the validator renders a final compliance decision on any change that modifies canonical sources.",
     "escalation": "If widespread drift is detected across multiple sync pairs, the documentation_manager must escalate to the architect for a dedicated documentation sync task contract."
   }
 }

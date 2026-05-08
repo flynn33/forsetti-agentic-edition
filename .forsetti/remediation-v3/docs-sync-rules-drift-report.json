@@ -1,0 +1,120 @@
+{
+  "task_id": "FAE-GOV-2026-05-08-004",
+  "task_name": "Docs sync rules drift repair",
+  "result": "pass",
+  "branch": "fix/v3-docs-sync-rules-drift",
+  "change_class": "governance",
+  "approval_class": "governance-class",
+  "release_impact": "governance-only",
+  "governance_steward_authorization": {
+    "role": "governance_steward",
+    "approver": "Flynn33",
+    "date": "2026-05-08",
+    "result": "approved",
+    "scope": "FAE-GOV-2026-05-08-004 on branch fix/v3-docs-sync-rules-drift",
+    "evidence": "Confirmed after explicit authorization request."
+  },
+  "files_changed": [
+    "contracts/FAE-GOV-2026-05-08-004-docs-sync-rules-drift.md",
+    "policies/docs-sync-rules.json",
+    "changelog/CHANGELOG.md",
+    "wiki/Changelog.md",
+    "wiki/Workflow.md",
+    "wiki/Documentation.md",
+    "wiki/_Sidebar.md",
+    ".forsetti/remediation-v3/docs-sync-rules-drift-report.md",
+    ".forsetti/remediation-v3/docs-sync-rules-drift-report.json"
+  ],
+  "changes_made": [
+    "Replaced stale sync pairs referencing non-existent paths with current repository canonical sources and policy-required wiki pages.",
+    "Aligned AGENTS.md and DOCUMENTATION_POLICY.md pairs with DOCUMENTATION_POLICY.md Section 4.1.",
+    "Created wiki/Documentation.md as the derived documentation policy page.",
+    "Updated wiki/Workflow.md as the derived workflow page for AGENTS.md and CHANGE_CONTROL_POLICY.md.",
+    "Updated wiki sidebar navigation for the documentation page.",
+    "Added sync modes for derived page expectations.",
+    "Updated changelog and wiki changelog, including the wiki changelog sync marker.",
+    "Kept root documentation policy unchanged."
+  ],
+  "validation_results": [
+    {
+      "check": "Python JSON parser",
+      "command": "py -m json.tool policies\\docs-sync-rules.json; py -m json.tool .forsetti\\remediation-v3\\docs-sync-rules-drift-report.json",
+      "result": "pass"
+    },
+    {
+      "check": "PowerShell JSON parser",
+      "command": "ConvertFrom-Json for policies/docs-sync-rules.json and docs-sync-rules-drift-report.json",
+      "result": "pass"
+    },
+    {
+      "check": "Manifest path existence",
+      "command": "Verified every sync_pairs canonical and derived path with Test-Path",
+      "result": "pass: 25 pairs"
+    },
+    {
+      "check": "Documentation policy sync pair coverage",
+      "command": "Compared docs-sync-rules.json pairs against DOCUMENTATION_POLICY.md Section 4.1 required pairs",
+      "result": "pass"
+    },
+    {
+      "check": "Wiki header format",
+      "command": "Verified wiki/Workflow.md, wiki/Documentation.md, and wiki/Changelog.md begin with title followed by canonical source and last synced metadata",
+      "result": "pass"
+    },
+    {
+      "check": "Wiki changelog canonical lines",
+      "command": "Verified wiki/Changelog.md includes the canonical changelog overview and governance-record sentence",
+      "result": "pass"
+    },
+    {
+      "check": "Windows PowerShell repository validator",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\validate-repo.ps1 -RepoRoot .",
+      "result": "pass: 0 errors, 0 warnings"
+    },
+    {
+      "check": "PowerShell 7 repository validator",
+      "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File scripts\\validate-repo.ps1 -RepoRoot .",
+      "result": "pass: 0 errors, 0 warnings"
+    },
+    {
+      "check": "Visual Studio Developer Command repository validator",
+      "command": "VsDevCmd.bat followed by scripts\\validate-repo.ps1 -RepoRoot .",
+      "result": "pass: 0 errors, 0 warnings"
+    },
+    {
+      "check": "Git whitespace check",
+      "command": "git diff --cached --check",
+      "result": "pass"
+    },
+    {
+      "check": "Source-line scan",
+      "command": "Select-String over changed files for prohibited source-line wording",
+      "result": "pass"
+    },
+    {
+      "check": "Local IDE/toolchain availability",
+      "command": "code --version and vswhere MSBuild discovery",
+      "result": "pass: VS Code 1.115.0 and Visual Studio Community 18 detected"
+    },
+    {
+      "check": "Staged scope check",
+      "command": "Compared git diff --cached --name-only against the amended task contract scope",
+      "result": "pass"
+    }
+  ],
+  "review_results": [
+    {
+      "role": "documentation_manager",
+      "result": "pass",
+      "evidence": "Final staged-payload review passed with no request-change findings."
+    },
+    {
+      "role": "governance_steward",
+      "result": "approved",
+      "evidence": "Flynn33 confirmed Governance Steward approval for the governance-class task."
+    }
+  ],
+  "known_issues": [],
+  "documentation_status": "Changelog, wiki changelog, wiki workflow page, wiki documentation page, and wiki sidebar updated. README and glossary not required.",
+  "scope_compliance": "All changed files are listed in the task contract."
+}

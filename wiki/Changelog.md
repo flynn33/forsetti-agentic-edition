@@ -1,11 +1,24 @@
 # Changelog
 
 > **Canonical source**: `changelog/CHANGELOG.md`
-> **Last synced**: 2026-05-08, Phase 01 portable scaffold
+> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-004 docs sync rules drift repair
 
-All notable changes to the Forsetti Agentic Edition governance framework are documented in the canonical changelog.
+All notable changes to the Forsetti Agentic Edition governance framework are documented in this file.
+
+The changelog is a governance record. Entries must be accurate, specific, and traceable.
 
 ## [Unreleased]
+
+### Governance
+
+**Title**: Repair docs sync policy manifest paths
+**Change Class**: governance
+**Version Impact**: governance-only
+**Summary**: Corrected `policies/docs-sync-rules.json` so documentation sync pairs reference current repository canonical sources and wiki-derived pages required by `DOCUMENTATION_POLICY.md`, including the missing documentation page, instead of stale `docs/*`, `CONSTITUTION.md`, and root `CHANGELOG.md` paths.
+**Affected Area**: policies, wiki, changelog, contracts
+**PR Reference**: pending pull request for `fix/v3-docs-sync-rules-drift`
+**Task Reference**: FAE-GOV-2026-05-08-004
+**Approval Class**: governance-class
 
 ### Features
 

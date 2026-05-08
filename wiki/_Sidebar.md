@@ -8,6 +8,7 @@
 - [Constitution](Constitution)
 - [Agent Roles](Agent-Roles)
 - [Workflow](Workflow)
+- [Documentation](Documentation)
 - [Compliance](Compliance)
 - [Releases](Releases)
 - [Changelog](Changelog)
