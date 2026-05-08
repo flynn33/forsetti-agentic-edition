@@ -90,6 +90,10 @@ Authority flows downward. Higher-ranked documents override lower-ranked document
 
 Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate documentation surfaces introduced for portability, except for canonical portable policy registries explicitly designated under `core/policies/`. They do not amend the constitutional authority hierarchy.
 
+### Local Validation
+
+The portable core includes a local validator at `core/validator/forsetti_validate.ps1`. Repository scripts under `scripts/` delegate to that validator so local checks and future optional adapters use the same repository-local validation entry point.
+
 ### Policy Documents (Rank 2)
 
 - `COMPLIANCE_POLICY.md` — Canonical compliance registry, evidence requirements, and compliance outcomes
@@ -179,6 +183,11 @@ This framework operates with a **strict default posture**.
     ├── docs-sync-rules.json
     ├── repo-boundaries.json
     ├── versioning-rules.json
+  ├── schemas/
+    ├── validator-result.schema.json
+  ├── validator/
+    ├── README.md
+    ├── forsetti_validate.ps1
 ├── overlays/
   ├── forsetti-apple/
     ├── README.md

@@ -66,6 +66,12 @@ Phase 02 establishes host-neutral policy manifests under `core/policies/`:
 
 The root `policies/compliance-rules.json` and `policies/repo-boundaries.json` files are compatibility mirrors and must remain byte-for-byte identical to their `core/policies/` counterparts until a future governance change amends the hierarchy.
 
-## Phase 02 Status
+## Local Validator
 
-This directory now contains the canonical compliance policy registry and portable policy manifests. It does not yet contain a portable validator engine or executable enforcement code. Those are reserved for later remediation phases.
+Phase 03 adds a PowerShell-native validator at `core/validator/forsetti_validate.ps1` and a result schema at `core/schemas/validator-result.schema.json`.
+
+The root validation scripts delegate to the core validator. The validator runs from repository files and canonical policy manifests.
+
+## Phase 03 Status
+
+This directory now contains the canonical compliance policy registry, portable policy manifests, and the first local validator CLI. Task contract enforcement, optional adapter conversion, and overlay validation are reserved for later remediation phases.

@@ -6,6 +6,17 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ## [Unreleased]
 
+### Features
+
+**Title**: Add portable local validator CLI
+**Change Class**: feature
+**Version Impact**: minor
+**Summary**: Added a PowerShell-native local validator under `core/validator/`, a machine-readable validator result schema, and root validation wrappers that delegate to the core validator. This establishes a repository-local validation entry point for later contract, policy path, adapter, and final acceptance phases.
+**Affected Area**: core, validator, schemas, scripts, documentation, changelog, contracts
+**PR Reference**: pending pull request for `fix/v3-local-validator-cli`
+**Task Reference**: FAE-TASK-2026-05-08-006
+**Approval Class**: governance-class
+
 ### Breaking Changes
 
 **Title**: Breaking: Establish canonical compliance rule registry

@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-005 canonical policy registry
+> **Last synced**: 2026-05-08, FAE-TASK-2026-05-08-006 local validator CLI
 
 ## Welcome
 
@@ -11,7 +11,7 @@ This wiki provides navigational documentation for the Forsetti Agentic Edition g
 
 | Layer | Path | Purpose |
 |:-----|:-----|:--------|
-| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and future validation interfaces. |
+| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and local validation interfaces. |
 | Adapters | `adapters/` | Optional host integrations that translate platform context into portable validation inputs. |
 | Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning. |
 

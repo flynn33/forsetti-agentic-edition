@@ -1,13 +1,24 @@
 # Changelog
 
 > **Canonical source**: `changelog/CHANGELOG.md`
-> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-005 canonical policy registry
+> **Last synced**: 2026-05-08, FAE-TASK-2026-05-08-006 local validator CLI
 
 All notable changes to the Forsetti Agentic Edition governance framework are documented in this file.
 
 The changelog is a governance record. Entries must be accurate, specific, and traceable.
 
 ## [Unreleased]
+
+### Features
+
+**Title**: Add portable local validator CLI
+**Change Class**: feature
+**Version Impact**: minor
+**Summary**: Added a PowerShell-native local validator under `core/validator/`, a machine-readable validator result schema, and root validation wrappers that delegate to the core validator. This establishes a repository-local validation entry point for later contract, policy path, adapter, and final acceptance phases.
+**Affected Area**: core, validator, schemas, scripts, documentation, changelog, contracts
+**PR Reference**: pending pull request for `fix/v3-local-validator-cli`
+**Task Reference**: FAE-TASK-2026-05-08-006
+**Approval Class**: governance-class
 
 ### Breaking Changes
 

@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition Overview
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-005 canonical policy registry
+> **Last synced**: 2026-05-08, FAE-TASK-2026-05-08-006 local validator CLI
 
 Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems.
 
@@ -13,7 +13,7 @@ Forsetti Agentic Edition is organized around three layers:
 
 | Layer | Path | Purpose |
 |---|---|---|
-| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and future validation interfaces. |
+| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and local validation interfaces. |
 | Adapters | `adapters/` | Optional host integrations that translate local or hosted platform context into portable validation inputs. |
 | Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning while documenting local expectations. |
 
@@ -34,6 +34,10 @@ Authority flows downward:
 | 7 | `wiki/*.md` | Derived summary content. Not canonical. |
 
 Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate documentation surfaces introduced for portability, except for canonical portable policy registries explicitly designated under `core/policies/`. They do not amend the constitutional authority hierarchy.
+
+## Local Validation
+
+The portable core includes a local validator at `core/validator/forsetti_validate.ps1`. Root scripts under `scripts/` delegate to that validator.
 
 ## Repository Structure
 
