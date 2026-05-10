@@ -1,153 +1,115 @@
 # Task Contract Template
 
-Standard template for defining scope, authority, and expected outputs for a task. Every field must be completed before execution begins. Ambiguous or incomplete contracts must not be handed to a Builder.
+Standard template for defining scope, authority, required outputs, documentation impact, release impact, and validation evidence for a governed task. Every required field must be completed before execution begins. Ambiguous or incomplete contracts must not be handed to a Builder.
+
+The enforceable JSON template lives at `core/contracts/task-contract-template.json`. The machine-readable schema lives at `core/schemas/task-contract.schema.json`, mirrored at `schemas/task-contract.schema.json` for compatibility.
 
 ---
 
-## Task ID
+## Contract Identity
 
-_Unique identifier for this task (e.g., FAE-TASK-001)._
+**Task ID:** FAE-TASK-YYYY-MM-DD-001
+**Branch:** branch/name
+**Created:** YYYY-MM-DD
+**Repository:** Forsetti Agentic Edition
 
-**Value:**
+## Role Assignment
 
-## Title
+**Contract Authoring Role:** Architect
+**Acting Role:** Builder
+**Reviewer Role:** Validator
+**Release Review Role:** Release Manager
+**Documentation Review Role:** Documentation Manager
 
-_Brief descriptive title of the task._
+## Required Advisory Reviewers
 
-**Value:**
+- Add advisory reviewer names only when required by the task.
 
-## Date
+## Change Classification
 
-_Date the contract was created._
+**Change Class:** feature
+**Approval Class:** standard
+**Release Impact:** minor
 
-**Value:** YYYY-MM-DD
+## Governance Steward Authorization
 
-## Initiating Request
-
-_Reference to the issue, PR, or request that initiated this task._
-
-**Value:**
-
-## Acting Role
-
-_The role executing this task._
-
-**Allowed values:** architect | builder | validator | release_manager | documentation_manager
-
-**Value:**
-
-## Reviewer Role
-
-_The role responsible for reviewing this task._
-
-**Allowed values:** validator | release_manager | documentation_manager | architect
-
-**Value:**
-
-## Change Class
-
-_Classification of the change._
-
-**Allowed values:** feature | bugfix | refactor | docs | governance | release | metadata | breaking-change
-
-**Value:**
-
-## Approval Class
-
-_Required approval level._
-
-**Allowed values:** standard | sensitive | governance-class | emergency | release-critical
-
-**Value:**
+**Required:** no
+**Authority:**
+**Evidence:**
 
 ## Objective
 
-_Clear statement of what this task will accomplish. Must be specific enough that completion can be verified._
-
-**Value:**
+State the verifiable outcome of the task.
 
 ## Business Reason
 
-_Why this task is needed. The problem it solves or the value it provides._
+Explain why this task is necessary.
 
-**Value:**
+## Downstream Impact Assessment
 
-## In Scope
+Identify affected documents, schemas, workflows, integrations, consumers, and migration needs. For breaking changes, include affected consumers and migration guidance expectations.
 
-_Explicit list of files, directories, or areas authorized for modification. Every authorized target must be listed. If it is not listed, it is not authorized._
+## Scope
 
--
--
+### In Scope
 
-## Out of Scope
+- `path/to/authorized-file.md`
 
-_Explicit list of areas NOT authorized for modification. Ambiguity about boundaries is resolved by this section: if something could be in scope but is listed here, it is out of scope._
+### Out of Scope
 
--
--
+- `path/to/excluded-area/**`
 
 ## Required Outputs
 
-_List of deliverables expected upon completion. Each output must be verifiable._
-
--
--
+- `path/to/required-output.md`
 
 ## Documentation Impact
 
-_Check all that apply:_
-
-- [ ] README update required
-- [ ] Wiki update required
-- [ ] Glossary update required
-- [ ] No documentation impact
-
-## Release Impact
-
-_Version impact classification._
-
-**Allowed values:** none | patch | minor | major | governance-only
-
-**Value:**
+**README update required:** no
+**Wiki update required:** no
+**Glossary update required:** no
+**Changelog entry required:** yes
+**Rationale:** Explain why documentation and changelog updates are or are not required.
 
 ## Validation Requirements
 
-_Specific validation steps required before completion can be claimed. Each step must produce verifiable evidence._
+- Run the local validator in the applicable mode and capture evidence.
 
--
--
+## Evidence Requirements
 
-## Risks and Constraints
+- Files changed
+- Validation evidence
+- Known issues
+- Documentation status
+- Release impact
+- Scope compliance
+## Constraints
 
-_Known risks, dependencies, or constraints that could affect execution._
+- Stay within the authorized scope.
 
--
--
+## Risks
+
+- List known implementation or validation risks.
 
 ## Escalation Triggers
 
-_Conditions that require escalation rather than continued execution._
-
--
--
+- Scope must expand beyond this contract.
 
 ## Definition of Done
 
-_Specific conditions that must all be true for this task to be complete:_
-
-- [ ] All in-scope changes implemented
-- [ ] Documentation updated as required
-- [ ] Changelog entry added (if meaningful change)
-- [ ] Validation requirements met with evidence
-- [ ] Completion summary produced with evidence
-- [ ] No unresolved blocking issues
+- [ ] All in-scope changes are complete.
+- [ ] Required outputs exist.
+- [ ] Validation requirements are met with evidence.
+- [ ] Documentation updates are complete or documented as not required.
+- [ ] Changelog entry is complete when required.
+- [ ] Completion summary is produced with evidence.
+- [ ] No unresolved blocking issues remain.
 
 ## Completion Summary Requirements
 
-_The completion summary submitted by the Builder must include all of the following:_
-
-- Files changed (complete list)
-- Evidence of validation (specific results, not assertions)
-- Known issues or limitations (if any, or explicit "none")
-- Documentation status (updated / not required / needs-sync)
-- Release impact confirmed
+- Files changed
+- Evidence of validation
+- Known issues or limitations
+- Documentation status
+- Release impact
+- Scope compliance

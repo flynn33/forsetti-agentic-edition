@@ -1,7 +1,7 @@
 # Changelog
 
 > **Canonical source**: `changelog/CHANGELOG.md`
-> **Last synced**: 2026-05-08, FAE-TASK-2026-05-08-006 local validator CLI
+> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-007 contract enforcement
 
 All notable changes to the Forsetti Agentic Edition governance framework are documented in this file.
 
@@ -21,6 +21,19 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Approval Class**: governance-class
 
 ### Breaking Changes
+
+**Title**: Breaking: Enforce task contract scope, approval, and evidence locally
+**Change Class**: breaking-change
+**Version Impact**: major
+**Summary**: Added an enforceable task contract schema under `core/schemas/`, a JSON task contract template under `core/contracts/`, contract enforcement rules under `core/validator/`, and validator CLI inputs for contract path and changed-file evidence. Contract mode now checks required contract fields, changed-file scope, protected-path approval class, required outputs, documentation impact, changelog impact, and evidence artifacts.
+**Affected Area**: contracts, schemas, core validator, scripts, documentation, changelog
+**PR Reference**: pending pull request for `fix/v3-contract-enforcement`
+**Task Reference**: FAE-GOV-2026-05-10-007
+**Approval Class**: governance-class
+**breaking_change**: true
+**migration_note**: Consumers that validate task contracts must accept the date-stamped task ID format such as `FAE-GOV-2026-05-10-007`, the new `scope` object with `in_scope` and `out_of_scope`, `evidence_requirements`, `required_advisory_reviewers`, `governance_authorization`, and `documentation_impact.changelog_update`. Consumers that call the local validator should use `-Mode contract` with `-ContractPath` and explicit changed-file input through `-ChangedFile` or `-ChangedFilesPath` when enforcing a specific task contract.
+**Migration Guidance**: Update task-contract producers to emit the schema fields in `core/schemas/task-contract.schema.json`. Update validator consumers to tolerate `contract`, `scope`, `approval`, `changelog`, and `evidence` finding categories and the added invocation metadata fields in `core/schemas/validator-result.schema.json`.
+**Affected Consumers**: Contract authors, validator integrations, release reviewers, documentation reviewers, scripts that parse validator results, and downstream repositories that consume `schemas/task-contract.schema.json` or `core/schemas/validator-result.schema.json`.
 
 **Title**: Breaking: Establish canonical compliance rule registry
 **Change Class**: breaking-change

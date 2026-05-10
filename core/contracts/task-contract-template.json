@@ -1,0 +1,75 @@
+{
+  "$schema": "../schemas/task-contract.schema.json",
+  "schema_version": "1.0",
+  "task_id": "FAE-TASK-2026-01-01-001",
+  "title": "Example governed task",
+  "date": "2026-01-01",
+  "initiating_request": "Describe the issue, pull request, or repository-owner request that initiated the task.",
+  "contract_authoring_role": "architect",
+  "acting_role": "builder",
+  "reviewer_role": "validator",
+  "release_review_role": "release_manager",
+  "documentation_review_role": "documentation_manager",
+  "required_advisory_reviewers": [],
+  "change_class": "feature",
+  "approval_class": "standard",
+  "governance_authorization": {
+    "required": false,
+    "authority": null,
+    "evidence": null
+  },
+  "objective": "State the verifiable outcome of the task.",
+  "business_reason": "Explain why this task is necessary.",
+  "scope": {
+    "in_scope": [
+      "path/to/authorized-file.md"
+    ],
+    "out_of_scope": [
+      "path/to/excluded-area/**"
+    ]
+  },
+  "required_outputs": [
+    "path/to/required-output.md"
+  ],
+  "documentation_impact": {
+    "readme_update": false,
+    "wiki_update": false,
+    "glossary_update": false,
+    "changelog_update": true,
+    "rationale": "Explain why documentation and changelog updates are or are not required."
+  },
+  "release_impact": "minor",
+  "validation_requirements": [
+    "Run the local validator in the applicable mode and capture evidence."
+  ],
+  "evidence_requirements": [
+    "Files changed",
+    "Validation evidence",
+    "Known issues",
+    "Documentation status",
+    "Release impact",
+    "Scope compliance"
+  ],
+  "constraints": [
+    "Stay within the authorized scope."
+  ],
+  "risks": [
+    "List known implementation or validation risks."
+  ],
+  "escalation_triggers": [
+    "Scope must expand beyond this contract."
+  ],
+  "definition_of_done": [
+    "All in-scope changes are complete.",
+    "Required validation evidence is captured.",
+    "Documentation and changelog obligations are satisfied."
+  ],
+  "completion_summary_requirements": [
+    "Files changed",
+    "Evidence of validation",
+    "Known issues",
+    "Documentation status",
+    "Release impact",
+    "Scope compliance"
+  ]
+}

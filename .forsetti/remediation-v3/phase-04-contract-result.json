@@ -1,0 +1,94 @@
+{
+    "schema_version":  "1.0",
+    "validator":  {
+                      "name":  "forsetti_validate",
+                      "version":  "0.2.0"
+                  },
+    "invocation":  {
+                       "repo_root":  "A:\\Codex\\Forsetti-Framwork-Agentic-Edition",
+                       "mode":  "contract",
+                       "strict":  true,
+                       "contract_path":  "contracts/FAE-GOV-2026-05-10-007-task-contract-scope-approval-evidence-enforcement.md",
+                       "changed_files_path":  "C:/Users/james/AppData/Local/Temp/forsetti-phase04-changed-files.txt",
+                       "changed_files_count":  20,
+                       "timestamp_utc":  "2026-05-10T15:44:51.0456368Z",
+                       "engine":  "Desktop",
+                       "ps_version":  "5.1.26100.8115"
+                   },
+    "summary":  {
+                    "status":  "pass",
+                    "total":  6,
+                    "passed":  6,
+                    "warnings":  0,
+                    "errors":  0,
+                    "duration_ms":  330
+                },
+    "findings":  [
+                     {
+                         "finding_id":  "FFAE-CONTRACT-INFRA-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "contract",
+                         "path":  null,
+                         "message":  "Contract enforcement infrastructure is present and parseable.",
+                         "evidence":  "Checked 4 files.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-CONTRACT-005",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "contract",
+                         "path":  "contracts/FAE-GOV-2026-05-10-007-task-contract-scope-approval-evidence-enforcement.md",
+                         "message":  "Task contract contains required governance fields.",
+                         "evidence":  "task_id=FAE-GOV-2026-05-10-007; approval_class=governance-class",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-SCOPE-002",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "scope",
+                         "path":  "contracts/FAE-GOV-2026-05-10-007-task-contract-scope-approval-evidence-enforcement.md",
+                         "message":  "Changed files are authorized by the task contract scope.",
+                         "evidence":  "Checked 20 changed paths.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-APPROVAL-004",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "approval",
+                         "path":  "contracts/FAE-GOV-2026-05-10-007-task-contract-scope-approval-evidence-enforcement.md",
+                         "message":  "Protected-path approval checks passed.",
+                         "evidence":  "Protected paths checked: 1; approval_class=governance-class",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-EVIDENCE-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "evidence",
+                         "path":  "contracts/FAE-GOV-2026-05-10-007-task-contract-scope-approval-evidence-enforcement.md",
+                         "message":  "Required outputs exist or are pending from the current validator invocation.",
+                         "evidence":  "Checked 6 required outputs.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-DOCS-003",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "docs",
+                         "path":  "contracts/FAE-GOV-2026-05-10-007-task-contract-scope-approval-evidence-enforcement.md",
+                         "message":  "Documentation and changelog obligations are represented in the changed-file set.",
+                         "evidence":  "readme=True; wiki=True; changelog=True",
+                         "remediation_hint":  null
+                     }
+                 ]
+}

@@ -1,0 +1,204 @@
+{
+    "schema_version":  "1.0",
+    "validator":  {
+                      "name":  "forsetti_validate",
+                      "version":  "0.2.0"
+                  },
+    "invocation":  {
+                       "repo_root":  "A:\\Codex\\Forsetti-Framwork-Agentic-Edition",
+                       "mode":  "all",
+                       "strict":  true,
+                       "contract_path":  null,
+                       "changed_files_path":  null,
+                       "changed_files_count":  0,
+                       "timestamp_utc":  "2026-05-10T15:44:51.0354587Z",
+                       "engine":  "Desktop",
+                       "ps_version":  "5.1.26100.8115"
+                   },
+    "summary":  {
+                    "status":  "pass",
+                    "total":  16,
+                    "passed":  16,
+                    "warnings":  0,
+                    "errors":  0,
+                    "duration_ms":  348
+                },
+    "findings":  [
+                     {
+                         "finding_id":  "FFAE-STRUCTURE-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "structure",
+                         "path":  null,
+                         "message":  "Required Phase 03 repository paths are present.",
+                         "evidence":  "Checked 71 paths.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-CONTENT-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "structure",
+                         "path":  null,
+                         "message":  "Required files have substantive content.",
+                         "evidence":  "Checked 71 required files.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-YAML-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "structure",
+                         "path":  ".github/workflows",
+                         "message":  "YAML workflow files are present and non-empty.",
+                         "evidence":  "Checked 10 workflow files.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-JSON-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "json",
+                         "path":  null,
+                         "message":  "All repository JSON files parse cleanly.",
+                         "evidence":  "Parsed 35 JSON files.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-POLICY-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "policy",
+                         "path":  "core/policies/compliance-rules.json",
+                         "message":  "Core and root compliance registries are byte-identical.",
+                         "evidence":  "SHA-256 5977BA1A647FD4A2E54D001BEA9B1893291A1F8E3D631B9C2CB14DC0B00EBA52",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-POLICY-002",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "policy",
+                         "path":  "core/policies/repo-boundaries.json",
+                         "message":  "Core and root repository boundary registries are byte-identical.",
+                         "evidence":  "SHA-256 F632CD4D75EE24BBDD02ADE0002F43DDBC4C9DAC5D0E3E9A952B94CF1F33F794",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-POLICY-003",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "policy",
+                         "path":  "core/policies/docs-sync-rules.json",
+                         "message":  "Core and root documentation sync registries are byte-identical.",
+                         "evidence":  "SHA-256 3CD5FEC9E56159ACBA454A0BDA94FE41051C9428733E1E520528BCF8D1BFBD0B",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-POLICY-006",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "policy",
+                         "path":  "core/policies/versioning-rules.json",
+                         "message":  "Core and root versioning registries are byte-identical.",
+                         "evidence":  "SHA-256 9A7C8D96C66F1D9699F0138B99C7FF97C27190DA78EF80DB78C56C42620B93E5",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-POLICY-007",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "policy",
+                         "path":  "core/policies/changelog-rules.json",
+                         "message":  "Core and root changelog registries are byte-identical.",
+                         "evidence":  "SHA-256 1A2A2F7C0C3DB75CBA253EC2148E5EE7B5D9C80081929D33ACEC110BADCEA681",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-LABELS-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "policy",
+                         "path":  "policies/labels.json",
+                         "message":  "Label registry mirrors are byte-identical.",
+                         "evidence":  "SHA-256 E77D7E0A39B1C5899A052AD83973E34E2EEB1422199A3F2AACDDFFE45CE36174",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-POLICY-004",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "policy",
+                         "path":  "core/policies/compliance-rules.json",
+                         "message":  "Canonical compliance IDs are complete and ordered.",
+                         "evidence":  "FAE-C001, FAE-C002, FAE-C003, FAE-C004, FAE-C005, FAE-C006, FAE-C007, FAE-C008, FAE-C009, FAE-C010, FAE-C011, FAE-C012",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-POLICY-005",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "policy",
+                         "path":  null,
+                         "message":  "Policy registries do not contain known stale repository paths.",
+                         "evidence":  "Scanned policies/*.json and core/policies/*.json.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-DOCS-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "docs",
+                         "path":  "core/policies/docs-sync-rules.json",
+                         "message":  "Documentation sync pairs reference existing repository paths.",
+                         "evidence":  "Checked 25 sync pairs.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-SCHEMA-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "schema",
+                         "path":  null,
+                         "message":  "Required schemas exist and define properties.",
+                         "evidence":  "Checked 5 schemas.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-SCRIPT-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "scripts",
+                         "path":  null,
+                         "message":  "Validation wrappers delegate to the core validator.",
+                         "evidence":  "scripts/validate-repo.ps1, scripts/validate-repo.sh",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-CONTRACT-INFRA-001",
+                         "rule_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "contract",
+                         "path":  null,
+                         "message":  "Contract enforcement infrastructure is present and parseable.",
+                         "evidence":  "Checked 4 files.",
+                         "remediation_hint":  null
+                     }
+                 ]
+}

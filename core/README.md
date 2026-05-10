@@ -68,10 +68,12 @@ The root `policies/compliance-rules.json` and `policies/repo-boundaries.json` fi
 
 ## Local Validator
 
-Phase 03 adds a PowerShell-native validator at `core/validator/forsetti_validate.ps1` and a result schema at `core/schemas/validator-result.schema.json`.
+Phase 03 added a PowerShell-native validator at `core/validator/forsetti_validate.ps1` and a result schema at `core/schemas/validator-result.schema.json`.
 
-The root validation scripts delegate to the core validator. The validator runs from repository files and canonical policy manifests.
+Phase 04 adds enforceable contract rules at `core/validator/contract_rules.ps1`, a canonical task contract schema at `core/schemas/task-contract.schema.json`, and a JSON task contract template at `core/contracts/task-contract-template.json`.
 
-## Phase 03 Status
+The root validation scripts delegate to the core validator. The validator runs from repository files and canonical policy manifests. `-Mode all` remains usable without a task contract, while `-Mode contract` requires a contract path and a changed-file set or local git status inference.
 
-This directory now contains the canonical compliance policy registry, portable policy manifests, and the first local validator CLI. Task contract enforcement, optional adapter conversion, and overlay validation are reserved for later remediation phases.
+## Phase 04 Status
+
+This directory now contains the canonical compliance policy registry, portable policy manifests, local validator CLI, task contract schema, task contract JSON template, and contract enforcement rules. Optional adapter conversion and overlay validation are reserved for later remediation phases.

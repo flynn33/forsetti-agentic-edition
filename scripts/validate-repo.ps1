@@ -2,10 +2,14 @@
 
 [CmdletBinding()]
 param(
-    [ValidateSet("all", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts")]
+    [ValidateSet("all", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts", "contract", "contracts")]
     [string]$Mode = "all",
     [string]$OutputJson,
-    [switch]$Strict
+    [switch]$Strict,
+    [string]$ContractPath,
+    [Alias("ChangedFiles")]
+    [string[]]$ChangedFile,
+    [string]$ChangedFilesPath
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,17 +29,25 @@ if (-not (Test-Path -LiteralPath $Validator)) {
     throw "Unable to locate Forsetti local validator: $Validator"
 }
 
-if (-not [string]::IsNullOrWhiteSpace($OutputJson)) {
-    if ($Strict) {
-        & $Validator -RepoRoot $RepoRoot -Mode $Mode -Strict -OutputJson $OutputJson
-    } else {
-        & $Validator -RepoRoot $RepoRoot -Mode $Mode -OutputJson $OutputJson
-    }
-} else {
-    if ($Strict) {
-        & $Validator -RepoRoot $RepoRoot -Mode $Mode -Strict
-    } else {
-        & $Validator -RepoRoot $RepoRoot -Mode $Mode
-    }
+$validatorArgs = @{
+    RepoRoot = $RepoRoot
+    Mode     = $Mode
 }
+if ($Strict) {
+    $validatorArgs.Strict = $true
+}
+if (-not [string]::IsNullOrWhiteSpace($OutputJson)) {
+    $validatorArgs.OutputJson = $OutputJson
+}
+if (-not [string]::IsNullOrWhiteSpace($ContractPath)) {
+    $validatorArgs.ContractPath = $ContractPath
+}
+if (@($ChangedFile).Count -gt 0) {
+    $validatorArgs.ChangedFile = $ChangedFile
+}
+if (-not [string]::IsNullOrWhiteSpace($ChangedFilesPath)) {
+    $validatorArgs.ChangedFilesPath = $ChangedFilesPath
+}
+
+& $Validator @validatorArgs
 exit $LASTEXITCODE

@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-08, FAE-TASK-2026-05-08-006 local validator CLI
+> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-007 contract enforcement
 
 ## Welcome
 
@@ -11,7 +11,7 @@ This wiki provides navigational documentation for the Forsetti Agentic Edition g
 
 | Layer | Path | Purpose |
 |:-----|:-----|:--------|
-| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and local validation interfaces. |
+| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, enforceable task contract structure, evidence requirements, canonical policy registries, and local validation interfaces. |
 | Adapters | `adapters/` | Optional host integrations that translate platform context into portable validation inputs. |
 | Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning. |
 
@@ -44,6 +44,7 @@ This wiki provides navigational documentation for the Forsetti Agentic Edition g
 2. Review [Agent Roles](Agent-Roles) to understand role boundaries.
 3. Study [Workflow](Workflow) for change control procedures.
 4. Check [Compliance](Compliance) for blocking violation rules.
+5. Use local validator contract mode when reviewing changed files against a governing task contract.
 
 ## Navigation
 
