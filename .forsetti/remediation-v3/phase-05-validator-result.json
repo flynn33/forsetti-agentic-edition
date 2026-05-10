@@ -11,7 +11,7 @@
                        "contract_path":  null,
                        "changed_files_path":  null,
                        "changed_files_count":  0,
-                       "timestamp_utc":  "2026-05-10T16:34:20.8874152Z",
+                       "timestamp_utc":  "2026-05-10T16:59:21.7754793Z",
                        "engine":  "Desktop",
                        "ps_version":  "5.1.26100.8115"
                    },
@@ -21,7 +21,7 @@
                     "passed":  17,
                     "warnings":  0,
                     "errors":  0,
-                    "duration_ms":  402
+                    "duration_ms":  386
                 },
     "findings":  [
                      {

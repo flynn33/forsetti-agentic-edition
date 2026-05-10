@@ -489,7 +489,7 @@ function Get-ForsettiProtectedPathRules {
             -Evidence "core/policies/repo-boundaries.json" `
             -RemediationHint "Restore the boundary policy before protected-path validation." `
             -RuleId "FAE-C004"
-        return @()
+        return $null
     }
 
     try {
@@ -514,6 +514,7 @@ function Get-ForsettiProtectedPathRules {
             -Evidence $_.Exception.Message `
             -RemediationHint "Fix the boundary policy JSON before protected-path validation." `
             -RuleId "FAE-C004"
+        return $null
     }
 
     return @($rules.ToArray())
@@ -535,7 +536,7 @@ function Get-ForsettiRoleLimitedPathRules {
             -Evidence "core/policies/repo-boundaries.json" `
             -RemediationHint "Restore the boundary policy before role-limited path validation." `
             -RuleId "FAE-C003"
-        return @()
+        return $null
     }
 
     try {
@@ -560,6 +561,7 @@ function Get-ForsettiRoleLimitedPathRules {
             -Evidence $_.Exception.Message `
             -RemediationHint "Fix the boundary policy JSON before role-limited path validation." `
             -RuleId "FAE-C003"
+        return $null
     }
 
     return @($rules.ToArray())
@@ -755,6 +757,10 @@ function Test-ForsettiProtectedApprovals {
     )
 
     $rules = Get-ForsettiProtectedPathRules -RepoRoot $RepoRoot
+    if ($null -eq $rules) {
+        return
+    }
+
     $protectedCount = 0
     $errors = 0
     foreach ($path in @($ChangedFiles)) {
@@ -825,6 +831,10 @@ function Test-ForsettiRoleLimitedPaths {
     )
 
     $rules = Get-ForsettiRoleLimitedPathRules -RepoRoot $RepoRoot
+    if ($null -eq $rules) {
+        return
+    }
+
     $limitedCount = 0
     $errors = 0
     $actingRole = ConvertTo-ForsettiToken $Contract.acting_role
@@ -1169,18 +1179,60 @@ function Test-ForsettiChangelogHistoryIntegrity {
             return 0
         }
 
+        $baseChangelog = @(& git -C $RepoRoot show ($base + ":changelog/CHANGELOG.md"))
+        $releasedStartLine = [int]::MaxValue
+        $unreleasedIndex = -1
+        for ($i = 0; $i -lt $baseChangelog.Count; $i++) {
+            if ($baseChangelog[$i] -match '^## \[Unreleased\]') {
+                $unreleasedIndex = $i
+                continue
+            }
+            if ($unreleasedIndex -ge 0 -and $i -gt $unreleasedIndex -and $baseChangelog[$i] -match '^## \[') {
+                $releasedStartLine = $i + 1
+                break
+            }
+        }
+
         $diffLines = @(& git -C $RepoRoot diff --unified=0 $base -- changelog/CHANGELOG.md)
-        $deletedLines = @($diffLines | Where-Object { $_.StartsWith("-", [System.StringComparison]::Ordinal) -and -not $_.StartsWith("---", [System.StringComparison]::Ordinal) })
-        if ($deletedLines.Count -gt 0) {
+        $deletedReleasedLines = New-Object System.Collections.Generic.List[string]
+        $oldLine = 0
+        foreach ($line in $diffLines) {
+            if ($line -match '^@@ -(?<start>\d+)(,(?<count>\d+))? \+\d+(,\d+)? @@') {
+                $oldLine = [int]$Matches["start"]
+                continue
+            }
+
+            if ($line.StartsWith("---", [System.StringComparison]::Ordinal) -or $line.StartsWith("+++", [System.StringComparison]::Ordinal)) {
+                continue
+            }
+
+            if ($line.StartsWith("-", [System.StringComparison]::Ordinal)) {
+                if ($oldLine -ge $releasedStartLine) {
+                    $deletedReleasedLines.Add(("line " + $oldLine + ": " + $line.Substring(1)))
+                }
+                $oldLine++
+                continue
+            }
+
+            if ($line.StartsWith("+", [System.StringComparison]::Ordinal)) {
+                continue
+            }
+
+            if ($oldLine -gt 0) {
+                $oldLine++
+            }
+        }
+
+        if ($deletedReleasedLines.Count -gt 0) {
             Add-Finding `
                 -FindingId "FFAE-CHANGELOG-005" `
                 -Severity "error" `
                 -Status "fail" `
                 -Category "changelog" `
                 -Path "changelog/CHANGELOG.md" `
-                -Message "Changelog diff deletes or rewrites existing history." `
-                -Evidence (("deleted_lines=" + $deletedLines.Count + "; first=" + $deletedLines[0]) -replace "`r?`n", " ") `
-                -RemediationHint "Append a new Unreleased entry instead of rewriting existing changelog history, or use a dedicated correction contract." `
+                -Message "Changelog diff deletes or rewrites released history." `
+                -Evidence (("deleted_released_lines=" + $deletedReleasedLines.Count + "; first=" + $deletedReleasedLines[0]) -replace "`r?`n", " ") `
+                -RemediationHint "Keep released changelog history append-only, or use a dedicated correction contract." `
                 -RuleId "FAE-C011" `
                 -PolicyRuleId "CHANGELOG-HISTORY-IMMUTABLE" `
                 -ConditionId "historical_changelog_mutation" `

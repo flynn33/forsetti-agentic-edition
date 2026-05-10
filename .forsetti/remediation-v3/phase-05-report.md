@@ -53,8 +53,12 @@ Release impact: `major`
 - `rg --pcre2 -n "docs/wiki|(?<!FORSETTI_)CONSTITUTION\.md|RELEASE_NOTES\.md|(?<!changelog/)CHANGELOG\.md|core/policies/\*\*|\.github/CODEOWNERS|schemas/\*\.json|approval:|retroactive|mutation|immutable|pre-merge|pull_request|workflow|version_impact|migration" core\policies policies .github\workflows README.md wiki changelog standards contracts`
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 -RepoRoot . -Mode all -Strict`
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 -RepoRoot . -Mode all -Strict -OutputJson .\.forsetti\remediation-v3\phase-05-validator-result.json`
-- `git diff --name-only`, `git diff --name-only --cached`, and `git ls-files --others --exclude-standard`
+- `git diff --name-only origin/main...HEAD`, `git diff --name-only`, `git diff --name-only --cached`, and `git ls-files --others --exclude-standard`
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 -RepoRoot . -Mode contract -ContractPath .\contracts\FAE-GOV-2026-05-10-008-policy-paths-docs-release-accuracy.md -ChangedFilesPath .\.forsetti\remediation-v3\phase-05-changed-files.txt -Strict -OutputJson .\.forsetti\remediation-v3\phase-05-contract-result.json`
+- `gh run view 25634019689 --log-failed`
+- `gh run view 25634019696 --log-failed`
+- `gh run view 25634019700 --log-failed`
+- `gh pr view 4 --json body,labels,number,url`
 
 ## MCP And Tooling Used
 
@@ -78,6 +82,12 @@ No Docker, WSL, hosted workflow runner, browser automation, or remote provider i
 - devops-engineer: Found hosted workflow checks still hard-coded and not yet invoking portable contract mode, plus label/protected-path policy needs. Disposition: Phase 05 implements local manifest-driven gates and documents hosted workflow conversion as Phase 06 scope. Boundary policy now covers validator, schema, contract, script, and issue template surfaces.
 - security-auditor: Found insufficient protection for validator/schema/contract assets, missing retroactive changelog mutation controls, and required negative assertions. Disposition: boundary policy now protects those surfaces, changelog policy includes append-only history gates, and this report records negative assertions.
 - code-reviewer: Found risks from fallback protected-path rules, broad changelog text matching, docs-sync path-only checks, stale regex limits, and validator-result schema category/field compatibility. Disposition: local validator now consumes the boundary manifest, adds role-limited enforcement, performs entry-specific changelog checks, validates Phase 05 manifest structure, and extends validator result findings.
+
+Post-PR review remediation:
+
+- Boundary policy parse failures now return a hard failure path to callers, so protected-path and role-limited checks do not emit contradictory pass findings after a manifest parse failure.
+- Changelog history integrity now evaluates deleted diff lines against released changelog sections only. Deletions inside the mutable `Unreleased` section are allowed by the Phase 05 changelog policy.
+- PR metadata check failures were inspected with `gh run view`; the PR body and governance approval label are being corrected outside repository files because those checks validate PR metadata.
 
 ## Validation Results
 
