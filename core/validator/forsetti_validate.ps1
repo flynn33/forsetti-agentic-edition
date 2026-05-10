@@ -3,10 +3,14 @@
 [CmdletBinding()]
 param(
     [string]$RepoRoot = (Get-Location).Path,
-    [ValidateSet("all", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts")]
+    [ValidateSet("all", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts", "contract", "contracts")]
     [string]$Mode = "all",
     [switch]$Strict,
-    [string]$OutputJson
+    [string]$OutputJson,
+    [string]$ContractPath,
+    [Alias("ChangedFiles")]
+    [string[]]$ChangedFile,
+    [string]$ChangedFilesPath
 )
 
 $ErrorActionPreference = "Stop"
@@ -157,7 +161,10 @@ function Test-RequiredPaths {
         "core/policies/docs-sync-rules.json",
         "core/policies/versioning-rules.json",
         "core/policies/changelog-rules.json",
+        "core/contracts/task-contract-template.json",
+        "core/schemas/task-contract.schema.json",
         "core/schemas/validator-result.schema.json",
+        "core/validator/contract_rules.ps1",
         "core/validator/forsetti_validate.ps1",
         "core/validator/README.md",
         "policies/agent-roles.json",
@@ -260,7 +267,10 @@ function Get-RequiredRepositoryFiles {
         "core/policies/docs-sync-rules.json",
         "core/policies/repo-boundaries.json",
         "core/policies/versioning-rules.json",
+        "core/contracts/task-contract-template.json",
+        "core/schemas/task-contract.schema.json",
         "core/schemas/validator-result.schema.json",
+        "core/validator/contract_rules.ps1",
         "core/validator/README.md",
         "core/validator/forsetti_validate.ps1",
         "policies/agent-roles.json",
@@ -686,6 +696,7 @@ function Test-DocsSync {
 function Test-Schemas {
     $schemaPaths = @(
         "schemas/task-contract.schema.json",
+        "core/schemas/task-contract.schema.json",
         "schemas/release-entry.schema.json",
         "schemas/compliance-report.schema.json",
         "core/schemas/validator-result.schema.json"
@@ -803,6 +814,21 @@ function Invoke-SelectedChecks {
     if ($Mode -eq "all" -or $Mode -eq "docs") { $checks += @{ Name = "docs"; Script = { Test-DocsSync } } }
     if ($Mode -eq "all" -or $Mode -eq "schema" -or $Mode -eq "schemas") { $checks += @{ Name = "schema"; Script = { Test-Schemas } } }
     if ($Mode -eq "all" -or $Mode -eq "scripts") { $checks += @{ Name = "scripts"; Script = { Test-ScriptWrappers } } }
+    if ($Mode -eq "all" -or $Mode -eq "contract" -or $Mode -eq "contracts") {
+        $checks += @{
+            Name = "contract"
+            Script = {
+                Test-ContractInfrastructure -RepoRoot $script:RepoRoot
+                Test-TaskContractRules `
+                    -RepoRoot $script:RepoRoot `
+                    -ContractPath $ContractPath `
+                    -ChangedFile $ChangedFile `
+                    -ChangedFilesPath $ChangedFilesPath `
+                    -PendingOutputPath $OutputJson `
+                    -RequireContract:($Mode -eq "contract" -or $Mode -eq "contracts")
+            }
+        }
+    }
 
     foreach ($check in $checks) {
         try {
@@ -832,15 +858,18 @@ function New-ValidatorResult {
         schema_version = "1.0"
         validator      = [pscustomobject][ordered]@{
             name    = "forsetti_validate"
-            version = "0.1.0"
+            version = "0.2.0"
         }
         invocation     = [pscustomobject][ordered]@{
-            repo_root     = $script:RepoRoot
-            mode          = $Mode
-            strict        = [bool]$Strict
-            timestamp_utc = (Get-Date).ToUniversalTime().ToString("o")
-            engine        = $PSVersionTable.PSEdition
-            ps_version    = $PSVersionTable.PSVersion.ToString()
+            repo_root           = $script:RepoRoot
+            mode                = $Mode
+            strict              = [bool]$Strict
+            contract_path       = if ([string]::IsNullOrWhiteSpace($ContractPath)) { $null } else { Get-RepoPath $ContractPath }
+            changed_files_path  = if ([string]::IsNullOrWhiteSpace($ChangedFilesPath)) { $null } else { Get-RepoPath $ChangedFilesPath }
+            changed_files_count = [int]$script:ContractChangedFilesCount
+            timestamp_utc       = (Get-Date).ToUniversalTime().ToString("o")
+            engine              = $PSVersionTable.PSEdition
+            ps_version          = $PSVersionTable.PSVersion.ToString()
         }
         summary        = [pscustomobject][ordered]@{
             status      = $status
@@ -886,6 +915,22 @@ function Write-HumanResult {
 }
 
 $script:RepoRoot = Resolve-ForsettiRepoRoot -Path $RepoRoot
+$script:ContractChangedFilesCount = 0
+$contractRulesPath = Join-Path $script:RepoRoot "core/validator/contract_rules.ps1"
+if (Test-Path -LiteralPath $contractRulesPath) {
+    . $contractRulesPath
+} else {
+    Add-Finding `
+        -FindingId "FFAE-CONTRACT-INFRA-001" `
+        -Severity "error" `
+        -Status "fail" `
+        -Category "contract" `
+        -Path "core/validator/contract_rules.ps1" `
+        -Message "Contract rules file is missing." `
+        -Evidence "core/validator/contract_rules.ps1" `
+        -RemediationHint "Restore the contract rules file." `
+        -RuleId "FAE-C011"
+}
 Invoke-SelectedChecks
 $result = New-ValidatorResult
 
@@ -898,7 +943,7 @@ if (-not [string]::IsNullOrWhiteSpace($OutputJson)) {
     if (-not [string]::IsNullOrWhiteSpace($jsonDir) -and -not (Test-Path -LiteralPath $jsonDir)) {
         New-Item -ItemType Directory -Path $jsonDir -Force | Out-Null
     }
-    $jsonText = $result | ConvertTo-Json -Depth 10
+    $jsonText = $result | ConvertTo-Json -Depth 20
     $utf8NoBom = New-Object System.Text.UTF8Encoding -ArgumentList $false
     [System.IO.File]::WriteAllText($jsonPath, $jsonText, $utf8NoBom)
 }

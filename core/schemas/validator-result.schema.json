@@ -40,6 +40,9 @@
         "repo_root",
         "mode",
         "strict",
+        "contract_path",
+        "changed_files_path",
+        "changed_files_count",
         "timestamp_utc",
         "engine",
         "ps_version"
@@ -61,11 +64,29 @@
             "docs",
             "schemas",
             "schema",
-            "scripts"
+            "scripts",
+            "contract",
+            "contracts"
           ]
         },
         "strict": {
           "type": "boolean"
+        },
+        "contract_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "changed_files_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "changed_files_count": {
+          "type": "integer",
+          "minimum": 0
         },
         "timestamp_utc": {
           "type": "string",
@@ -175,7 +196,12 @@
               "policy",
               "docs",
               "schema",
-              "scripts"
+              "scripts",
+              "contract",
+              "scope",
+              "approval",
+              "changelog",
+              "evidence"
             ]
           },
           "path": {

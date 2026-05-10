@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition Overview
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-08, FAE-TASK-2026-05-08-006 local validator CLI
+> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-007 contract enforcement
 
 Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems.
 
@@ -39,11 +39,15 @@ Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate d
 
 The portable core includes a local validator at `core/validator/forsetti_validate.ps1`. Root scripts under `scripts/` delegate to that validator.
 
+The validator supports repository structure, JSON, policy mirror, documentation sync, schema, script wrapper, and task contract checks. Contract mode enforces changed files against the governing task contract scope, checks protected-path approval class requirements, and verifies required outputs and evidence artifacts.
+
 ## Repository Structure
 
 The repository now includes:
 
 - `core/` for portable governance documents and canonical policy manifests.
+- `core/contracts/task-contract-template.json` and `core/schemas/task-contract.schema.json` for enforceable task contract structure.
+- `core/validator/contract_rules.ps1` for local task contract enforcement.
 - `adapters/github-actions/` for optional GitHub Actions integration documentation.
 - `overlays/generic/`, `overlays/forsetti-apple/`, and `overlays/forsetti-windows/` for platform overlay scaffolds.
 - Root governance, policy, standards, contracts, schemas, scripts, changelog, and wiki documentation.

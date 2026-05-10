@@ -94,6 +94,17 @@ Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate d
 
 The portable core includes a local validator at `core/validator/forsetti_validate.ps1`. Repository scripts under `scripts/` delegate to that validator so local checks and future optional adapters use the same repository-local validation entry point.
 
+The validator supports repository structure, JSON, policy mirror, documentation sync, schema, script wrapper, and task contract checks. Contract mode enforces changed files against the governing task contract scope, checks protected-path approval class requirements, and verifies required outputs and evidence artifacts:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 `
+  -RepoRoot . `
+  -Mode contract `
+  -ContractPath .\contracts\TASK-CONTRACT.md `
+  -ChangedFilesPath .\changed-files.txt `
+  -Strict
+```
+
 ### Policy Documents (Rank 2)
 
 - `COMPLIANCE_POLICY.md` — Canonical compliance registry, evidence requirements, and compliance outcomes
@@ -177,6 +188,8 @@ This framework operates with a **strict default posture**.
   ├── AGENTS.md
   ├── FORSETTI_AGENTIC_CONSTITUTION.md
   ├── README.md
+  ├── contracts/
+    ├── task-contract-template.json
   ├── policies/
     ├── changelog-rules.json
     ├── compliance-rules.json
@@ -184,8 +197,10 @@ This framework operates with a **strict default posture**.
     ├── repo-boundaries.json
     ├── versioning-rules.json
   ├── schemas/
+    ├── task-contract.schema.json
     ├── validator-result.schema.json
   ├── validator/
+    ├── contract_rules.ps1
     ├── README.md
     ├── forsetti_validate.ps1
 ├── overlays/
