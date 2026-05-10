@@ -64,17 +64,26 @@ function Add-Finding {
         [string]$Message,
         [AllowNull()]$Evidence,
         [AllowNull()]$RemediationHint,
-        [AllowNull()]$RuleId
+        [AllowNull()]$RuleId,
+        [AllowNull()]$PolicyRuleId,
+        [AllowNull()]$ConditionId,
+        [AllowNull()]$GateId
     )
 
     $pathValue = if ([string]::IsNullOrWhiteSpace([string]$Path)) { $null } else { [string]$Path }
     $evidenceValue = if ([string]::IsNullOrWhiteSpace([string]$Evidence)) { $null } else { [string]$Evidence }
     $remediationHintValue = if ([string]::IsNullOrWhiteSpace([string]$RemediationHint)) { $null } else { [string]$RemediationHint }
     $ruleIdValue = if ([string]::IsNullOrWhiteSpace([string]$RuleId)) { $null } else { [string]$RuleId }
+    $policyRuleIdValue = if ([string]::IsNullOrWhiteSpace([string]$PolicyRuleId)) { $null } else { [string]$PolicyRuleId }
+    $conditionIdValue = if ([string]::IsNullOrWhiteSpace([string]$ConditionId)) { $null } else { [string]$ConditionId }
+    $gateIdValue = if ([string]::IsNullOrWhiteSpace([string]$GateId)) { $null } else { [string]$GateId }
 
     $script:Findings.Add([pscustomobject][ordered]@{
         finding_id       = $FindingId
         rule_id          = $ruleIdValue
+        policy_rule_id   = $policyRuleIdValue
+        condition_id     = $conditionIdValue
+        gate_id          = $gateIdValue
         severity         = $Severity
         status           = $Status
         category         = $Category
@@ -545,6 +554,166 @@ function Assert-ByteIdentical {
     }
 }
 
+function Add-PolicyStructureFailure {
+    param(
+        [string]$Path,
+        [string]$Message,
+        [string]$Evidence,
+        [string]$PolicyRuleId,
+        [string]$ConditionId,
+        [string]$GateId
+    )
+
+    $script:PolicyStructureErrors++
+    Add-Finding `
+        -FindingId "FFAE-POLICY-008" `
+        -Severity "error" `
+        -Status "fail" `
+        -Category "policy" `
+        -Path $Path `
+        -Message $Message `
+        -Evidence $Evidence `
+        -RemediationHint "Update the policy manifest with enforceable rule identifiers, gate metadata, evidence requirements, and rejection conditions." `
+        -RuleId "FAE-C011" `
+        -PolicyRuleId $PolicyRuleId `
+        -ConditionId $ConditionId `
+        -GateId $GateId
+}
+
+function Test-PolicyManifestStructure {
+    $script:PolicyStructureErrors = 0
+
+    $repoBoundaries = Get-JsonObject "core/policies/repo-boundaries.json"
+    if (@($repoBoundaries.pre_merge_gates).Count -eq 0) {
+        Add-PolicyStructureFailure `
+            -Path "core/policies/repo-boundaries.json" `
+            -Message "Repository boundary manifest is missing pre-merge gate definitions." `
+            -Evidence "pre_merge_gates" `
+            -PolicyRuleId "PHASE05-BOUNDARY-GATES" `
+            -ConditionId "missing_pre_merge_gates" `
+            -GateId "boundary-manifest-structure"
+    }
+
+    foreach ($mapping in @($repoBoundaries.approval_required_paths.mappings)) {
+        if ([string]::IsNullOrWhiteSpace([string]$mapping.path_pattern) -or
+            [string]::IsNullOrWhiteSpace([string]$mapping.minimum_approval_class) -or
+            [string]::IsNullOrWhiteSpace([string]$mapping.policy_rule_id) -or
+            [string]::IsNullOrWhiteSpace([string]$mapping.gate_id)) {
+            Add-PolicyStructureFailure `
+                -Path "core/policies/repo-boundaries.json" `
+                -Message "Approval-required path mapping is missing enforceable metadata." `
+                -Evidence ($mapping | ConvertTo-Json -Compress -Depth 6) `
+                -PolicyRuleId "PHASE05-BOUNDARY-APPROVAL-MAPPING" `
+                -ConditionId "approval_mapping_missing_metadata" `
+                -GateId "boundary-manifest-structure"
+        }
+    }
+
+    foreach ($mapping in @($repoBoundaries.role_limited_paths.mappings)) {
+        if ([string]::IsNullOrWhiteSpace([string]$mapping.path_pattern) -or
+            @($mapping.allowed_roles).Count -eq 0 -or
+            [string]::IsNullOrWhiteSpace([string]$mapping.policy_rule_id) -or
+            [string]::IsNullOrWhiteSpace([string]$mapping.gate_id)) {
+            Add-PolicyStructureFailure `
+                -Path "core/policies/repo-boundaries.json" `
+                -Message "Role-limited path mapping is missing enforceable metadata." `
+                -Evidence ($mapping | ConvertTo-Json -Compress -Depth 6) `
+                -PolicyRuleId "PHASE05-BOUNDARY-ROLE-MAPPING" `
+                -ConditionId "role_mapping_missing_metadata" `
+                -GateId "boundary-manifest-structure"
+        }
+    }
+
+    $docsSync = Get-JsonObject "core/policies/docs-sync-rules.json"
+    if (@($docsSync.pre_merge_gates).Count -eq 0) {
+        Add-PolicyStructureFailure `
+            -Path "core/policies/docs-sync-rules.json" `
+            -Message "Documentation sync manifest is missing pre-merge gate definitions." `
+            -Evidence "pre_merge_gates" `
+            -PolicyRuleId "PHASE05-DOCS-GATES" `
+            -ConditionId "missing_pre_merge_gates" `
+            -GateId "docs-sync-structure"
+    }
+
+    foreach ($pair in @($docsSync.sync_pairs)) {
+        if ([string]::IsNullOrWhiteSpace([string]$pair.rule_id) -or
+            @($pair.trigger_paths).Count -eq 0 -or
+            @($pair.required_derived_paths).Count -eq 0 -or
+            @($pair.evidence_required).Count -eq 0 -or
+            [string]::IsNullOrWhiteSpace([string]$pair.rejection_condition) -or
+            [string]::IsNullOrWhiteSpace([string]$pair.failure_action)) {
+            Add-PolicyStructureFailure `
+                -Path "core/policies/docs-sync-rules.json" `
+                -Message "Documentation sync pair is missing enforceable metadata." `
+                -Evidence ($pair | ConvertTo-Json -Compress -Depth 6) `
+                -PolicyRuleId "PHASE05-DOCS-PAIR-METADATA" `
+                -ConditionId "docs_sync_pair_missing_metadata" `
+                -GateId "docs-sync-structure"
+        }
+    }
+
+    $requiredCanonicalPolicyPairs = @(
+        "core/policies/compliance-rules.json",
+        "core/policies/repo-boundaries.json",
+        "core/policies/docs-sync-rules.json",
+        "core/policies/versioning-rules.json",
+        "core/policies/changelog-rules.json"
+    )
+    foreach ($canonical in $requiredCanonicalPolicyPairs) {
+        if (@($docsSync.sync_pairs | Where-Object { [string]$_.canonical -eq $canonical }).Count -eq 0) {
+            Add-PolicyStructureFailure `
+                -Path "core/policies/docs-sync-rules.json" `
+                -Message "Documentation sync manifest does not cover a canonical core policy manifest." `
+                -Evidence $canonical `
+                -PolicyRuleId "PHASE05-DOCS-CORE-POLICY-COVERAGE" `
+                -ConditionId "missing_core_policy_sync_pair" `
+                -GateId "docs-sync-structure"
+        }
+    }
+
+    $changelogRules = Get-JsonObject "core/policies/changelog-rules.json"
+    if (@($changelogRules.pre_merge_gates).Count -eq 0 -or
+        -not $changelogRules.immutability_policy -or
+        @($changelogRules.structured_validation_rules).Count -eq 0) {
+        Add-PolicyStructureFailure `
+            -Path "core/policies/changelog-rules.json" `
+            -Message "Changelog rules manifest is missing pre-merge, immutability, or structured validation data." `
+            -Evidence "pre_merge_gates, immutability_policy, structured_validation_rules" `
+            -PolicyRuleId "PHASE05-CHANGELOG-STRUCTURE" `
+            -ConditionId "changelog_manifest_missing_enforceable_data" `
+            -GateId "changelog-entry-required"
+    }
+
+    $versioningRules = Get-JsonObject "core/policies/versioning-rules.json"
+    if (@($versioningRules.pre_merge_gates).Count -eq 0 -or
+        @($versioningRules.classification_decision_table).Count -eq 0 -or
+        -not $versioningRules.downgrade_controls) {
+        Add-PolicyStructureFailure `
+            -Path "core/policies/versioning-rules.json" `
+            -Message "Versioning rules manifest is missing pre-merge, classification, or downgrade-control data." `
+            -Evidence "pre_merge_gates, classification_decision_table, downgrade_controls" `
+            -PolicyRuleId "PHASE05-VERSIONING-STRUCTURE" `
+            -ConditionId "versioning_manifest_missing_enforceable_data" `
+            -GateId "version-contract-changelog-consistency"
+    }
+
+    if ($script:PolicyStructureErrors -eq 0) {
+        Add-Finding `
+            -FindingId "FFAE-POLICY-008" `
+            -Severity "info" `
+            -Status "pass" `
+            -Category "policy" `
+            -Path $null `
+            -Message "Phase 05 policy manifests include enforceable gate, evidence, and rejection metadata." `
+            -Evidence "Checked repository boundaries, documentation sync, changelog, and versioning manifests." `
+            -RemediationHint $null `
+            -RuleId $null `
+            -PolicyRuleId "PHASE05-POLICY-STRUCTURE" `
+            -ConditionId $null `
+            -GateId $null
+    }
+}
+
 function Test-PolicyRegistries {
     Assert-ByteIdentical `
         -Left "core/policies/compliance-rules.json" `
@@ -643,6 +812,8 @@ function Test-PolicyRegistries {
             -RemediationHint $null `
             -RuleId $null
     }
+
+    Test-PolicyManifestStructure
 }
 
 function Test-DocsSync {

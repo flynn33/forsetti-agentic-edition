@@ -94,7 +94,7 @@ Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate d
 
 The portable core includes a local validator at `core/validator/forsetti_validate.ps1`. Repository scripts under `scripts/` delegate to that validator so local checks and future optional adapters use the same repository-local validation entry point.
 
-The validator supports repository structure, JSON, policy mirror, documentation sync, schema, script wrapper, and task contract checks. Contract mode enforces changed files against the governing task contract scope, checks protected-path approval class requirements, and verifies required outputs and evidence artifacts:
+The validator supports repository structure, JSON, policy mirror, documentation sync, schema, script wrapper, and task contract checks. Contract mode enforces changed files against the governing task contract scope, checks protected-path approval class requirements from `core/policies/repo-boundaries.json`, checks role-limited path rules, verifies required outputs and evidence artifacts, checks same-change documentation sync for changed canonical sources, and validates changelog entries for required fields, migration guidance, affected consumers, Unreleased placement, and version consistency:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 `
@@ -104,6 +104,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_va
   -ChangedFilesPath .\changed-files.txt `
   -Strict
 ```
+
+Validator result findings include the compliance rule identifier and, when a machine-readable policy gate supplies one, the policy rule identifier, condition identifier, and gate identifier used to reach the finding.
 
 ### Policy Documents (Rank 2)
 

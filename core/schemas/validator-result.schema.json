@@ -152,6 +152,9 @@
         "required": [
           "finding_id",
           "rule_id",
+          "policy_rule_id",
+          "condition_id",
+          "gate_id",
           "severity",
           "status",
           "category",
@@ -171,6 +174,27 @@
               "null"
             ],
             "pattern": "^FAE-C[0-9]{3}$"
+          },
+          "policy_rule_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "condition_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "gate_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
           },
           "severity": {
             "type": "string",

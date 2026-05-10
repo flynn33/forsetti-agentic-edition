@@ -64,7 +64,7 @@ Phase 02 establishes host-neutral policy manifests under `core/policies/`:
 | `core/policies/versioning-rules.json` | Portable copy of version impact rules. |
 | `core/policies/changelog-rules.json` | Portable copy of changelog entry requirements. |
 
-The root `policies/compliance-rules.json` and `policies/repo-boundaries.json` files are compatibility mirrors and must remain byte-for-byte identical to their `core/policies/` counterparts until a future governance change amends the hierarchy.
+The matching root files under `policies/` are compatibility mirrors and must remain byte-for-byte identical to their `core/policies/` counterparts until a future governance change amends the hierarchy.
 
 ## Local Validator
 
@@ -74,6 +74,8 @@ Phase 04 adds enforceable contract rules at `core/validator/contract_rules.ps1`,
 
 The root validation scripts delegate to the core validator. The validator runs from repository files and canonical policy manifests. `-Mode all` remains usable without a task contract, while `-Mode contract` requires a contract path and a changed-file set or local git status inference.
 
-## Phase 04 Status
+Phase 05 adds enforceable gate metadata to the boundary, documentation sync, changelog, and versioning manifests. Contract mode consumes the boundary manifest for protected and role-limited paths, consumes the docs sync manifest for same-change derived documentation checks, and checks changelog entries against the task contract before merge.
 
-This directory now contains the canonical compliance policy registry, portable policy manifests, local validator CLI, task contract schema, task contract JSON template, and contract enforcement rules. Optional adapter conversion and overlay validation are reserved for later remediation phases.
+## Phase 05 Status
+
+This directory now contains the canonical compliance policy registry, portable policy manifests with pre-merge gate metadata, local validator CLI, task contract schema, task contract JSON template, and contract enforcement rules. Optional adapter conversion and overlay validation are reserved for later remediation phases.

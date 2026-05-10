@@ -55,9 +55,11 @@ The validator implements repository-local checks only:
 - contract enforcement infrastructure presence
 - task contract required field checks
 - changed-file scope enforcement against the governing task contract
-- protected-path approval enforcement using `core/policies/repo-boundaries.json` and higher-authority protected asset rules from `CHANGE_CONTROL_POLICY.md`
+- protected-path approval enforcement using `core/policies/repo-boundaries.json`
+- role-limited path enforcement using `core/policies/repo-boundaries.json`
 - required output and evidence artifact checks
-- documentation and changelog obligation checks
+- documentation sync checks for changed canonical sources using `core/policies/docs-sync-rules.json`
+- changelog obligation checks for required fields, migration guidance, affected consumers, Unreleased placement, and version consistency
 
 `-Mode all` checks contract infrastructure but does not require a task contract unless `-ContractPath` is supplied. `-Mode contract` and `-Mode contracts` require `-ContractPath`.
 
@@ -65,7 +67,7 @@ Workflow adapter conversion and platform overlay validation are reserved for lat
 
 ## Result Model
 
-The validator emits a `ValidationResult` object matching `core/schemas/validator-result.schema.json`.
+The validator emits a `ValidationResult` object matching `core/schemas/validator-result.schema.json`. Findings include `rule_id` for canonical compliance rules and may include `policy_rule_id`, `condition_id`, and `gate_id` when a machine-readable policy manifest supplies the local enforcement metadata.
 
 The result status is deterministic:
 

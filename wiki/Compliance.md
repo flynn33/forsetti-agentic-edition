@@ -1,7 +1,7 @@
 # Compliance
 
 > **Canonical source**: [`COMPLIANCE_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/COMPLIANCE_POLICY.md)
-> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-005 canonical policy registry
+> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-008 policy paths, docs, changelog, and release accuracy
 
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
 
@@ -53,6 +53,12 @@ The canonical machine-readable compliance registry is `core/policies/compliance-
 Completion claims must identify files changed, validation results, known issues, documentation status, release impact, and scope compliance.
 
 Scope evidence compares changed files against the task contract. Documentation evidence confirms required documentation and wiki sync. Release evidence confirms version impact, changelog accuracy, and migration guidance for breaking changes. Governance evidence confirms protected-path authority and governance isolation. Evidence integrity confirms that validation artifacts are current, specific, and traceable.
+
+## Policy Gate Evidence
+
+Machine-readable policy manifests can define local gate metadata in addition to canonical `FAE-C###` compliance rule IDs. Validator findings include policy-local rule IDs, condition IDs, and gate IDs when a manifest supplies that data.
+
+Phase 05 policy gates cover protected path approval, role-limited path authority, policy mirror integrity, documentation sync, changelog entry completeness, changelog history integrity, and version classification consistency. These gates make the evidence behind a pass, request-changes, or block decision traceable to a specific manifest condition.
 
 ---
 

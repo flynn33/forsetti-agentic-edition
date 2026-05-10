@@ -140,15 +140,23 @@ The following governance paths require elevated handling. Modifications to these
 | `DOCUMENTATION_POLICY.md` | Governance-Class |
 | `AGENTS.md` | Governance-Class |
 | `core/policies/*.json` | Governance-Class |
+| `core/validator/**` | Governance-Class |
+| `core/contracts/**` | Governance-Class |
+| `contracts/*-template.md` | Governance-Class |
+| `core/schemas/*.json` | Sensitive |
 | `policies/*.json` | Sensitive or Governance-Class (depending on content) |
 | `schemas/*.json` | Sensitive |
+| `scripts/**` | Sensitive |
 | `agents/*.md` | Sensitive |
 | `.github/CODEOWNERS` | Governance-Class |
+| `.github/ISSUE_TEMPLATE/**` | Sensitive |
 | `.github/workflows/*.yml` | Sensitive |
 
 ### Policy Manifest Classification
 
 Files in `core/policies/*.json` are canonical portable policy registries and require **Governance-Class** approval.
+
+Files in `core/validator/**`, `core/contracts/**`, and `contracts/*-template.md` alter portable validation behavior or governed task structure and require **Governance-Class** approval.
 
 Files in `policies/*.json` require:
 - **Governance-Class** if the manifest encodes constitutional, compliance, or policy rules.

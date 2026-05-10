@@ -104,6 +104,8 @@ Every changelog entry must include:
 | **version_impact** | One of: none, patch, minor, major, governance-only |
 | **summary** | Clear description of what changed and why |
 | **affected_area** | The governance area(s) affected (e.g., compliance, contracts, schemas, workflows) |
+| **task_reference** | The task contract, issue, or pull request that authorized the change |
+| **approval_class** | The approval class used for the change |
 
 ### Additional Fields for Breaking Changes
 
@@ -111,8 +113,11 @@ Breaking change changelog entries must also include:
 
 | Field | Description |
 |---|---|
+| **migration_note** | Concise actionable migration instructions |
 | **migration_guidance** | Specific instructions for consumers on what to change and how |
 | **affected_consumers** | Which downstream documents, schemas, or integrations are affected |
+
+The canonical machine-readable versioning and changelog manifests are `core/policies/versioning-rules.json` and `core/policies/changelog-rules.json`, with byte-identical compatibility mirrors under `policies/`. These manifests define pre-merge gates for version consistency, breaking-change disclosure, downgrade controls, required changelog entries, and append-only changelog history.
 
 ### Changelog Standards
 
