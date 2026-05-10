@@ -11,7 +11,7 @@
                        "contract_path":  "contracts/FAE-GOV-2026-05-10-007-task-contract-scope-approval-evidence-enforcement.md",
                        "changed_files_path":  "C:/Users/james/AppData/Local/Temp/forsetti-phase04-changed-files.txt",
                        "changed_files_count":  20,
-                       "timestamp_utc":  "2026-05-10T15:31:54.9594021Z",
+                       "timestamp_utc":  "2026-05-10T15:44:51.0456368Z",
                        "engine":  "Desktop",
                        "ps_version":  "5.1.26100.8115"
                    },
@@ -21,7 +21,7 @@
                     "passed":  6,
                     "warnings":  0,
                     "errors":  0,
-                    "duration_ms":  342
+                    "duration_ms":  330
                 },
     "findings":  [
                      {

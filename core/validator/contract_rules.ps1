@@ -680,7 +680,7 @@ function Test-ForsettiContractScope {
 
         $matchesOutOfScope = $false
         foreach ($scopePattern in @($Contract.out_of_scope)) {
-            if ($scopePattern -match '[\\/*?]' -and (Test-ForsettiPathPattern -Path $path -Pattern $scopePattern)) {
+            if (Test-ForsettiPathPattern -Path $path -Pattern $scopePattern) {
                 $matchesOutOfScope = $true
                 break
             }

@@ -49,6 +49,7 @@ Pass.
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 -RepoRoot . -Mode all -Strict -OutputJson .\.forsetti\remediation-v3\phase-04-validator-result.json`
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 -RepoRoot . -Mode contract -ContractPath .\contracts\FAE-GOV-2026-05-10-007-task-contract-scope-approval-evidence-enforcement.md -ChangedFilesPath "$env:TEMP\forsetti-phase04-changed-files.txt" -Strict -OutputJson .\.forsetti\remediation-v3\phase-04-contract-result.json`
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 -RepoRoot . -Mode contract -ContractPath .\contracts\FAE-GOV-2026-05-10-007-task-contract-scope-approval-evidence-enforcement.md -ChangedFile CONTRIBUTING.md -Strict -OutputJson "$env:TEMP\forsetti-phase04-negative-scope-result.json"`
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 -RepoRoot . -Mode contract -ContractPath "$env:TEMP\forsetti-phase04-exact-outscope-contract.json" -ChangedFile README.md -Strict -OutputJson "$env:TEMP\forsetti-phase04-negative-exact-outscope-result.json"`
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 -RepoRoot . -Mode contract -ContractPath "$env:TEMP\forsetti-phase04-standard-contract.json" -ChangedFile AGENTS.md -Strict -OutputJson "$env:TEMP\forsetti-phase04-negative-approval-result.json"`
 - `py -m json.tool .forsetti\remediation-v3\phase-04-validator-result.json`
 - `py -m json.tool .forsetti\remediation-v3\phase-04-contract-result.json`
@@ -93,6 +94,7 @@ Pass.
 - PowerShell parser pass: 3 changed PowerShell files parsed with no syntax errors.
 - Whitespace check: `git diff --check` passed with no whitespace errors.
 - Negative scope case: `CONTRIBUTING.md` blocked under `FFAE-SCOPE-002` / `FAE-C002`.
+- Negative exact root out-of-scope case: `README.md` blocked under `FFAE-SCOPE-002` / `FAE-C002` when listed in both `in_scope` and `out_of_scope`.
 - Negative approval case: `AGENTS.md` with `standard` approval blocked under `FFAE-APPROVAL-004` / `FAE-C004`.
 - Schema mirror check: `core/schemas/task-contract.schema.json` and `schemas/task-contract.schema.json` are byte-identical.
 
