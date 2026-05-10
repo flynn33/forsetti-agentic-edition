@@ -1,7 +1,7 @@
 # Documentation
 
 > **Canonical source**: [`DOCUMENTATION_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/DOCUMENTATION_POLICY.md)
-> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-004 docs sync rules drift repair
+> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-008 policy paths, docs, changelog, and release accuracy
 
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
 
@@ -50,6 +50,20 @@ The documentation policy defines these canonical-to-wiki pairs:
 | `README.md` | `wiki/Overview.md` |
 
 When a canonical source has multiple derived wiki pages, all derived pages must be updated or tracked for sync.
+
+The canonical machine-readable sync manifest is `core/policies/docs-sync-rules.json`, with `policies/docs-sync-rules.json` as a byte-identical root mirror. The manifest expands the table above into enforceable sync pairs for role files, standards, changelog records, and canonical core policy manifests.
+
+Machine-readable sync pairs include stable rule IDs, trigger paths, required derived paths, required evidence, rejection conditions, and failure actions. Contract-mode validation uses those pairs to request changes when a canonical source changes without the required derived wiki update or an approved deferral.
+
+Additional core policy sync pairs include:
+
+| Canonical Source | Wiki Derived Page |
+|---|---|
+| `core/policies/compliance-rules.json` | `wiki/Compliance.md` |
+| `core/policies/repo-boundaries.json` | `wiki/Workflow.md`, `wiki/Compliance.md` |
+| `core/policies/docs-sync-rules.json` | `wiki/Documentation.md` |
+| `core/policies/versioning-rules.json` | `wiki/Releases.md` |
+| `core/policies/changelog-rules.json` | `wiki/Changelog.md` |
 
 ---
 

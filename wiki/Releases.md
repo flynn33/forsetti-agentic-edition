@@ -3,7 +3,7 @@
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
 
 > **Canonical source**: [`RELEASE_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/RELEASE_POLICY.md)
-> **Last synced**: 2026-05-08, FAE-GOV-2026-05-08-005 canonical policy registry
+> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-008 policy paths, docs, changelog, and release accuracy
 
 ---
 
@@ -111,6 +111,8 @@ Every changelog entry must include:
 | **version_impact** | One of: none, patch, minor, major, governance-only |
 | **summary** | Clear description of what changed and why |
 | **affected_area** | The governance area(s) affected (e.g., compliance, contracts, schemas, workflows) |
+| **task_reference** | The task contract, issue, or pull request that authorized the change |
+| **approval_class** | The approval class used for the change |
 
 ### Additional Fields for Breaking Changes
 
@@ -120,6 +122,8 @@ Breaking change changelog entries must also include:
 |---|---|
 | **migration_guidance** | Specific instructions for consumers on what to change and how |
 | **affected_consumers** | Which downstream documents, schemas, or integrations are affected |
+
+The canonical changelog and versioning manifests define pre-merge gates for required entries, breaking-change disclosure, version consistency, downgrade control, and policy data-shape changes. A change that alters machine-readable policy shape or local enforcement behavior is treated as major when consumers must adapt.
 
 ### Changelog Standards
 

@@ -95,13 +95,21 @@ When a canonical source file is modified, the corresponding wiki-derived page **
 
 When a canonical source has multiple derived wiki pages, **all** derived pages must be updated or labeled for sync.
 
-### 4.2 Sync Completion
+### 4.2 Machine-Readable Sync Manifest
+
+The canonical machine-readable sync manifest is `core/policies/docs-sync-rules.json`. The root `policies/docs-sync-rules.json` file is a byte-identical compatibility mirror.
+
+The manifest may expand the table above into enforceable sync pairs for role files, standards, changelog records, and canonical core policy manifests. Expanded pairs must reference existing repository paths, identify the canonical source, identify the required derived wiki page, include a stable rule identifier, and define required evidence, rejection condition, and failure action.
+
+Core policy manifests under `core/policies/` are canonical when a matching root mirror exists. Root mirror paths under `policies/` must not be treated as independent canonical sources for documentation sync unless a higher-authority policy explicitly changes that hierarchy.
+
+### 4.3 Sync Completion
 
 A `docs:needs-sync` label is a tracking mechanism, not a permanent exemption. Outstanding syncs must be completed within the next two PRs merged to `main` after the label was applied, or a dedicated documentation sync PR must be opened.
 
 If a `docs:needs-sync` label remains unresolved after three PRs have been merged to `main`, it becomes a **blocking compliance violation**. No further feature or governance PRs may be merged until the sync is resolved.
 
-### 4.3 Sync Direction
+### 4.4 Sync Direction
 
 Synchronization is **one-directional**: canonical source to wiki. Changes must never flow from wiki to canonical source. If a wiki page contains information that should be canonical, that information must first be added to the appropriate canonical source, then the wiki page must be updated to derive from it.
 

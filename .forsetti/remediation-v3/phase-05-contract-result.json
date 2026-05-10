@@ -1,0 +1,126 @@
+{
+    "schema_version":  "1.0",
+    "validator":  {
+                      "name":  "forsetti_validate",
+                      "version":  "0.2.0"
+                  },
+    "invocation":  {
+                       "repo_root":  "A:\\Codex\\Forsetti-Framwork-Agentic-Edition",
+                       "mode":  "contract",
+                       "strict":  true,
+                       "contract_path":  "contracts/FAE-GOV-2026-05-10-008-policy-paths-docs-release-accuracy.md",
+                       "changed_files_path":  ".forsetti/remediation-v3/phase-05-changed-files.txt",
+                       "changed_files_count":  31,
+                       "timestamp_utc":  "2026-05-10T16:34:21.8071235Z",
+                       "engine":  "Desktop",
+                       "ps_version":  "5.1.26100.8115"
+                   },
+    "summary":  {
+                    "status":  "pass",
+                    "total":  7,
+                    "passed":  7,
+                    "warnings":  0,
+                    "errors":  0,
+                    "duration_ms":  594
+                },
+    "findings":  [
+                     {
+                         "finding_id":  "FFAE-CONTRACT-INFRA-001",
+                         "rule_id":  null,
+                         "policy_rule_id":  null,
+                         "condition_id":  null,
+                         "gate_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "contract",
+                         "path":  null,
+                         "message":  "Contract enforcement infrastructure is present and parseable.",
+                         "evidence":  "Checked 4 files.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-CONTRACT-005",
+                         "rule_id":  null,
+                         "policy_rule_id":  null,
+                         "condition_id":  null,
+                         "gate_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "contract",
+                         "path":  "contracts/FAE-GOV-2026-05-10-008-policy-paths-docs-release-accuracy.md",
+                         "message":  "Task contract contains required governance fields.",
+                         "evidence":  "task_id=FAE-GOV-2026-05-10-008; approval_class=governance-class",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-SCOPE-002",
+                         "rule_id":  null,
+                         "policy_rule_id":  null,
+                         "condition_id":  null,
+                         "gate_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "scope",
+                         "path":  "contracts/FAE-GOV-2026-05-10-008-policy-paths-docs-release-accuracy.md",
+                         "message":  "Changed files are authorized by the task contract scope.",
+                         "evidence":  "Checked 31 changed paths.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-APPROVAL-004",
+                         "rule_id":  null,
+                         "policy_rule_id":  null,
+                         "condition_id":  null,
+                         "gate_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "approval",
+                         "path":  "contracts/FAE-GOV-2026-05-10-008-policy-paths-docs-release-accuracy.md",
+                         "message":  "Protected-path approval checks passed.",
+                         "evidence":  "Protected paths checked: 16; approval_class=governance-class",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-ROLE-003",
+                         "rule_id":  null,
+                         "policy_rule_id":  "BOUNDARY-ROLE-LIMITED-PATHS",
+                         "condition_id":  null,
+                         "gate_id":  "boundary-role-limited-paths",
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "approval",
+                         "path":  "contracts/FAE-GOV-2026-05-10-008-policy-paths-docs-release-accuracy.md",
+                         "message":  "Role-limited path checks passed.",
+                         "evidence":  "Role-limited path matches checked: 20; acting_role=builder",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-EVIDENCE-001",
+                         "rule_id":  null,
+                         "policy_rule_id":  null,
+                         "condition_id":  null,
+                         "gate_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "evidence",
+                         "path":  "contracts/FAE-GOV-2026-05-10-008-policy-paths-docs-release-accuracy.md",
+                         "message":  "Required outputs exist or are pending from the current validator invocation.",
+                         "evidence":  "Checked 8 required outputs.",
+                         "remediation_hint":  null
+                     },
+                     {
+                         "finding_id":  "FFAE-DOCS-003",
+                         "rule_id":  null,
+                         "policy_rule_id":  null,
+                         "condition_id":  null,
+                         "gate_id":  null,
+                         "severity":  "info",
+                         "status":  "pass",
+                         "category":  "docs",
+                         "path":  "contracts/FAE-GOV-2026-05-10-008-policy-paths-docs-release-accuracy.md",
+                         "message":  "Documentation and changelog obligations are represented in the changed-file set.",
+                         "evidence":  "readme=True; wiki=True; changelog=True",
+                         "remediation_hint":  null
+                     }
+                 ]
+}

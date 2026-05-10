@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition Overview
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-007 contract enforcement
+> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-008 policy paths, docs, changelog, and release accuracy
 
 Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems.
 
@@ -39,7 +39,7 @@ Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate d
 
 The portable core includes a local validator at `core/validator/forsetti_validate.ps1`. Root scripts under `scripts/` delegate to that validator.
 
-The validator supports repository structure, JSON, policy mirror, documentation sync, schema, script wrapper, and task contract checks. Contract mode enforces changed files against the governing task contract scope, checks protected-path approval class requirements, and verifies required outputs and evidence artifacts.
+The validator supports repository structure, JSON, policy mirror, documentation sync, schema, script wrapper, and task contract checks. Contract mode enforces changed files against the governing task contract scope, checks protected-path and role-limited path requirements from `core/policies/repo-boundaries.json`, verifies required outputs and evidence artifacts, checks documentation sync for changed canonical sources, and validates changelog entries for required fields, migration guidance, affected consumers, Unreleased placement, and version consistency.
 
 ## Repository Structure
 
@@ -47,14 +47,14 @@ The repository now includes:
 
 - `core/` for portable governance documents and canonical policy manifests.
 - `core/contracts/task-contract-template.json` and `core/schemas/task-contract.schema.json` for enforceable task contract structure.
-- `core/validator/contract_rules.ps1` for local task contract enforcement.
+- `core/validator/contract_rules.ps1` for local task contract, protected path, documentation sync, changelog, and version evidence enforcement.
 - `adapters/github-actions/` for optional GitHub Actions integration documentation.
 - `overlays/generic/`, `overlays/forsetti-apple/`, and `overlays/forsetti-windows/` for platform overlay scaffolds.
 - Root governance, policy, standards, contracts, schemas, scripts, changelog, and wiki documentation.
 
 ## Operating Model
 
-Every meaningful change must operate under a task contract, remain within authorized scope, update required documentation, include changelog evidence when required, and provide validation evidence before completion is claimed. Canonical compliance rule identifiers are defined in `core/policies/compliance-rules.json` and mirrored at `policies/compliance-rules.json`.
+Every meaningful change must operate under a task contract, remain within authorized scope, update required documentation, include changelog evidence when required, and provide validation evidence before completion is claimed. Canonical compliance rule identifiers are defined in `core/policies/compliance-rules.json` and mirrored at `policies/compliance-rules.json`. Policy-local gate identifiers in the boundary, documentation sync, changelog, and versioning manifests provide additional evidence traceability.
 
 ## Navigation
 

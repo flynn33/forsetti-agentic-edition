@@ -498,6 +498,8 @@ function Get-ForsettiProtectedPathRules {
             $rules.Add([pscustomobject][ordered]@{
                 pattern = [string]$mapping.path_pattern
                 minimum_approval_class = ConvertTo-ForsettiToken $mapping.minimum_approval_class
+                policy_rule_id = [string]$mapping.policy_rule_id
+                gate_id = [string]$mapping.gate_id
                 source = "core/policies/repo-boundaries.json"
             })
         }
@@ -514,20 +516,50 @@ function Get-ForsettiProtectedPathRules {
             -RuleId "FAE-C004"
     }
 
-    $fallbackRules = @(
-        @{ pattern = "schemas/*.json"; minimum_approval_class = "sensitive" },
-        @{ pattern = "agents/*.md"; minimum_approval_class = "sensitive" },
-        @{ pattern = "*_POLICY.md"; minimum_approval_class = "governance-class" },
-        @{ pattern = ".github/workflows/*.yml"; minimum_approval_class = "sensitive" },
-        @{ pattern = ".github/CODEOWNERS"; minimum_approval_class = "governance-class" }
-    )
+    return @($rules.ToArray())
+}
 
-    foreach ($fallback in $fallbackRules) {
-        $rules.Add([pscustomobject][ordered]@{
-            pattern = $fallback.pattern
-            minimum_approval_class = $fallback.minimum_approval_class
-            source = "CHANGE_CONTROL_POLICY.md protected asset table"
-        })
+function Get-ForsettiRoleLimitedPathRules {
+    param([string]$RepoRoot)
+
+    $rules = New-Object System.Collections.Generic.List[object]
+    $policyPath = Join-Path $RepoRoot "core/policies/repo-boundaries.json"
+    if (-not (Test-Path -LiteralPath $policyPath)) {
+        Add-Finding `
+            -FindingId "FFAE-ROLE-001" `
+            -Severity "error" `
+            -Status "fail" `
+            -Category "approval" `
+            -Path "core/policies/repo-boundaries.json" `
+            -Message "Repository boundary policy is missing." `
+            -Evidence "core/policies/repo-boundaries.json" `
+            -RemediationHint "Restore the boundary policy before role-limited path validation." `
+            -RuleId "FAE-C003"
+        return @()
+    }
+
+    try {
+        $policy = Get-Content -LiteralPath $policyPath -Raw | ConvertFrom-Json
+        foreach ($mapping in @($policy.role_limited_paths.mappings)) {
+            $rules.Add([pscustomobject][ordered]@{
+                pattern = [string]$mapping.path_pattern
+                allowed_roles = @($mapping.allowed_roles | ForEach-Object { ConvertTo-ForsettiToken $_ })
+                policy_rule_id = [string]$mapping.policy_rule_id
+                gate_id = [string]$mapping.gate_id
+                source = "core/policies/repo-boundaries.json"
+            })
+        }
+    } catch {
+        Add-Finding `
+            -FindingId "FFAE-ROLE-002" `
+            -Severity "error" `
+            -Status "fail" `
+            -Category "approval" `
+            -Path "core/policies/repo-boundaries.json" `
+            -Message "Repository boundary policy could not be parsed for role-limited path validation." `
+            -Evidence $_.Exception.Message `
+            -RemediationHint "Fix the boundary policy JSON before role-limited path validation." `
+            -RuleId "FAE-C003"
     }
 
     return @($rules.ToArray())
@@ -743,7 +775,10 @@ function Test-ForsettiProtectedApprovals {
                 -Message "Changed protected path lacks the required approval class." `
                 -Evidence ("required=" + $required.minimum_approval_class + "; actual=" + $Contract.approval_class + "; source=" + $required.source + "; pattern=" + $required.pattern) `
                 -RemediationHint "Raise the approval class or remove the protected-path change." `
-                -RuleId "FAE-C004"
+                -RuleId "FAE-C004" `
+                -PolicyRuleId $required.policy_rule_id `
+                -ConditionId "protected_path_without_required_approval" `
+                -GateId $required.gate_id
             continue
         }
 
@@ -760,7 +795,10 @@ function Test-ForsettiProtectedApprovals {
                     -Message "Governance-class protected path lacks Governance Steward authorization evidence." `
                     -Evidence ("required=" + $required.minimum_approval_class + "; pattern=" + $required.pattern) `
                     -RemediationHint "Record Governance Steward authorization evidence in the task contract." `
-                    -RuleId "FAE-C004"
+                    -RuleId "FAE-C004" `
+                    -PolicyRuleId $required.policy_rule_id `
+                    -ConditionId "governance_authorization_missing" `
+                    -GateId $required.gate_id
             }
         }
     }
@@ -776,6 +814,61 @@ function Test-ForsettiProtectedApprovals {
             -Evidence ("Protected paths checked: " + $protectedCount + "; approval_class=" + $Contract.approval_class) `
             -RemediationHint $null `
             -RuleId $null
+    }
+}
+
+function Test-ForsettiRoleLimitedPaths {
+    param(
+        [string]$RepoRoot,
+        [object]$Contract,
+        [string[]]$ChangedFiles
+    )
+
+    $rules = Get-ForsettiRoleLimitedPathRules -RepoRoot $RepoRoot
+    $limitedCount = 0
+    $errors = 0
+    $actingRole = ConvertTo-ForsettiToken $Contract.acting_role
+
+    foreach ($path in @($ChangedFiles)) {
+        foreach ($rule in @($rules)) {
+            if (-not (Test-ForsettiPathPattern -Path $path -Pattern $rule.pattern)) {
+                continue
+            }
+
+            $limitedCount++
+            if (@($rule.allowed_roles) -notcontains $actingRole) {
+                $errors++
+                Add-Finding `
+                    -FindingId "FFAE-ROLE-003" `
+                    -Severity "error" `
+                    -Status "fail" `
+                    -Category "approval" `
+                    -Path $path `
+                    -Message "Changed role-limited path is not authorized for the task contract acting role." `
+                    -Evidence ("acting_role=" + $actingRole + "; allowed_roles=" + (@($rule.allowed_roles) -join ",") + "; source=" + $rule.source + "; pattern=" + $rule.pattern) `
+                    -RemediationHint "Use an authorized acting role, amend the contract, or remove the role-limited path change." `
+                    -RuleId "FAE-C003" `
+                    -PolicyRuleId $rule.policy_rule_id `
+                    -ConditionId "role_not_allowed_for_changed_path" `
+                    -GateId $rule.gate_id
+            }
+        }
+    }
+
+    if ($errors -eq 0) {
+        Add-Finding `
+            -FindingId "FFAE-ROLE-003" `
+            -Severity "info" `
+            -Status "pass" `
+            -Category "approval" `
+            -Path $Contract.path `
+            -Message "Role-limited path checks passed." `
+            -Evidence ("Role-limited path matches checked: " + $limitedCount + "; acting_role=" + $actingRole) `
+            -RemediationHint $null `
+            -RuleId $null `
+            -PolicyRuleId "BOUNDARY-ROLE-LIMITED-PATHS" `
+            -ConditionId $null `
+            -GateId "boundary-role-limited-paths"
     }
 }
 
@@ -823,6 +916,297 @@ function Test-ForsettiRequiredOutputs {
     }
 }
 
+function Test-ForsettiDocsSyncForChangedFiles {
+    param(
+        [string]$RepoRoot,
+        [string[]]$ChangedFiles
+    )
+
+    $warnings = 0
+    $policyPath = Join-Path $RepoRoot "core/policies/docs-sync-rules.json"
+    if (-not (Test-Path -LiteralPath $policyPath)) {
+        Add-Finding `
+            -FindingId "FFAE-DOCS-005" `
+            -Severity "warning" `
+            -Status "warn" `
+            -Category "docs" `
+            -Path "core/policies/docs-sync-rules.json" `
+            -Message "Documentation sync policy is missing, so changed canonical sources cannot be checked." `
+            -Evidence "core/policies/docs-sync-rules.json" `
+            -RemediationHint "Restore the docs sync policy manifest." `
+            -RuleId "FAE-C008" `
+            -PolicyRuleId "DOCSYNC-POLICY-MISSING" `
+            -ConditionId "docs_sync_policy_missing" `
+            -GateId "docs-sync-changed-source"
+        return 1
+    }
+
+    try {
+        $sync = Get-Content -LiteralPath $policyPath -Raw | ConvertFrom-Json
+        foreach ($pair in @($sync.sync_pairs)) {
+            $triggered = $false
+            foreach ($trigger in @($pair.trigger_paths)) {
+                foreach ($changed in @($ChangedFiles)) {
+                    if (Test-ForsettiPathPattern -Path $changed -Pattern ([string]$trigger)) {
+                        $triggered = $true
+                        break
+                    }
+                }
+                if ($triggered) { break }
+            }
+
+            if (-not $triggered) {
+                continue
+            }
+
+            foreach ($derived in @($pair.required_derived_paths)) {
+                $derivedPath = [string]$derived
+                if ($ChangedFiles -notcontains $derivedPath) {
+                    $warnings++
+                    Add-Finding `
+                        -FindingId "FFAE-DOCS-005" `
+                        -Severity "warning" `
+                        -Status "warn" `
+                        -Category "docs" `
+                        -Path $derivedPath `
+                        -Message "Changed canonical source requires derived documentation sync in the same change or an approved deferral." `
+                        -Evidence ("canonical=" + [string]$pair.canonical + "; derived=" + $derivedPath) `
+                        -RemediationHint "Update the derived documentation path or record an approved docs sync deferral." `
+                        -RuleId "FAE-C008" `
+                        -PolicyRuleId ([string]$pair.rule_id) `
+                        -ConditionId ([string]$pair.rejection_condition) `
+                        -GateId "docs-sync-changed-source"
+                }
+            }
+        }
+    } catch {
+        $warnings++
+        Add-Finding `
+            -FindingId "FFAE-DOCS-006" `
+            -Severity "warning" `
+            -Status "warn" `
+            -Category "docs" `
+            -Path "core/policies/docs-sync-rules.json" `
+            -Message "Documentation sync policy could not be evaluated." `
+            -Evidence $_.Exception.Message `
+            -RemediationHint "Fix the docs sync policy JSON before contract validation." `
+            -RuleId "FAE-C008" `
+            -PolicyRuleId "DOCSYNC-POLICY-EVALUATION" `
+            -ConditionId "docs_sync_policy_parse_error" `
+            -GateId "docs-sync-changed-source"
+    }
+
+    return $warnings
+}
+
+function Get-ForsettiChangelogEntry {
+    param(
+        [string]$RepoRoot,
+        [string]$TaskId
+    )
+
+    $changelogPath = Join-Path $RepoRoot "changelog/CHANGELOG.md"
+    if (-not (Test-Path -LiteralPath $changelogPath)) {
+        return [pscustomobject][ordered]@{
+            found = $false
+            text = ""
+            task_index = -1
+            is_unreleased = $false
+        }
+    }
+
+    $lines = @(Get-Content -LiteralPath $changelogPath)
+    $taskIndex = -1
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        if ($lines[$i] -match [regex]::Escape($TaskId)) {
+            $taskIndex = $i
+            break
+        }
+    }
+
+    if ($taskIndex -lt 0) {
+        return [pscustomobject][ordered]@{
+            found = $false
+            text = ""
+            task_index = -1
+            is_unreleased = $false
+        }
+    }
+
+    $start = $taskIndex
+    while ($start -gt 0 -and $lines[$start] -notmatch '^\*\*Title\*\*:') {
+        $start--
+    }
+    if ($lines[$start] -notmatch '^\*\*Title\*\*:') {
+        $start = $taskIndex
+    }
+
+    $end = $start + 1
+    while ($end -lt $lines.Count) {
+        if ($end -gt $start -and ($lines[$end] -match '^\*\*Title\*\*:' -or $lines[$end] -match '^## \[')) {
+            break
+        }
+        $end++
+    }
+
+    $unreleasedIndex = -1
+    $nextReleaseIndex = $lines.Count
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        if ($lines[$i] -match '^## \[Unreleased\]') {
+            $unreleasedIndex = $i
+            continue
+        }
+        if ($unreleasedIndex -ge 0 -and $i -gt $unreleasedIndex -and $lines[$i] -match '^## \[') {
+            $nextReleaseIndex = $i
+            break
+        }
+    }
+
+    return [pscustomobject][ordered]@{
+        found = $true
+        text = (($lines[$start..($end - 1)]) -join "`n")
+        task_index = $taskIndex
+        is_unreleased = ($unreleasedIndex -ge 0 -and $taskIndex -gt $unreleasedIndex -and $taskIndex -lt $nextReleaseIndex)
+    }
+}
+
+function Test-ForsettiChangelogEntryRequirements {
+    param(
+        [string]$RepoRoot,
+        [object]$Contract
+    )
+
+    $warnings = 0
+    $entry = Get-ForsettiChangelogEntry -RepoRoot $RepoRoot -TaskId $Contract.task_id
+    if (-not $entry.found) {
+        Add-Finding `
+            -FindingId "FFAE-CHANGELOG-003" `
+            -Severity "warning" `
+            -Status "warn" `
+            -Category "changelog" `
+            -Path "changelog/CHANGELOG.md" `
+            -Message "Required changelog entry for the task contract was not found." `
+            -Evidence ("task_id=" + $Contract.task_id) `
+            -RemediationHint "Add a changelog entry containing the task reference and required fields." `
+            -RuleId "FAE-C005" `
+            -PolicyRuleId "CHANGELOG-REQUIRED-FIELDS" `
+            -ConditionId "missing_entry_for_required_class" `
+            -GateId "changelog-entry-required"
+        return 1
+    }
+
+    if (-not $entry.is_unreleased) {
+        $warnings++
+        Add-Finding `
+            -FindingId "FFAE-CHANGELOG-004" `
+            -Severity "warning" `
+            -Status "warn" `
+            -Category "changelog" `
+            -Path "changelog/CHANGELOG.md" `
+            -Message "New changelog entry must be located under the Unreleased section." `
+            -Evidence ("task_id=" + $Contract.task_id) `
+            -RemediationHint "Move the new changelog entry under ## [Unreleased]." `
+            -RuleId "FAE-C005" `
+            -PolicyRuleId "CHANGELOG-ENTRY-LOCATION" `
+            -ConditionId "new_entry_outside_unreleased" `
+            -GateId "changelog-entry-required"
+    }
+
+    $expectedClass = [regex]::Escape([string]$Contract.change_class)
+    $expectedImpact = [regex]::Escape([string]$Contract.release_impact)
+    $expectedApproval = [regex]::Escape([string]$Contract.approval_class)
+    $requiredPatterns = @(
+        @{ pattern = '(?im)^\*\*Change Class\*\*:\s*' + $expectedClass + '\s*$'; field = "Change Class"; condition = "change_class_mismatch"; rule = "CHANGELOG-VERSION-CONSISTENCY"; gate = "changelog-version-consistency"; compliance = "FAE-C009" },
+        @{ pattern = '(?im)^\*\*Version Impact\*\*:\s*' + $expectedImpact + '\s*$'; field = "Version Impact"; condition = "version_impact_mismatch"; rule = "CHANGELOG-VERSION-CONSISTENCY"; gate = "changelog-version-consistency"; compliance = "FAE-C009" },
+        @{ pattern = '(?im)^\*\*Task Reference\*\*:\s*' + [regex]::Escape([string]$Contract.task_id) + '\s*$'; field = "Task Reference"; condition = "missing_required_field"; rule = "CHANGELOG-REQUIRED-FIELDS"; gate = "changelog-entry-required"; compliance = "FAE-C005" },
+        @{ pattern = '(?im)^\*\*Approval Class\*\*:\s*' + $expectedApproval + '\s*$'; field = "Approval Class"; condition = "approval_class_mismatch"; rule = "CHANGELOG-REQUIRED-FIELDS"; gate = "changelog-entry-required"; compliance = "FAE-C005" }
+    )
+
+    if ($Contract.change_class -eq "breaking-change") {
+        $requiredPatterns += @(
+            @{ pattern = '(?im)^\*\*breaking_change\*\*:\s*true\s*$'; field = "breaking_change"; condition = "breaking_change_without_required_disclosure"; rule = "CHANGELOG-BREAKING-DISCLOSURE"; gate = "changelog-breaking-disclosure"; compliance = "FAE-C006" },
+            @{ pattern = '(?im)^\*\*migration_note\*\*:\s*\S'; field = "migration_note"; condition = "breaking_change_without_required_disclosure"; rule = "CHANGELOG-BREAKING-DISCLOSURE"; gate = "changelog-breaking-disclosure"; compliance = "FAE-C006" },
+            @{ pattern = '(?im)^\*\*Migration Guidance\*\*:\s*\S'; field = "Migration Guidance"; condition = "breaking_change_without_required_disclosure"; rule = "CHANGELOG-BREAKING-DISCLOSURE"; gate = "changelog-breaking-disclosure"; compliance = "FAE-C006" },
+            @{ pattern = '(?im)^\*\*Affected Consumers\*\*:\s*\S'; field = "Affected Consumers"; condition = "breaking_change_without_required_disclosure"; rule = "CHANGELOG-BREAKING-DISCLOSURE"; gate = "changelog-breaking-disclosure"; compliance = "FAE-C006" }
+        )
+    }
+
+    foreach ($required in $requiredPatterns) {
+        if ($entry.text -notmatch $required.pattern) {
+            $warnings++
+            Add-Finding `
+                -FindingId "FFAE-CHANGELOG-003" `
+                -Severity "warning" `
+                -Status "warn" `
+                -Category "changelog" `
+                -Path "changelog/CHANGELOG.md" `
+                -Message ("Changelog entry is missing or mismatches required field: " + $required.field) `
+                -Evidence ("task_id=" + $Contract.task_id + "; field=" + $required.field) `
+                -RemediationHint "Update the changelog entry so required fields match the task contract and breaking-change policy." `
+                -RuleId $required.compliance `
+                -PolicyRuleId $required.rule `
+                -ConditionId $required.condition `
+                -GateId $required.gate
+        }
+    }
+
+    return $warnings
+}
+
+function Test-ForsettiChangelogHistoryIntegrity {
+    param(
+        [string]$RepoRoot,
+        [string[]]$ChangedFiles
+    )
+
+    if ($ChangedFiles -notcontains "changelog/CHANGELOG.md") {
+        return 0
+    }
+
+    try {
+        $base = (& git -C $RepoRoot merge-base HEAD origin/main 2>$null)
+        if ([string]::IsNullOrWhiteSpace($base)) {
+            return 0
+        }
+
+        $diffLines = @(& git -C $RepoRoot diff --unified=0 $base -- changelog/CHANGELOG.md)
+        $deletedLines = @($diffLines | Where-Object { $_.StartsWith("-", [System.StringComparison]::Ordinal) -and -not $_.StartsWith("---", [System.StringComparison]::Ordinal) })
+        if ($deletedLines.Count -gt 0) {
+            Add-Finding `
+                -FindingId "FFAE-CHANGELOG-005" `
+                -Severity "error" `
+                -Status "fail" `
+                -Category "changelog" `
+                -Path "changelog/CHANGELOG.md" `
+                -Message "Changelog diff deletes or rewrites existing history." `
+                -Evidence (("deleted_lines=" + $deletedLines.Count + "; first=" + $deletedLines[0]) -replace "`r?`n", " ") `
+                -RemediationHint "Append a new Unreleased entry instead of rewriting existing changelog history, or use a dedicated correction contract." `
+                -RuleId "FAE-C011" `
+                -PolicyRuleId "CHANGELOG-HISTORY-IMMUTABLE" `
+                -ConditionId "historical_changelog_mutation" `
+                -GateId "changelog-history-immutable"
+            return 1
+        }
+    } catch {
+        Add-Finding `
+            -FindingId "FFAE-CHANGELOG-005" `
+            -Severity "warning" `
+            -Status "warn" `
+            -Category "changelog" `
+            -Path "changelog/CHANGELOG.md" `
+            -Message "Changelog history integrity could not be checked against origin/main." `
+            -Evidence $_.Exception.Message `
+            -RemediationHint "Run the validator in a git repository with origin/main available, or provide equivalent diff evidence in the phase report." `
+            -RuleId "FAE-C011" `
+            -PolicyRuleId "CHANGELOG-HISTORY-IMMUTABLE" `
+            -ConditionId "changelog_history_diff_unavailable" `
+            -GateId "changelog-history-immutable"
+        return 1
+    }
+
+    return 0
+}
+
 function Test-ForsettiDocumentationObligations {
     param(
         [string]$RepoRoot,
@@ -832,6 +1216,8 @@ function Test-ForsettiDocumentationObligations {
 
     $warnings = 0
     $docImpact = $Contract.documentation_impact
+    $warnings += Test-ForsettiDocsSyncForChangedFiles -RepoRoot $RepoRoot -ChangedFiles $ChangedFiles
+
     if ($docImpact.readme_update -and ($ChangedFiles -notcontains "README.md")) {
         $warnings++
         Add-Finding `
@@ -877,25 +1263,11 @@ function Test-ForsettiDocumentationObligations {
             -RuleId "FAE-C005"
     }
 
-    if ($Contract.change_class -eq "breaking-change") {
-        $changelogPath = Join-Path $RepoRoot "changelog/CHANGELOG.md"
-        if (Test-Path -LiteralPath $changelogPath) {
-            $changelog = Get-Content -LiteralPath $changelogPath -Raw
-            if ($changelog -notmatch [regex]::Escape($Contract.task_id) -or $changelog -notmatch '(?i)migration') {
-                $warnings++
-                Add-Finding `
-                    -FindingId "FFAE-CHANGELOG-002" `
-                    -Severity "warning" `
-                    -Status "warn" `
-                    -Category "changelog" `
-                    -Path "changelog/CHANGELOG.md" `
-                    -Message "Breaking change requires changelog migration guidance and task traceability." `
-                    -Evidence ("task_id=" + $Contract.task_id) `
-                    -RemediationHint "Add migration guidance, affected consumers, and task reference to the changelog." `
-                    -RuleId "FAE-C006"
-            }
-        }
+    if ($docImpact.changelog_update -or $Contract.change_class -eq "breaking-change") {
+        $warnings += Test-ForsettiChangelogEntryRequirements -RepoRoot $RepoRoot -Contract $Contract
     }
+
+    $warnings += Test-ForsettiChangelogHistoryIntegrity -RepoRoot $RepoRoot -ChangedFiles $ChangedFiles
 
     if ($warnings -eq 0) {
         Add-Finding `
@@ -1029,6 +1401,7 @@ function Test-TaskContractRules {
     Test-ForsettiContractShape -Contract $contract
     Test-ForsettiContractScope -Contract $contract -ChangedFiles $changedFiles
     Test-ForsettiProtectedApprovals -RepoRoot $RepoRoot -Contract $contract -ChangedFiles $changedFiles
+    Test-ForsettiRoleLimitedPaths -RepoRoot $RepoRoot -Contract $contract -ChangedFiles $changedFiles
     Test-ForsettiRequiredOutputs -RepoRoot $RepoRoot -Contract $contract -PendingOutputPath $PendingOutputPath
     Test-ForsettiDocumentationObligations -RepoRoot $RepoRoot -Contract $contract -ChangedFiles $changedFiles
 }

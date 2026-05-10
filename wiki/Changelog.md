@@ -1,7 +1,7 @@
 # Changelog
 
 > **Canonical source**: `changelog/CHANGELOG.md`
-> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-007 contract enforcement
+> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-008 policy paths, docs, changelog, and release accuracy
 
 All notable changes to the Forsetti Agentic Edition governance framework are documented in this file.
 
@@ -21,6 +21,19 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Approval Class**: governance-class
 
 ### Breaking Changes
+
+**Title**: Breaking: Encode policy path, documentation, changelog, and release gates
+**Change Class**: breaking-change
+**Version Impact**: major
+**Summary**: Updated repository boundary, documentation sync, changelog, and versioning manifests with enforceable rule identifiers, pre-merge gate metadata, required evidence, rejection conditions, and byte-identical root mirror metadata. Contract-mode validation now consumes the boundary manifest for protected and role-limited path checks, consumes the docs sync manifest for changed canonical source checks, validates changelog entries against task contract fields, and reports policy rule, condition, and gate identifiers in validator findings.
+**Affected Area**: policies, core validator, validator result schema, documentation, changelog
+**PR Reference**: pending pull request for `fix/v3-policy-paths-docs-release`
+**Task Reference**: FAE-GOV-2026-05-10-008
+**Approval Class**: governance-class
+**breaking_change**: true
+**migration_note**: Consumers of machine-readable policy manifests must accept `schema_version` 2.0 for docs sync, changelog, and versioning rules, `schema_version` 2.1 for repository boundary rules, root mirror metadata, pre-merge gate arrays, rule IDs, gate IDs, evidence requirements, and rejection condition fields. Consumers of validator result JSON must accept `policy_rule_id`, `condition_id`, and `gate_id` fields on each finding.
+**Migration Guidance**: Update policy-manifest parsers to treat `core/policies/*.json` as canonical where root mirrors exist and to preserve unknown structured gate metadata. Update validator-result consumers to read the added finding fields and to tolerate policy-local rule IDs alongside canonical `FAE-C###` compliance rule IDs. Update pre-merge integrations to enforce changelog entries under `Unreleased`, required breaking-change migration fields, affected consumers, version impact consistency, and docs sync for changed canonical sources.
+**Affected Consumers**: Local validator integrations, hosted workflow adapters, policy manifest parsers, documentation sync reviewers, changelog and release reviewers, downstream repositories that mirror Forsetti policy JSON, and tools that parse `core/schemas/validator-result.schema.json`.
 
 **Title**: Breaking: Enforce task contract scope, approval, and evidence locally
 **Change Class**: breaking-change

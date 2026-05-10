@@ -1,7 +1,7 @@
 # Workflow
 
 > **Canonical sources**: [`AGENTS.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/AGENTS.md), [`CHANGE_CONTROL_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CHANGE_CONTROL_POLICY.md)
-> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-007 contract enforcement
+> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-008 policy paths, docs, changelog, and release accuracy
 
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
 
@@ -99,7 +99,11 @@ Policy manifests under `core/policies/*.json` are canonical portable policy regi
 
 Protected asset handling is enforced by `FAE-C004` in the canonical compliance registry. Role separation is enforced separately by `FAE-C003`.
 
-Local protected-path checks use `core/policies/repo-boundaries.json` plus higher-authority protected asset rules from `CHANGE_CONTROL_POLICY.md`. When multiple rules match a path, the most restrictive approval requirement applies.
+Local protected-path checks use `core/policies/repo-boundaries.json` as the manifest-driven source for approval requirements. When multiple rules match a path, the most restrictive approval requirement applies.
+
+The repository boundary manifest now includes pre-merge gate data for protected paths, role-limited paths, governance isolation, and policy mirror integrity. It also covers enforcement surfaces such as `core/validator/**`, `core/schemas/*.json`, `core/contracts/**`, `contracts/*-template.md`, `schemas/*.json`, and `scripts/**`.
+
+Contract-mode validation also checks role-limited paths. A path can be in scope and still fail validation when the task contract acting role is not authorized for that path family.
 
 ---
 

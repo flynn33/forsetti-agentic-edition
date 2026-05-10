@@ -1,15 +1,18 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
+  "canonical_source": "core/policies/changelog-rules.json",
+  "root_mirror": "policies/changelog-rules.json",
+  "mirror_policy": {
+    "status": "byte_identical_compatibility_mirror",
+    "rule_id": "FAE-C011",
+    "failure_action": "block_merge"
+  },
   "required_fields": [
     {
       "field": "title",
       "type": "string",
       "description": "A concise human-readable summary of the change in imperative mood. Maximum 120 characters. Must describe what the change does, not how it was implemented.",
-      "constraints": {
-        "max_length": 120,
-        "min_length": 10,
-        "format": "imperative_mood"
-      }
+      "constraints": {"max_length": 120, "min_length": 10, "format": "imperative_mood"}
     },
     {
       "field": "change_class",
@@ -27,173 +30,263 @@
       "field": "summary",
       "type": "string",
       "description": "A detailed description of what changed and why. Must be specific enough for a consumer to understand the impact without reading the diff. Minimum 30 characters.",
-      "constraints": {
-        "min_length": 30,
-        "max_length": 2000
-      }
+      "constraints": {"min_length": 30, "max_length": 2000}
     },
     {
       "field": "affected_area",
       "type": "string",
       "description": "The module, component, layer, or subsystem affected by this change. Used for filtering and release note grouping. Must reference a recognized area within the project.",
-      "constraints": {
-        "min_length": 2,
-        "max_length": 100
-      }
+      "constraints": {"min_length": 2, "max_length": 100}
+    },
+    {
+      "field": "task_reference",
+      "type": "string",
+      "description": "A reference to the task contract, issue number, or pull request that authorized this change.",
+      "constraints": {"min_length": 3, "max_length": 200}
+    },
+    {
+      "field": "approval_class",
+      "type": "enum",
+      "description": "The approval class used for the change. Must match the task contract approval_class.",
+      "allowed_values": ["standard", "sensitive", "governance-class", "emergency", "release-critical"]
     }
   ],
   "optional_fields": [
     {
       "field": "breaking_change",
       "type": "boolean",
-      "description": "Whether this change breaks backward compatibility. Must be true when change_class is breaking-change. Must be true when version_impact is major and the change alters public API or default behavior. When true, migration_note becomes required.",
+      "description": "Whether this change breaks backward compatibility. Must be true when change_class is breaking-change. Must be true when version_impact is major and the change alters public API, policy, schema, default behavior, or consumer obligations.",
       "default": false,
-      "conditional_requirement": "Required and must be true when change_class is breaking-change."
+      "conditional_requirement": "Required and must be true when change_class is breaking-change or version_impact is major."
     },
     {
       "field": "migration_note",
       "type": "string",
       "description": "Instructions for consumers on how to migrate from the previous behavior to the new behavior. Required when breaking_change is true. Must be actionable and specific.",
-      "constraints": {
-        "min_length": 20,
-        "max_length": 5000
-      },
+      "constraints": {"min_length": 20, "max_length": 5000},
       "conditional_requirement": "Required when breaking_change is true."
     },
     {
-      "field": "task_reference",
+      "field": "migration_guidance",
       "type": "string",
-      "description": "A reference to the task contract, issue number, or pull request that authorized this change. Format: issue number, PR number, or task contract identifier.",
-      "constraints": {
-        "max_length": 200
-      }
+      "description": "Expanded migration guidance for breaking changes. Required when breaking_change is true if the entry is rendered in Markdown with a dedicated Migration Guidance field.",
+      "constraints": {"min_length": 20, "max_length": 5000},
+      "conditional_requirement": "Required when breaking_change is true."
+    },
+    {
+      "field": "affected_consumers",
+      "type": "string",
+      "description": "Downstream consumers, schemas, workflows, validators, documentation surfaces, or integrations that must adapt to the change.",
+      "constraints": {"min_length": 10, "max_length": 2000},
+      "conditional_requirement": "Required when breaking_change is true."
     }
   ],
   "change_class_requirements": {
     "description": "Defines which change_class values require a changelog entry and which are exempt.",
     "requires_entry": [
-      {
-        "change_class": "feature",
-        "reason": "All new features must be documented in the changelog for consumer awareness."
-      },
-      {
-        "change_class": "bugfix",
-        "reason": "All bug fixes must be documented so consumers know which defects were corrected."
-      },
-      {
-        "change_class": "breaking-change",
-        "reason": "All breaking changes must be prominently documented with migration notes."
-      },
-      {
-        "change_class": "governance",
-        "reason": "All governance changes must be documented for transparency and auditability."
-      },
-      {
-        "change_class": "release",
-        "reason": "Release process changes that affect version impact must be documented."
-      }
+      {"change_class": "feature", "reason": "All new features must be documented in the changelog for consumer awareness."},
+      {"change_class": "bugfix", "reason": "All bug fixes must be documented so consumers know which defects were corrected."},
+      {"change_class": "breaking-change", "reason": "All breaking changes must be prominently documented with migration notes and affected consumers."},
+      {"change_class": "governance", "reason": "All governance changes must be documented for transparency and auditability."},
+      {"change_class": "release", "reason": "Release process changes that affect version impact must be documented."}
     ],
     "entry_conditional": [
-      {
-        "change_class": "refactor",
-        "condition": "Required only when version_impact is not none. Internal refactors with no external impact are exempt."
-      }
+      {"change_class": "refactor", "condition": "Required only when version_impact is not none. Internal refactors with no external impact are exempt."}
     ],
     "exempt": [
-      {
-        "change_class": "docs",
-        "condition": "Exempt when version_impact is none. Required if documentation change affects user-facing behavior descriptions."
-      },
-      {
-        "change_class": "metadata",
-        "condition": "Exempt when version_impact is none. Required if metadata change affects build output or artifact content."
-      }
+      {"change_class": "docs", "condition": "Exempt when version_impact is none. Required if documentation change affects user-facing behavior descriptions."},
+      {"change_class": "metadata", "condition": "Exempt when version_impact is none. Required if metadata change affects build output or artifact content."}
     ]
   },
   "breaking_change_rules": {
-    "required_fields_when_breaking": ["title", "change_class", "version_impact", "summary", "affected_area", "breaking_change", "migration_note"],
+    "required_fields_when_breaking": [
+      "title",
+      "change_class",
+      "version_impact",
+      "summary",
+      "affected_area",
+      "task_reference",
+      "approval_class",
+      "breaking_change",
+      "migration_note",
+      "migration_guidance",
+      "affected_consumers"
+    ],
     "constraints": [
       "change_class must be breaking-change.",
       "version_impact must be major.",
       "breaking_change must be true.",
       "migration_note must be present and actionable.",
+      "migration_guidance must be present and actionable when the entry format supports it.",
+      "affected_consumers must identify downstream consumers that must adapt.",
       "summary must explicitly state what breaks and for whom.",
       "title must indicate the breaking nature of the change."
     ],
-    "validation_method": "schema:breaking_change_entry_validation"
+    "validation_method": "validator:changelog_entry_validation",
+    "compliance_rule_ids": ["FAE-C005", "FAE-C006", "FAE-C009", "FAE-C011"]
   },
+  "entry_location_rules": {
+    "mutable_section": "Unreleased",
+    "new_entries": {
+      "allowed_section": "Unreleased",
+      "rejection_condition": "new_entry_outside_unreleased",
+      "failure_action": "request_changes",
+      "rule_id": "CHANGELOG-ENTRY-LOCATION",
+      "compliance_rule_id": "FAE-C005"
+    },
+    "released_sections": {
+      "mutation_policy": "append_only_after_release",
+      "rejection_condition": "historical_changelog_mutation",
+      "failure_action": "block_merge",
+      "rule_id": "CHANGELOG-HISTORY-IMMUTABLE",
+      "compliance_rule_id": "FAE-C011"
+    }
+  },
+  "immutability_policy": {
+    "description": "The changelog is a governance record. Released history must not be rewritten by normal feature, bugfix, docs, or governance work.",
+    "mutable_sections": ["Unreleased"],
+    "historical_sections": "append_only",
+    "permitted_corrections": {
+      "requires_dedicated_contract": true,
+      "requires_governance_class": true,
+      "requires_release_manager_review": true,
+      "requires_correction_note": true
+    },
+    "blocked_mutations": [
+      "deleting a released changelog entry",
+      "changing a released version impact",
+      "changing a released breaking_change flag",
+      "removing migration guidance from a released breaking change",
+      "moving a released entry to hide original release context"
+    ]
+  },
+  "structured_validation_rules": [
+    {
+      "rule_id": "CHANGELOG-REQUIRED-FIELDS",
+      "compliance_rule_id": "FAE-C005",
+      "when": {"entry_required": true},
+      "required_fields": ["title", "change_class", "version_impact", "summary", "affected_area", "task_reference", "approval_class"],
+      "evidence_required": ["task contract", "changelog entry"],
+      "rejection_condition": "missing_required_field",
+      "failure_action": "request_changes"
+    },
+    {
+      "rule_id": "CHANGELOG-BREAKING-DISCLOSURE",
+      "compliance_rule_id": "FAE-C006",
+      "when": {"change_class": "breaking-change"},
+      "required_fields": ["breaking_change", "migration_note", "migration_guidance", "affected_consumers"],
+      "required_values": {"breaking_change": true, "version_impact": "major"},
+      "evidence_required": ["task contract", "changelog entry", "affected consumer assessment"],
+      "rejection_condition": "breaking_change_without_required_disclosure",
+      "failure_action": "block_merge"
+    },
+    {
+      "rule_id": "CHANGELOG-VERSION-CONSISTENCY",
+      "compliance_rule_id": "FAE-C009",
+      "when": {"entry_required": true},
+      "required_consistency": ["task_contract.change_class", "task_contract.release_impact", "changelog.change_class", "changelog.version_impact"],
+      "evidence_required": ["task contract", "changelog entry", "versioning-rules.json"],
+      "rejection_condition": "version_impact_mismatch",
+      "failure_action": "request_changes"
+    },
+    {
+      "rule_id": "CHANGELOG-HISTORY-IMMUTABLE",
+      "compliance_rule_id": "FAE-C011",
+      "when": {"path_changed": "changelog/CHANGELOG.md"},
+      "required_consistency": ["new entry is in Unreleased", "released sections have no deleted or rewritten lines"],
+      "evidence_required": ["git diff against merge base", "changelog entry location"],
+      "rejection_condition": "historical_changelog_mutation",
+      "failure_action": "block_merge"
+    }
+  ],
   "validation_rules": [
     {
       "rule": "required_fields_present",
+      "rule_id": "CHANGELOG-REQUIRED-FIELDS",
+      "compliance_rule_id": "FAE-C005",
       "description": "All required fields must be present and non-empty in every changelog entry.",
-      "validation_method": "schema:field_presence_check"
+      "validation_method": "validator:field_presence_check",
+      "evidence_required": ["changelog entry"]
     },
     {
       "rule": "enum_values_valid",
-      "description": "change_class and version_impact must contain values from their respective enum definitions.",
-      "validation_method": "schema:enum_validation"
+      "rule_id": "CHANGELOG-ENUM-VALUES",
+      "compliance_rule_id": "FAE-C011",
+      "description": "change_class, version_impact, and approval_class must contain values from their respective enum definitions.",
+      "validation_method": "validator:enum_validation",
+      "evidence_required": ["changelog entry"]
     },
     {
       "rule": "version_impact_consistent",
-      "description": "version_impact in the changelog entry must match the version_impact in the task contract and the change_type_mapping in versioning-rules.json.",
-      "validation_method": "workflow:cross_reference_validation"
+      "rule_id": "CHANGELOG-VERSION-CONSISTENCY",
+      "compliance_rule_id": "FAE-C009",
+      "description": "version_impact in the changelog entry must match the release impact in the task contract and the change_type_mapping in versioning-rules.json.",
+      "validation_method": "validator:cross_reference_validation",
+      "evidence_required": ["task contract", "changelog entry", "versioning-rules.json"]
     },
     {
-      "rule": "breaking_change_completeness",
-      "description": "When breaking_change is true, migration_note must be present. When change_class is breaking-change, breaking_change must be true.",
-      "validation_method": "schema:conditional_field_validation"
+      "rule": "breaking_change_consistency",
+      "rule_id": "CHANGELOG-BREAKING-DISCLOSURE",
+      "compliance_rule_id": "FAE-C006",
+      "description": "When breaking_change is true, migration fields and affected consumers must be present. When change_class is breaking-change, breaking_change must be true.",
+      "validation_method": "validator:conditional_field_validation",
+      "evidence_required": ["task contract", "changelog entry"]
     },
     {
-      "rule": "title_format",
-      "description": "title must be imperative mood, between 10 and 120 characters, and must not duplicate the summary.",
-      "validation_method": "schema:title_format_check"
+      "rule": "history_integrity",
+      "rule_id": "CHANGELOG-HISTORY-IMMUTABLE",
+      "compliance_rule_id": "FAE-C011",
+      "description": "New entries must be added under Unreleased and released changelog history must not be silently rewritten.",
+      "validation_method": "validator:diff_validation",
+      "evidence_required": ["git diff against merge base", "changelog entry location"]
+    }
+  ],
+  "pre_merge_gates": [
+    {
+      "gate_id": "changelog-entry-required",
+      "compliance_rule_id": "FAE-C005",
+      "validator_mode": "contract",
+      "inputs": ["task_contract", "changed_files", "changelog/CHANGELOG.md"],
+      "evidence_required": ["task reference in changelog", "required fields"],
+      "rejection_condition": "missing_entry_for_required_class",
+      "failure_status": "request_changes"
     },
     {
-      "rule": "summary_specificity",
-      "description": "summary must be at least 30 characters and must describe impact, not just list file changes.",
-      "validation_method": "schema:summary_quality_check"
+      "gate_id": "changelog-breaking-disclosure",
+      "compliance_rule_id": "FAE-C006",
+      "validator_mode": "contract",
+      "inputs": ["task_contract", "changelog/CHANGELOG.md"],
+      "evidence_required": ["breaking_change=true", "migration_note", "migration_guidance", "affected_consumers"],
+      "rejection_condition": "breaking_change_without_required_disclosure",
+      "failure_status": "block"
+    },
+    {
+      "gate_id": "changelog-version-consistency",
+      "compliance_rule_id": "FAE-C009",
+      "validator_mode": "contract",
+      "inputs": ["task_contract", "changelog/CHANGELOG.md", "core/policies/versioning-rules.json"],
+      "evidence_required": ["matching change_class", "matching version_impact"],
+      "rejection_condition": "version_impact_mismatch",
+      "failure_status": "request_changes"
+    },
+    {
+      "gate_id": "changelog-history-immutable",
+      "compliance_rule_id": "FAE-C011",
+      "validator_mode": "contract",
+      "inputs": ["git diff", "changelog/CHANGELOG.md"],
+      "evidence_required": ["no deleted released-history lines", "new entry under Unreleased"],
+      "rejection_condition": "historical_changelog_mutation",
+      "failure_status": "block"
     }
   ],
   "rejection_conditions": [
-    {
-      "condition": "missing_required_field",
-      "description": "Any required field is absent or empty.",
-      "action": "request_changes"
-    },
-    {
-      "condition": "invalid_enum_value",
-      "description": "change_class or version_impact contains a value not in the standard enum.",
-      "action": "request_changes"
-    },
-    {
-      "condition": "breaking_change_without_migration_note",
-      "description": "breaking_change is true but migration_note is missing or empty.",
-      "action": "block_merge"
-    },
-    {
-      "condition": "undisclosed_breaking_change",
-      "description": "Diff evidence shows a breaking change but breaking_change is false or change_class is not breaking-change.",
-      "action": "block_merge"
-    },
-    {
-      "condition": "version_impact_mismatch",
-      "description": "version_impact in changelog does not match the task contract or violates change_type_mapping.",
-      "action": "request_changes"
-    },
-    {
-      "condition": "missing_entry_for_required_class",
-      "description": "A change_class that requires an entry has no corresponding changelog entry.",
-      "action": "request_changes"
-    },
-    {
-      "condition": "title_exceeds_length",
-      "description": "title exceeds 120 characters.",
-      "action": "request_changes"
-    },
-    {
-      "condition": "summary_too_vague",
-      "description": "summary is under 30 characters or describes only file names without impact.",
-      "action": "request_changes"
-    }
+    {"condition": "missing_required_field", "description": "Any required field is absent or empty.", "action": "request_changes", "rule_id": "CHANGELOG-REQUIRED-FIELDS"},
+    {"condition": "invalid_enum_value", "description": "change_class, version_impact, or approval_class contains a value not in the standard enum.", "action": "request_changes", "rule_id": "CHANGELOG-ENUM-VALUES"},
+    {"condition": "breaking_change_without_required_disclosure", "description": "breaking_change is true or required but migration fields or affected consumers are missing.", "action": "block_merge", "rule_id": "CHANGELOG-BREAKING-DISCLOSURE"},
+    {"condition": "undisclosed_breaking_change", "description": "Diff evidence shows a breaking change but breaking_change is false or change_class is not breaking-change.", "action": "block_merge", "rule_id": "CHANGELOG-BREAKING-DISCLOSURE"},
+    {"condition": "version_impact_mismatch", "description": "version_impact in changelog does not match the task contract or violates change_type_mapping.", "action": "request_changes", "rule_id": "CHANGELOG-VERSION-CONSISTENCY"},
+    {"condition": "missing_entry_for_required_class", "description": "A change_class that requires an entry has no corresponding changelog entry.", "action": "request_changes", "rule_id": "CHANGELOG-REQUIRED-FIELDS"},
+    {"condition": "new_entry_outside_unreleased", "description": "A new changelog entry is not located under the Unreleased section.", "action": "request_changes", "rule_id": "CHANGELOG-ENTRY-LOCATION"},
+    {"condition": "historical_changelog_mutation", "description": "Released changelog history is deleted or rewritten outside a dedicated correction contract.", "action": "block_merge", "rule_id": "CHANGELOG-HISTORY-IMMUTABLE"}
   ]
 }

@@ -149,6 +149,10 @@ Release compliance must include version impact classification, complete changelo
 
 Governance compliance must include approval class verification for governance-touching changes, role authority confirmation, Governance Steward authorization when required, and evidence that governance changes are isolated.
 
+### Policy Gate Evidence
+
+When a machine-readable policy manifest defines a local rule identifier, condition identifier, or gate identifier, validation evidence must preserve those identifiers with the canonical `FAE-C###` compliance rule. Policy-local identifiers do not replace the canonical compliance registry; they make the specific manifest condition and rejection reason traceable.
+
 ---
 
 ## Compliance Categories
