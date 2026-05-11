@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-008 policy paths, docs, changelog, and release accuracy
+> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-011 GitHub Actions adapter documentation sync
 
 ## Welcome
 
@@ -12,8 +12,10 @@ This wiki provides navigational documentation for the Forsetti Agentic Edition g
 | Layer | Path | Purpose |
 |:-----|:-----|:--------|
 | Portable core | `core/` | Host-neutral governance doctrine, role boundaries, enforceable task contract structure, evidence requirements, canonical policy registries with pre-merge gate metadata, and local validation interfaces. |
-| Adapters | `adapters/` | Optional host integrations that translate platform context into portable validation inputs. |
+| Adapters | `adapters/` | Optional host integrations that translate platform context into portable validation inputs. GitHub Actions workflow implementation lives in `adapters/github-actions/workflows/`. |
 | Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning. |
+
+GitHub Actions workflow files are wrappers around adapter-owned scripts. They preserve hosted check names while keeping enforcement logic and local-validator invocation outside the portable core.
 
 ## Quick Navigation
 

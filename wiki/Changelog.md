@@ -1,13 +1,25 @@
 # Changelog
 
 > **Canonical source**: `changelog/CHANGELOG.md`
-> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-009 adapter workflow boundary protection
+> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-011 GitHub Actions adapter documentation sync
 
 All notable changes to the Forsetti Agentic Edition governance framework are documented in this file.
 
 The changelog is a governance record. Entries must be accurate, specific, and traceable.
 
 ## [Unreleased]
+
+### Documentation
+
+**Title**: Document GitHub Actions adapter conversion
+**Change Class**: docs
+**Version Impact**: patch
+**Summary**: Updated README, adapter guide, wiki, and release traceability documentation to describe the Phase 06A conversion of GitHub Actions workflows into optional adapter-owned scripts while keeping final Phase 06 acceptance dependent on the Phase 06B evidence.
+**Affected Area**: README, adapters, wiki, changelog, remediation evidence
+**PR Reference**: pending pull request for `fix/v3-github-adapter-docs-06b`
+**Task Reference**: FAE-TASK-2026-05-11-011
+**Approval Class**: standard
+**Phase 06A Reference**: PR #6, merge commit `0c0a2cf6fa4b99de1bd839332991ec26ba6c354e`, evidence under `.forsetti/remediation-v3/phase-06a-*`
 
 ### Features
 
