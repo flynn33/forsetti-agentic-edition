@@ -1,0 +1,12 @@
+.forsetti/remediation-v3/phase-06b-changed-files.txt
+.forsetti/remediation-v3/phase-06b-contract-result.json
+.forsetti/remediation-v3/phase-06b-report.md
+.forsetti/remediation-v3/phase-06b-validator-result.json
+adapters/github-actions/README.md
+changelog/CHANGELOG.md
+contracts/FAE-TASK-2026-05-11-011-github-actions-adapter-docs-sync.md
+README.md
+wiki/Changelog.md
+wiki/Home.md
+wiki/Overview.md
+wiki/Workflow.md

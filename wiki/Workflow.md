@@ -1,7 +1,7 @@
 # Workflow
 
 > **Canonical sources**: [`AGENTS.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/AGENTS.md), [`CHANGE_CONTROL_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CHANGE_CONTROL_POLICY.md)
-> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-009 adapter workflow boundary protection
+> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-011 GitHub Actions adapter documentation sync
 
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
 
@@ -104,6 +104,12 @@ Local protected-path checks use `core/policies/repo-boundaries.json` as the mani
 The repository boundary manifest now includes pre-merge gate data for protected paths, role-limited paths, governance isolation, and policy mirror integrity. It also covers enforcement surfaces such as `core/validator/**`, `core/schemas/*.json`, `core/contracts/**`, `contracts/*-template.md`, `schemas/*.json`, `scripts/**`, and `adapters/github-actions/workflows/**`.
 
 Contract-mode validation also checks role-limited paths. A path can be in scope and still fail validation when the task contract acting role is not authorized for that path family.
+
+## Hosted Workflow Adapter
+
+GitHub Actions workflows are optional hosted wrappers. The workflow YAML preserves triggers, job identifiers, and check names, while implementation logic lives in `adapters/github-actions/workflows/`.
+
+Adapter scripts compute changed-file evidence with local `git diff`, read repository policy manifests, and invoke `core/validator/forsetti_validate.ps1` where hosted checks need local validation behavior. Hosted execution does not replace task-contract evidence or Validator review.
 
 ---
 

@@ -70,7 +70,7 @@ Forsetti Agentic Edition is organized around a portable governance core, optiona
 
 The portable core must not depend on adapters, overlays, hosted workflow runners, IDEs, local MCP servers, container runtimes, or provider-specific tooling. Those tools may support evidence collection in a governed task, but they are not core product dependencies.
 
-GitHub Actions support belongs in `adapters/github-actions/` as an optional adapter surface. It does not define canonical compliance rules.
+GitHub Actions support belongs in `adapters/github-actions/` as an optional adapter surface. It does not define canonical compliance rules. Workflow files under `.github/workflows/` are thin hosted wrappers that preserve GitHub check names and delegate implementation to adapter-owned scripts under `adapters/github-actions/workflows/`.
 
 ---
 
@@ -106,6 +106,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_va
 ```
 
 Validator result findings include the compliance rule identifier and, when a machine-readable policy gate supplies one, the policy rule identifier, condition identifier, and gate identifier used to reach the finding.
+
+### GitHub Actions Adapter
+
+The optional GitHub Actions adapter translates pull request, push, and manual workflow event context into repository-local validation inputs. Adapter scripts compute changed-file evidence with local `git diff`, read canonical policy manifests such as `core/policies/repo-boundaries.json`, and invoke the local validator where applicable.
+
+Hosted workflow execution is convenience automation. Required compliance evidence still comes from task contracts, local validator output, changelog and documentation updates, and reviewer decisions.
 
 ### Policy Documents (Rank 2)
 
@@ -172,6 +178,7 @@ This framework operates with a **strict default posture**.
 ├── adapters/
   ├── github-actions/
     ├── README.md
+    ├── workflows/
 ├── agents/
   ├── architect.md
   ├── builder.md
