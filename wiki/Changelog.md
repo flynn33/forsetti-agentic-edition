@@ -1,7 +1,7 @@
 # Changelog
 
 > **Canonical source**: `changelog/CHANGELOG.md`
-> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-008 policy paths, docs, changelog, and release accuracy
+> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-009 adapter workflow boundary protection
 
 All notable changes to the Forsetti Agentic Edition governance framework are documented in this file.
 
@@ -62,6 +62,15 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Affected Consumers**: Validators, policy readers, documentation sync checks, workflow adapters, contract authors, and release reviewers that consume compliance rule identifiers or policy manifests.
 
 ### Governance
+
+**Title**: Protect GitHub Actions adapter workflow scripts
+**Change Class**: governance
+**Version Impact**: governance-only
+**Summary**: Updated the repository boundary manifest so future `adapters/github-actions/workflows/**` scripts are protected, role-limited to Architect or Governance Steward authority, and require sensitive approval or higher before merge. This prevents Phase 06 from moving hosted enforcement logic into an under-protected adapter path.
+**Affected Area**: policies, adapters, workflows, documentation, changelog
+**PR Reference**: pending pull request for `fix/v3-adapter-workflow-boundary-protection`
+**Task Reference**: FAE-GOV-2026-05-11-009
+**Approval Class**: governance-class
 
 **Title**: Repair docs sync policy manifest paths
 **Change Class**: governance

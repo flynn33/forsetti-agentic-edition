@@ -1,0 +1,11 @@
+.forsetti/remediation-v3/phase-06-boundary-protection-changed-files.txt
+.forsetti/remediation-v3/phase-06-boundary-protection-contract-result.json
+.forsetti/remediation-v3/phase-06-boundary-protection-report.md
+.forsetti/remediation-v3/phase-06-boundary-protection-validator-result.json
+changelog/CHANGELOG.md
+contracts/FAE-GOV-2026-05-11-009-adapter-workflow-boundary-protection.md
+core/policies/repo-boundaries.json
+policies/repo-boundaries.json
+wiki/Changelog.md
+wiki/Compliance.md
+wiki/Workflow.md

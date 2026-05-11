@@ -1,7 +1,7 @@
 # Compliance
 
 > **Canonical source**: [`COMPLIANCE_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/COMPLIANCE_POLICY.md)
-> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-008 policy paths, docs, changelog, and release accuracy
+> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-009 adapter workflow boundary protection
 
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
 
@@ -58,7 +58,7 @@ Scope evidence compares changed files against the task contract. Documentation e
 
 Machine-readable policy manifests can define local gate metadata in addition to canonical `FAE-C###` compliance rule IDs. Validator findings include policy-local rule IDs, condition IDs, and gate IDs when a manifest supplies that data.
 
-Phase 05 policy gates cover protected path approval, role-limited path authority, policy mirror integrity, documentation sync, changelog entry completeness, changelog history integrity, and version classification consistency. These gates make the evidence behind a pass, request-changes, or block decision traceable to a specific manifest condition.
+Policy gates cover protected path approval, role-limited path authority, policy mirror integrity, documentation sync, changelog entry completeness, changelog history integrity, and version classification consistency. The repository boundary manifest also protects GitHub Actions adapter workflow scripts before hosted enforcement logic is moved into that adapter surface. These gates make the evidence behind a pass, request-changes, or block decision traceable to a specific manifest condition.
 
 ---
 

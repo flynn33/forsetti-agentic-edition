@@ -60,6 +60,15 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ### Governance
 
+**Title**: Protect GitHub Actions adapter workflow scripts
+**Change Class**: governance
+**Version Impact**: governance-only
+**Summary**: Updated the repository boundary manifest so future `adapters/github-actions/workflows/**` scripts are protected, role-limited to Architect or Governance Steward authority, and require sensitive approval or higher before merge. This prevents Phase 06 from moving hosted enforcement logic into an under-protected adapter path.
+**Affected Area**: policies, adapters, workflows, documentation, changelog
+**PR Reference**: pending pull request for `fix/v3-adapter-workflow-boundary-protection`
+**Task Reference**: FAE-GOV-2026-05-11-009
+**Approval Class**: governance-class
+
 **Title**: Repair docs sync policy manifest paths
 **Change Class**: governance
 **Version Impact**: governance-only
