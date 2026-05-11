@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, edited, synchronize, reopened]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   version-impact-check:
     name: Validate Version Impact Classification
@@ -11,109 +15,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Detect changed files
-        id: changed
-        uses: tj-actions/changed-files@v44
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Validate version impact
-        env:
-          PR_BODY: ${{ github.event.pull_request.body }}
-          ALL_CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
-        run: |
-          if [ -z "$PR_BODY" ]; then
-            echo "::error::PR body is empty. Cannot determine version impact."
-            exit 1
-          fi
-
-          # Extract Release Impact value
-          RELEASE_IMPACT=$(echo "$PR_BODY" | grep -oP '(?<=\*\*Release Impact\*\*:\s)<!--\s*)?(\w[\w-]*)' | head -1 || true)
-          if [ -z "$RELEASE_IMPACT" ]; then
-            # Try alternate pattern without HTML comment artifacts
-            RELEASE_IMPACT=$(echo "$PR_BODY" | grep -A0 '**Release Impact**' | sed 's/.*:\s*//' | sed 's/<!--.*-->//g' | tr -d '[:space:]' | head -1 || true)
-          fi
-
-          # Extract Change Class value
-          CHANGE_CLASS=$(echo "$PR_BODY" | grep -A0 '**Change Class**' | sed 's/.*:\s*//' | sed 's/<!--.*-->//g' | tr -d '[:space:]' | head -1 || true)
-
-          echo "Detected Release Impact: '$RELEASE_IMPACT'"
-          echo "Detected Change Class: '$CHANGE_CLASS'"
-
-          # Check if governance-sensitive paths were touched
-          GOVERNANCE_TOUCHED=false
-          GOVERNANCE_PATHS=(
-            "FORSETTI_CONSTITUTION.md"
-            "AGENTS.md"
-            "COMPLIANCE_POLICY.md"
-            "CHANGE_CONTROL_POLICY.md"
-            "RELEASE_POLICY.md"
-            "DOCUMENTATION_POLICY.md"
-            "policies/"
-            "agents/"
-          )
-
-          for file in $ALL_CHANGED_FILES; do
-            for gov_path in "${GOVERNANCE_PATHS[@]}"; do
-              if [[ "$file" == ${gov_path}* ]] || [[ "$file" == "$gov_path" ]]; then
-                GOVERNANCE_TOUCHED=true
-                echo "Governance path modified: $file"
-              fi
-            done
-          done
-
-          FAILED=0
-          WARNINGS=()
-
-          # Validate: governance changes should have governance-only or major impact
-          if [ "$GOVERNANCE_TOUCHED" = true ]; then
-            if [[ "$RELEASE_IMPACT" != "governance-only" ]] && [[ "$RELEASE_IMPACT" != "major" ]]; then
-              echo "::error::Governance-sensitive paths were modified but Release Impact is '$RELEASE_IMPACT'."
-              echo "Governance changes should have Release Impact of 'governance-only' or 'major'."
-              FAILED=1
-            fi
-          fi
-
-          # Validate: change class vs release impact consistency
-          case "$CHANGE_CLASS" in
-            governance)
-              if [[ "$RELEASE_IMPACT" != "governance-only" ]] && [[ "$RELEASE_IMPACT" != "major" ]]; then
-                echo "::error::Change Class is 'governance' but Release Impact is '$RELEASE_IMPACT'. Expected 'governance-only' or 'major'."
-                FAILED=1
-              fi
-              ;;
-            metadata)
-              if [[ "$RELEASE_IMPACT" != "none" ]]; then
-                WARNINGS+=("Change Class is 'metadata' but Release Impact is '$RELEASE_IMPACT'. Expected 'none'.")
-              fi
-              ;;
-            bugfix)
-              if [[ "$RELEASE_IMPACT" != "patch" ]] && [[ "$RELEASE_IMPACT" != "minor" ]] && [[ "$RELEASE_IMPACT" != "none" ]]; then
-                WARNINGS+=("Change Class is 'bugfix' but Release Impact is '$RELEASE_IMPACT'. Expected 'patch', 'minor', or 'none'.")
-              fi
-              ;;
-            breaking-change)
-              if [[ "$RELEASE_IMPACT" != "major" ]]; then
-                echo "::error::Change Class is 'breaking-change' but Release Impact is '$RELEASE_IMPACT'. Expected 'major'."
-                FAILED=1
-              fi
-              ;;
-            docs)
-              if [[ "$RELEASE_IMPACT" != "none" ]] && [[ "$RELEASE_IMPACT" != "patch" ]]; then
-                WARNINGS+=("Change Class is 'docs' but Release Impact is '$RELEASE_IMPACT'. Expected 'none' or 'patch'.")
-              fi
-              ;;
-          esac
-
-          # Print warnings
-          for warning in "${WARNINGS[@]}"; do
-            echo "::warning::$warning"
-          done
-
-          if [ "$FAILED" -eq 1 ]; then
-            echo ""
-            echo "Version impact classification does not match the change class or modified paths."
-            echo "Please update the Release Impact or Change Class in the PR description."
-            exit 1
-          fi
-
-          echo "Version impact classification is consistent. Check passed."
+        shell: pwsh
+        run: ./adapters/github-actions/workflows/check-version-impact.ps1
