@@ -11,7 +11,7 @@
     "contract_path": "contracts/FAE-TASK-2026-05-11-013-platform-overlays.md",
     "changed_files_path": ".forsetti/remediation-v3/phase-08-changed-files.txt",
     "changed_files_count": 15,
-    "timestamp_utc": "2026-05-11T19:58:58.6223449Z",
+    "timestamp_utc": "2026-05-11T22:07:03.9554180Z",
     "engine": "Core",
     "ps_version": "7.5.5"
   },
@@ -21,7 +21,7 @@
     "passed": 7,
     "warnings": 0,
     "errors": 0,
-    "duration_ms": 492
+    "duration_ms": 498
   },
   "findings": [
     {

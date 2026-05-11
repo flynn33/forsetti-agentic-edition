@@ -20,7 +20,7 @@ Windows work must preserve the same platform alignment principles:
 - capability enforcement
 - module identity validation
 - module-scoped context
-- one active UI, app, or automation surface unless a multi-surface model is documented
+- **Single active surface**: prefer one active UI, app, or automation surface unless the task contract documents a multi-surface model.
 
 Windows implementation may differ from Apple implementation, but the governance meaning must remain the same.
 

@@ -11,7 +11,7 @@
     "contract_path": null,
     "changed_files_path": null,
     "changed_files_count": 0,
-    "timestamp_utc": "2026-05-11T19:58:52.5797827Z",
+    "timestamp_utc": "2026-05-11T22:06:59.3340367Z",
     "engine": "Core",
     "ps_version": "7.5.5"
   },
@@ -21,7 +21,7 @@
     "passed": 17,
     "warnings": 0,
     "errors": 0,
-    "duration_ms": 298
+    "duration_ms": 380
   },
   "findings": [
     {
