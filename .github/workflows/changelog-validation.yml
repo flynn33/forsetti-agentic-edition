@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   changelog-format-check:
     name: Validate Changelog Entry Format
@@ -11,165 +15,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Detect changed files
-        id: changed
-        uses: tj-actions/changed-files@v44
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Validate changelog entry format
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
-          PR_BODY: ${{ github.event.pull_request.body }}
-        run: |
-          # Check if changelog was modified
-          CHANGELOG_MODIFIED=false
-          for file in $ALL_CHANGED_FILES; do
-            if [[ "$file" == "changelog/CHANGELOG.md" ]]; then
-              CHANGELOG_MODIFIED=true
-              break
-            fi
-          done
-
-          if [ "$CHANGELOG_MODIFIED" = false ]; then
-            echo "Changelog was not modified. Skipping format validation."
-            exit 0
-          fi
-
-          FAILED=0
-          WARNINGS=()
-
-          # -----------------------------------------------------------
-          # 1. Extract the newest changelog entry
-          # -----------------------------------------------------------
-          # Get content from the first ## heading to the next ## heading (or EOF)
-          ENTRY=$(awk '/^## \[/{if(found) exit; found=1} found{print}' changelog/CHANGELOG.md)
-
-          if [ -z "$ENTRY" ]; then
-            echo "::error::Could not extract a changelog entry from changelog/CHANGELOG.md."
-            exit 1
-          fi
-
-          echo "Validating newest changelog entry..."
-          echo ""
-
-          # -----------------------------------------------------------
-          # 2. Extract and validate required fields
-          # -----------------------------------------------------------
-          # Valid enum values
-          VALID_CHANGE_CLASSES="feature|bugfix|refactor|docs|governance|release|metadata|breaking-change"
-          VALID_VERSION_IMPACTS="none|patch|minor|major|governance-only"
-
-          # Extract Title
-          TITLE=$(echo "$ENTRY" | grep -oP '(?<=\*\*Title\*\*:\s).*' | head -1 | sed 's/^[[:space:]]*//' || true)
-          if [ -z "$TITLE" ]; then
-            echo "::error::Missing required field: **Title**. Every changelog entry must have a Title."
-            FAILED=1
-          else
-            TITLE_LEN=${#TITLE}
-            if [ "$TITLE_LEN" -lt 10 ]; then
-              echo "::error::Title is too short ($TITLE_LEN characters). Minimum is 10 characters."
-              FAILED=1
-            elif [ "$TITLE_LEN" -gt 120 ]; then
-              echo "::error::Title exceeds maximum length ($TITLE_LEN characters). Maximum is 120 characters."
-              FAILED=1
-            fi
-          fi
-
-          # Extract Change Class
-          CHANGE_CLASS=$(echo "$ENTRY" | grep -oP '(?<=\*\*Change Class\*\*:\s).*' | head -1 | tr -d '[:space:]' || true)
-          if [ -z "$CHANGE_CLASS" ]; then
-            echo "::error::Missing required field: **Change Class**."
-            FAILED=1
-          elif ! echo "$CHANGE_CLASS" | grep -qE "^($VALID_CHANGE_CLASSES)$"; then
-            echo "::error::Invalid Change Class: '$CHANGE_CLASS'. Must be one of: $VALID_CHANGE_CLASSES"
-            FAILED=1
-          fi
-
-          # Extract Version Impact
-          VERSION_IMPACT=$(echo "$ENTRY" | grep -oP '(?<=\*\*Version Impact\*\*:\s).*' | head -1 | tr -d '[:space:]' || true)
-          if [ -z "$VERSION_IMPACT" ]; then
-            echo "::error::Missing required field: **Version Impact**."
-            FAILED=1
-          elif ! echo "$VERSION_IMPACT" | grep -qE "^($VALID_VERSION_IMPACTS)$"; then
-            echo "::error::Invalid Version Impact: '$VERSION_IMPACT'. Must be one of: $VALID_VERSION_IMPACTS"
-            FAILED=1
-          fi
-
-          # Extract Summary
-          SUMMARY=$(echo "$ENTRY" | grep -oP '(?<=\*\*Summary\*\*:\s).*' | head -1 || true)
-          if [ -z "$SUMMARY" ]; then
-            echo "::error::Missing required field: **Summary**."
-            FAILED=1
-          else
-            SUMMARY_LEN=${#SUMMARY}
-            if [ "$SUMMARY_LEN" -lt 30 ]; then
-              echo "::error::Summary is too short ($SUMMARY_LEN characters). Minimum is 30 characters. Summary must describe impact, not just list file changes."
-              FAILED=1
-            fi
-          fi
-
-          # Extract Affected Area
-          AFFECTED_AREA=$(echo "$ENTRY" | grep -oP '(?<=\*\*Affected Area\*\*:\s).*' | head -1 | sed 's/^[[:space:]]*//' || true)
-          if [ -z "$AFFECTED_AREA" ]; then
-            echo "::error::Missing required field: **Affected Area**."
-            FAILED=1
-          fi
-
-          # -----------------------------------------------------------
-          # 3. Breaking change validation
-          # -----------------------------------------------------------
-          if [ "$CHANGE_CLASS" = "breaking-change" ]; then
-            if [ "$VERSION_IMPACT" != "major" ]; then
-              echo "::error::Change Class is 'breaking-change' but Version Impact is '$VERSION_IMPACT'. Must be 'major'."
-              FAILED=1
-            fi
-
-            # Check for migration note
-            HAS_MIGRATION=$(echo "$ENTRY" | grep -ciE '\*\*Migration Note\*\*|\*\*Migration\*\*|## Migration|### Migration' || true)
-            if [ "$HAS_MIGRATION" -eq 0 ]; then
-              echo "::error::Breaking change entries require a **Migration Note** or migration section."
-              FAILED=1
-            fi
-          fi
-
-          # -----------------------------------------------------------
-          # 4. Cross-reference with PR body Change Class
-          # -----------------------------------------------------------
-          if [ -n "$PR_BODY" ] && [ -n "$CHANGE_CLASS" ]; then
-            PR_CHANGE_CLASS=$(echo "$PR_BODY" | grep -A0 '**Change Class**' | sed 's/.*:\s*//' | sed 's/<!--.*-->//g' | tr -d '[:space:]' | head -1 || true)
-            if [ -n "$PR_CHANGE_CLASS" ] && [ "$PR_CHANGE_CLASS" != "$CHANGE_CLASS" ]; then
-              WARNINGS+=("Changelog Change Class '$CHANGE_CLASS' differs from PR body Change Class '$PR_CHANGE_CLASS'. These should be consistent.")
-            fi
-          fi
-
-          # -----------------------------------------------------------
-          # 5. Report results
-          # -----------------------------------------------------------
-          for warning in "${WARNINGS[@]}"; do
-            echo "::warning::$warning"
-          done
-
-          echo ""
-          echo "========================================"
-          echo "  Changelog Validation Summary"
-          echo "========================================"
-          echo "  Title:          ${TITLE:-MISSING}"
-          echo "  Change Class:   ${CHANGE_CLASS:-MISSING}"
-          echo "  Version Impact: ${VERSION_IMPACT:-MISSING}"
-          echo "  Summary:        ${SUMMARY:+present (${#SUMMARY} chars)}${SUMMARY:-MISSING}"
-          echo "  Affected Area:  ${AFFECTED_AREA:-MISSING}"
-
-          if [ "$FAILED" -eq 1 ]; then
-            echo "  Status:         FAIL"
-            echo "========================================"
-            echo ""
-            echo "Please update the changelog entry in changelog/CHANGELOG.md to include all"
-            echo "required fields with valid values per the changelog format standard."
-            exit 1
-          elif [ ${#WARNINGS[@]} -gt 0 ]; then
-            echo "  Status:         WARNING"
-            echo "========================================"
-          else
-            echo "  Status:         PASS"
-            echo "========================================"
-          fi
+        shell: pwsh
+        run: ./adapters/github-actions/workflows/check-changelog-entry.ps1

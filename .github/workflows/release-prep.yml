@@ -12,6 +12,9 @@ on:
           - "true"
           - "false"
 
+permissions:
+  contents: read
+
 jobs:
   release-readiness:
     name: Validate Release Readiness
@@ -19,128 +22,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Validate changelog
-        id: changelog
-        run: |
-          CHANGELOG="changelog/CHANGELOG.md"
-          if [ ! -f "$CHANGELOG" ]; then
-            echo "::error::Changelog file not found at $CHANGELOG"
-            echo "status=failed" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Check that changelog has entries beyond just a header
-          ENTRY_COUNT=$(grep -cE '^\s*##\s' "$CHANGELOG" || true)
-          LINE_COUNT=$(wc -l < "$CHANGELOG")
-
-          if [ "$LINE_COUNT" -lt 5 ]; then
-            echo "::error::Changelog appears to be empty or has no meaningful entries."
-            echo "status=failed" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          if [ "$ENTRY_COUNT" -lt 1 ]; then
-            echo "::warning::Changelog has no version section headers (## x.y.z). Verify format."
-          fi
-
-          echo "Changelog validation passed. Found $ENTRY_COUNT version sections in $LINE_COUNT lines."
-          echo "status=passed" >> "$GITHUB_OUTPUT"
-
-      - name: Validate JSON files
-        id: json_check
-        run: |
-          JSON_ERRORS=0
-          JSON_FILES=$(find . -name "*.json" -not -path "./.git/*" 2>/dev/null || true)
-
-          if [ -z "$JSON_FILES" ]; then
-            echo "No JSON files found. Skipping JSON validation."
-            echo "status=passed" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          for file in $JSON_FILES; do
-            if ! python3 -c "import json; json.load(open('$file'))" 2>/dev/null; then
-              echo "::error::Invalid JSON: $file"
-              JSON_ERRORS=$((JSON_ERRORS + 1))
-            else
-              echo "Valid JSON: $file"
-            fi
-          done
-
-          if [ "$JSON_ERRORS" -gt 0 ]; then
-            echo "::error::$JSON_ERRORS JSON file(s) failed to parse."
-            echo "status=failed" >> "$GITHUB_OUTPUT"
-          else
-            echo "All JSON files parsed successfully."
-            echo "status=passed" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Validate YAML workflow files
-        id: yaml_check
-        run: |
-          YAML_ERRORS=0
-          YAML_FILES=$(find .github/workflows -name "*.yml" -o -name "*.yaml" 2>/dev/null || true)
-
-          if [ -z "$YAML_FILES" ]; then
-            echo "No YAML workflow files found. Skipping YAML validation."
-            echo "status=passed" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          for file in $YAML_FILES; do
-            if ! python3 -c "import yaml; yaml.safe_load(open('$file'))" 2>/dev/null; then
-              echo "::error::Invalid YAML: $file"
-              YAML_ERRORS=$((YAML_ERRORS + 1))
-            else
-              echo "Valid YAML: $file"
-            fi
-          done
-
-          if [ "$YAML_ERRORS" -gt 0 ]; then
-            echo "::error::$YAML_ERRORS YAML file(s) failed to parse."
-            echo "status=failed" >> "$GITHUB_OUTPUT"
-          else
-            echo "All YAML workflow files parsed successfully."
-            echo "status=passed" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Report release readiness
-        env:
-          CHANGELOG_STATUS: ${{ steps.changelog.outputs.status }}
-          JSON_STATUS: ${{ steps.json_check.outputs.status }}
-          YAML_STATUS: ${{ steps.yaml_check.outputs.status }}
-          DRY_RUN: ${{ inputs.dry_run }}
-        run: |
-          echo "====================================="
-          echo "  Release Readiness Report"
-          echo "====================================="
-          echo ""
-          echo "  Changelog:    $CHANGELOG_STATUS"
-          echo "  JSON files:   $JSON_STATUS"
-          echo "  YAML files:   $YAML_STATUS"
-          echo "  Dry run:      $DRY_RUN"
-          echo ""
-
-          READY=true
-
-          if [ "$CHANGELOG_STATUS" = "failed" ]; then
-            READY=false
-          fi
-          if [ "$JSON_STATUS" = "failed" ]; then
-            READY=false
-          fi
-          if [ "$YAML_STATUS" = "failed" ]; then
-            READY=false
-          fi
-
-          if [ "$READY" = true ]; then
-            echo "  STATUS: READY FOR RELEASE"
-            echo ""
-            echo "====================================="
-          else
-            echo "  STATUS: NOT READY — FIX ISSUES ABOVE"
-            echo ""
-            echo "====================================="
-            exit 1
-          fi
+      - name: Validate release readiness
+        shell: pwsh
+        run: ./adapters/github-actions/workflows/check-release-readiness.ps1
