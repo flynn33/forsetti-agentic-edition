@@ -30,6 +30,7 @@
       "contracts/*-template.md",
       "schemas/*.json",
       "scripts/**",
+      "adapters/github-actions/workflows/**",
       ".github/labels.json",
       ".github/CODEOWNERS",
       ".github/ISSUE_TEMPLATE/**",
@@ -115,6 +116,13 @@
         "policy_rule_id": "BOUNDARY-ROLE-SCRIPTS",
         "gate_id": "boundary-role-limited-paths",
         "reason": "Repository scripts can affect local validation and release evidence."
+      },
+      {
+        "path_pattern": "adapters/github-actions/workflows/**",
+        "allowed_roles": ["architect", "governance_steward"],
+        "policy_rule_id": "BOUNDARY-ROLE-GITHUB-ACTIONS-ADAPTER-WORKFLOWS",
+        "gate_id": "boundary-role-limited-paths",
+        "reason": "GitHub Actions adapter workflow scripts affect hosted enforcement execution and require planning or governance authority."
       },
       {
         "path_pattern": "changelog/CHANGELOG.md",
@@ -260,6 +268,13 @@
         "policy_rule_id": "BOUNDARY-APPROVAL-SCRIPTS",
         "gate_id": "boundary-protected-paths",
         "reason": "Repository scripts affect local validation and release evidence collection."
+      },
+      {
+        "path_pattern": "adapters/github-actions/workflows/**",
+        "minimum_approval_class": "sensitive",
+        "policy_rule_id": "BOUNDARY-APPROVAL-GITHUB-ACTIONS-ADAPTER-WORKFLOWS",
+        "gate_id": "boundary-protected-paths",
+        "reason": "GitHub Actions adapter workflow scripts affect hosted enforcement execution and require elevated review."
       },
       {
         "path_pattern": ".github/CODEOWNERS",
