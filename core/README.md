@@ -58,6 +58,7 @@ Phase 02 establishes host-neutral policy manifests under `core/policies/`:
 
 | File | Purpose |
 |---|---|
+| `core/policies/ai-assistance-disclosure.json` | Canonical support policy for AI assistance accountability and non-attribution. |
 | `core/policies/compliance-rules.json` | Canonical registry for `FAE-C001` through `FAE-C012`. |
 | `core/policies/repo-boundaries.json` | Portable repository boundary and approval-class manifest. |
 | `core/policies/docs-sync-rules.json` | Portable copy of documentation sync requirements. |
@@ -76,6 +77,8 @@ The root validation scripts delegate to the core validator. The validator runs f
 
 Phase 05 adds enforceable gate metadata to the boundary, documentation sync, changelog, and versioning manifests. Contract mode consumes the boundary manifest for protected and role-limited paths, consumes the docs sync manifest for same-change derived documentation checks, and checks changelog entries against the task contract before merge.
 
+Phase 07 adds the canonical support manifest for AI assistance accountability and non-attribution at `core/policies/ai-assistance-disclosure.json`.
+
 ## Phase 05 Status
 
-This directory now contains the canonical compliance policy registry, portable policy manifests with pre-merge gate metadata, local validator CLI, task contract schema, task contract JSON template, and contract enforcement rules. Optional adapter conversion and overlay validation are reserved for later remediation phases.
+This directory now contains the canonical compliance policy registry, portable policy manifests with pre-merge gate metadata, the AI assistance accountability manifest, local validator CLI, task contract schema, task contract JSON template, and contract enforcement rules. Optional adapter conversion and overlay validation are reserved for later remediation phases.

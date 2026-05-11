@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "FAE-AIA-001",
+  "policy_title": "AI Assistance Accountability and Non-Attribution",
+  "canonical_source": "core/policies/ai-assistance-disclosure.json",
+  "root_mirror": "policies/ai-assistance-disclosure.json",
+  "mirror_policy": {
+    "status": "byte_identical_compatibility_mirror",
+    "rule_id": "FAE-C011",
+    "failure_action": "block_merge"
+  },
+  "compliance_rule_id": "FAE-C012",
+  "binding_policy": "AI_ASSISTANCE_POLICY.md",
+  "decision": "request_changes",
+  "accountability_rule": {
+    "summary": "AI-assisted work must remain accountable to a human owner and governed role without attributing authorship, contribution, review, validation, approval, release, or maintenance to assistance.",
+    "required_record_fields": [
+      "accountable_human_owner",
+      "acting_governed_role",
+      "contract_id_or_remediation_phase_id",
+      "review_evidence",
+      "validation_evidence",
+      "approval_evidence_when_required"
+    ],
+    "prohibited_record_content": [
+      "tool_credit",
+      "model_credit",
+      "vendor_credit",
+      "automation_credit",
+      "agent_credit",
+      "thanks_to_assistance",
+      "citation_of_assistance",
+      "authorship_attribution_to_assistance",
+      "contributor_attribution_to_assistance"
+    ]
+  },
+  "prohibited_attribution_surfaces": [
+    "source_files",
+    "generated_code_comments",
+    "commit_messages",
+    "commit_metadata",
+    "changelog_entries",
+    "pull_request_metadata",
+    "release_notes",
+    "readme_notices",
+    "readme_footers",
+    "readme_headers",
+    "contributor_lists",
+    "authorship_metadata",
+    "documentation_prose_crediting_an_ai_system"
+  ],
+  "required_evidence": [
+    "accountable human owner",
+    "acting governed role",
+    "task contract or remediation phase reference",
+    "review evidence",
+    "validation evidence",
+    "approval evidence when required by path, role, or approval class",
+    "absence of prohibited attribution credit"
+  ],
+  "validation": {
+    "method": "policy_review_and_text_search",
+    "positive_requirements": [
+      "Confirm the accountability record identifies both a human owner and an acting governed role.",
+      "Confirm review evidence is present.",
+      "Confirm validation evidence is present.",
+      "Confirm approval evidence is present when required by path, role, or approval-class policy."
+    ],
+    "negative_requirements": [
+      "Confirm no prohibited attribution credit appears in governed delivery surfaces.",
+      "Confirm assistance is not listed as author, contributor, reviewer, validator, approver, releaser, or maintainer.",
+      "Confirm commit metadata, pull request metadata, changelog, release notes, README notices, contributor lists, authorship metadata, and documentation prose do not credit assistance."
+    ]
+  },
+  "rejection_conditions": [
+    {
+      "condition": "prohibited_attribution_credit_added",
+      "description": "The change credits assistance on a prohibited surface.",
+      "failure_action": "request_changes"
+    },
+    {
+      "condition": "missing_accountable_owner",
+      "description": "The accountability record does not identify both an accountable human owner and an acting governed role.",
+      "failure_action": "request_changes"
+    },
+    {
+      "condition": "missing_review_or_validation_trail",
+      "description": "The accountability record lacks required review or validation evidence.",
+      "failure_action": "request_changes"
+    },
+    {
+      "condition": "approval_evidence_missing_when_required",
+      "description": "The accountability record lacks approval evidence required by path, role, or approval-class policy.",
+      "failure_action": "request_changes"
+    }
+  ],
+  "related_policy_paths": [
+    "AI_ASSISTANCE_POLICY.md",
+    "COMPLIANCE_POLICY.md",
+    "AGENTS.md",
+    "core/policies/compliance-rules.json",
+    "core/policies/repo-boundaries.json"
+  ]
+}

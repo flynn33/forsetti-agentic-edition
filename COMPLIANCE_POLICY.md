@@ -114,9 +114,9 @@ Validation evidence must be real, specific, current, and traceable to commands, 
 
 Decision: block.
 
-### FAE-C012: AI Assistance Disclosure and Human Accountability
+### FAE-C012: AI Assistance Accountability and Non-Attribution
 
-Automated assistance must never replace accountable human or governed role ownership. Repository policy may require contract and evidence disclosure for automated assistance, but source, commit, footer, or contributor attribution to automation is not permitted unless a higher-authority policy explicitly allows it.
+AI-assisted work must never replace accountable human ownership or governed role accountability. `AI_ASSISTANCE_POLICY.md` prohibits attribution credit to any tool, model, vendor, automation, or agent in source files, generated code comments, commit messages, changelog entries, release notes, README notices, contributor lists, authorship metadata, and documentation prose. Governance evidence must record only the accountable human owner, acting governed role, contract ID or remediation phase ID, review evidence, validation evidence, and required approval evidence.
 
 Decision: request changes.
 

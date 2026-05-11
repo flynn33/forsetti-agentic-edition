@@ -1,7 +1,8 @@
 # Compliance
 
 > **Canonical source**: [`COMPLIANCE_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/COMPLIANCE_POLICY.md)
-> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-009 adapter workflow boundary protection
+> **Additional sources**: `AI_ASSISTANCE_POLICY.md`, `core/policies/compliance-rules.json`, `core/policies/ai-assistance-disclosure.json`
+> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
 
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
 
@@ -16,6 +17,8 @@ Compliance is determined by evidence, not confidence, assertion, or intent. A ch
 ## Canonical Rule Registry
 
 The canonical machine-readable compliance registry is `core/policies/compliance-rules.json`. The root file `policies/compliance-rules.json` is a compatibility mirror and must remain byte-for-byte identical to the core registry until the root policy hierarchy is amended.
+
+FAE-C012 is supported by `AI_ASSISTANCE_POLICY.md` and the canonical manifest `core/policies/ai-assistance-disclosure.json`.
 
 ---
 
@@ -44,7 +47,15 @@ The canonical machine-readable compliance registry is `core/policies/compliance-
 | FAE-C009 | Version Classification Accuracy | request changes |
 | FAE-C010 | Governance Change Isolation | block |
 | FAE-C011 | Evidence and Validation Integrity | block |
-| FAE-C012 | AI Assistance Disclosure and Human Accountability | request changes |
+| FAE-C012 | AI Assistance Accountability and Non-Attribution | request changes |
+
+---
+
+## AI Assistance Accountability
+
+AI-assisted work remains accountable to the human owner and governed role operating under the task contract. The accountability record must identify only the accountable human owner, acting governed role, contract ID or remediation phase ID, review evidence, validation evidence, and required approval evidence.
+
+Attribution credit to a tool, model, vendor, automation, or agent is prohibited in source files, generated code comments, commit messages, changelog entries, release notes, README notices, contributor lists, authorship metadata, and documentation prose.
 
 ---
 

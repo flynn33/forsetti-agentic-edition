@@ -1,13 +1,15 @@
 # Glossary
 
 > **Canonical sources**: repository governance documents and Phase 01 scaffold documents referenced by each term
-> **Last synced**: 2026-05-08, Phase 01 portable scaffold
+> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
 
 Key terms used throughout the Forsetti Agentic Edition governance framework.
 
 **Approval Class**: The required authority level for a change (standard, sensitive, governance-class, emergency, release-critical). Defined in `CHANGE_CONTROL_POLICY.md`.
 
 **Adapter**: An optional host integration that translates platform-specific context into portable Forsetti validation inputs without defining canonical governance rules.
+
+**AI Assistance Accountability**: The requirement that AI-assisted work remains accountable to a human owner and governed role, with contract, review, validation, and required approval evidence. Defined in `AI_ASSISTANCE_POLICY.md`.
 
 **Blocking Violation**: A compliance failure that prevents a change from being merged. Defined in `COMPLIANCE_POLICY.md`.
 
@@ -36,6 +38,8 @@ Key terms used throughout the Forsetti Agentic Edition governance framework.
 **Governance Steward**: An elevated authority role for constitutional amendments and governance-class changes.
 
 **Governance-Only**: A version impact classification for constitutional/compliance changes tracked in the changelog but not in semantic versioning.
+
+**Non-Attribution**: The prohibition on crediting a tool, model, vendor, automation, or agent as author, contributor, reviewer, validator, approver, releaser, maintainer, or source of work. Defined in `AI_ASSISTANCE_POLICY.md`.
 
 **Platform Overlay**: Platform-specific guidance that narrows local execution expectations while preserving portable core governance meaning.
 

@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-011 GitHub Actions adapter documentation sync
+> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
 
 ## Welcome
 
@@ -25,7 +25,7 @@ GitHub Actions workflow files are wrappers around adapter-owned scripts. They pr
 | [Constitution](Constitution) | Foundational principles, authority hierarchy, and governance doctrine | `FORSETTI_CONSTITUTION.md` |
 | [Agent Roles](Agent-Roles) | The governed roles, their authorities, and boundaries | `AGENTS.md`, `agents/*.md` |
 | [Workflow](Workflow) | Change control lifecycle, approval classes, and documentation policy | `CHANGE_CONTROL_POLICY.md`, `DOCUMENTATION_POLICY.md` |
-| [Compliance](Compliance) | Canonical compliance registry, evidence requirements, and outcomes | `COMPLIANCE_POLICY.md`, `core/policies/compliance-rules.json` |
+| [Compliance](Compliance) | Canonical compliance registry, evidence requirements, accountability policy, and outcomes | `COMPLIANCE_POLICY.md`, `AI_ASSISTANCE_POLICY.md`, `core/policies/compliance-rules.json` |
 | [Releases](Releases) | Versioning model, release readiness, and impact classification | `RELEASE_POLICY.md` |
 | [Changelog](Changelog) | Version history and change records | `changelog/CHANGELOG.md` |
 | [Glossary](Glossary) | Key terms and definitions | Various |
