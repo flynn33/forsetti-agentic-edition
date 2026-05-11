@@ -79,6 +79,8 @@ Phase 05 adds enforceable gate metadata to the boundary, documentation sync, cha
 
 Phase 07 adds the canonical support manifest for AI assistance accountability and non-attribution at `core/policies/ai-assistance-disclosure.json`.
 
-## Phase 05 Status
+Phase 08 expands platform overlay guidance under `overlays/generic/`, `overlays/forsetti-apple/`, and `overlays/forsetti-windows/`. Those overlays narrow local evidence expectations for host-neutral, Apple-platform, and Windows-native work while remaining dependent on the portable core.
 
-This directory now contains the canonical compliance policy registry, portable policy manifests with pre-merge gate metadata, the AI assistance accountability manifest, local validator CLI, task contract schema, task contract JSON template, and contract enforcement rules. Optional adapter conversion and overlay validation are reserved for later remediation phases.
+## Current Status
+
+This directory now contains the canonical compliance policy registry, portable policy manifests with pre-merge gate metadata, the AI assistance accountability manifest, local validator CLI, task contract schema, task contract JSON template, and contract enforcement rules. Optional adapters and platform overlays use the core as their governance base; the core does not depend on adapter scripts, overlay documents, hosted workflows, IDEs, local MCP servers, browser automation, container runtimes, or provider-specific tooling.

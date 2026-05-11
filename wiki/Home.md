@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
+> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-013 platform overlay guidance
 
 ## Welcome
 
@@ -13,9 +13,11 @@ This wiki provides navigational documentation for the Forsetti Agentic Edition g
 |:-----|:-----|:--------|
 | Portable core | `core/` | Host-neutral governance doctrine, role boundaries, enforceable task contract structure, evidence requirements, canonical policy registries with pre-merge gate metadata, and local validation interfaces. |
 | Adapters | `adapters/` | Optional host integrations that translate platform context into portable validation inputs. GitHub Actions workflow implementation lives in `adapters/github-actions/workflows/`. |
-| Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning. |
+| Overlays | `overlays/` | Host-neutral and platform-specific execution guidance that preserves core governance meaning. |
 
 GitHub Actions workflow files are wrappers around adapter-owned scripts. They preserve hosted check names while keeping enforcement logic and local-validator invocation outside the portable core.
+
+Phase 08 overlays provide `generic`, Apple-platform, and Windows-native guidance profiles. They remain subordinate to root governance documents and canonical core policy registries.
 
 ## Quick Navigation
 

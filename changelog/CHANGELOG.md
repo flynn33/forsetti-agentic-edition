@@ -20,6 +20,15 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ### Features
 
+**Title**: Add platform overlay guidance profiles
+**Change Class**: feature
+**Version Impact**: minor
+**Summary**: Expanded generic, Apple, and Windows overlays from scaffolds into guidance profiles for host-neutral operation, Apple-platform alignment, and Windows-native evidence collection while preserving portable core boundaries and avoiding product dependency on platform tooling.
+**Affected Area**: overlays, README, wiki, changelog, remediation evidence
+**PR Reference**: pending pull request for `fix/v3-platform-overlays`
+**Task Reference**: FAE-TASK-2026-05-11-013
+**Approval Class**: sensitive
+
 **Title**: Add portable local validator CLI
 **Change Class**: feature
 **Version Impact**: minor
