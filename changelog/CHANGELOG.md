@@ -31,6 +31,19 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ### Breaking Changes
 
+**Title**: Breaking: Establish AI assistance accountability without attribution
+**Change Class**: breaking-change
+**Version Impact**: major
+**Summary**: Added a compliance support policy and machine-readable manifest requiring a human accountable owner, governed role, contract or phase reference, review evidence, validation evidence, and required approval evidence while prohibiting attribution credit to tools, models, vendors, automation, or agents across governed delivery surfaces. Consumers must now collect and validate the accountability record for AI-assisted work.
+**Affected Area**: compliance, policies, documentation, wiki, changelog
+**PR Reference**: pending pull request for `fix/v3-ai-accountability-no-attribution`
+**Task Reference**: FAE-GOV-2026-05-11-012
+**Approval Class**: governance-class
+**breaking_change**: true
+**migration_note**: Consumers that process FAE-C012 must require a human accountable owner, acting governed role, contract ID or remediation phase ID, review evidence, validation evidence, and required approval evidence, and must reject attribution credit to tools, models, vendors, automation, or agents on governed delivery surfaces.
+**Migration Guidance**: Update contract templates, review checklists, validator integrations, changelog and release review procedures, and PR review practices that evaluate FAE-C012 so they distinguish accountability evidence from attribution credit. Do not record tool, model, vendor, automation, or agent names as authors, contributors, reviewers, validators, approvers, releasers, maintainers, or sources of work.
+**Affected Consumers**: Contract authors, validators, documentation reviewers, release reviewers, policy manifest consumers, downstream repositories that mirror Forsetti policy JSON, and optional adapters or checks that evaluate FAE-C012.
+
 **Title**: Breaking: Encode policy path, documentation, changelog, and release gates
 **Change Class**: breaking-change
 **Version Impact**: major
@@ -66,8 +79,8 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Task Reference**: FAE-GOV-2026-05-08-005
 **Approval Class**: governance-class
 **breaking_change**: true
-**migration_note**: Consumers that referenced old Markdown rule meanings must update to the canonical registry: `FAE-C003` is Role Separation Enforcement, `FAE-C004` is Protected Asset Governance Gate, `FAE-C005` is Changelog Entry Required for Substantive Changes, `FAE-C006` is Breaking Change Disclosure Mandate, `FAE-C007` is Completion Summary Truthfulness, `FAE-C008` is Documentation Sync Compliance, `FAE-C009` is Version Classification Accuracy, `FAE-C010` is Governance Change Isolation, `FAE-C011` is Evidence and Validation Integrity, and `FAE-C012` is AI Assistance Disclosure and Human Accountability.
-**Migration Guidance**: Consumers that referenced old Markdown rule meanings must update to the canonical registry: `FAE-C003` is Role Separation Enforcement, `FAE-C004` is Protected Asset Governance Gate, `FAE-C005` is Changelog Entry Required for Substantive Changes, `FAE-C006` is Breaking Change Disclosure Mandate, `FAE-C007` is Completion Summary Truthfulness, `FAE-C008` is Documentation Sync Compliance, `FAE-C009` is Version Classification Accuracy, `FAE-C010` is Governance Change Isolation, `FAE-C011` is Evidence and Validation Integrity, and `FAE-C012` is AI Assistance Disclosure and Human Accountability.
+**migration_note**: Consumers that referenced old Markdown rule meanings must update to the canonical registry: `FAE-C003` is Role Separation Enforcement, `FAE-C004` is Protected Asset Governance Gate, `FAE-C005` is Changelog Entry Required for Substantive Changes, `FAE-C006` is Breaking Change Disclosure Mandate, `FAE-C007` is Completion Summary Truthfulness, `FAE-C008` is Documentation Sync Compliance, `FAE-C009` is Version Classification Accuracy, `FAE-C010` is Governance Change Isolation, `FAE-C011` is Evidence and Validation Integrity, and `FAE-C012` is AI Assistance Accountability and Non-Attribution.
+**Migration Guidance**: Consumers that referenced old Markdown rule meanings must update to the canonical registry: `FAE-C003` is Role Separation Enforcement, `FAE-C004` is Protected Asset Governance Gate, `FAE-C005` is Changelog Entry Required for Substantive Changes, `FAE-C006` is Breaking Change Disclosure Mandate, `FAE-C007` is Completion Summary Truthfulness, `FAE-C008` is Documentation Sync Compliance, `FAE-C009` is Version Classification Accuracy, `FAE-C010` is Governance Change Isolation, `FAE-C011` is Evidence and Validation Integrity, and `FAE-C012` is AI Assistance Accountability and Non-Attribution.
 **Affected Consumers**: Validators, policy readers, documentation sync checks, workflow adapters, contract authors, and release reviewers that consume compliance rule identifiers or policy manifests.
 
 ### Governance

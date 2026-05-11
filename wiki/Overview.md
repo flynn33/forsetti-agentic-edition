@@ -1,11 +1,13 @@
 # Forsetti Agentic Edition Overview
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-011 GitHub Actions adapter documentation sync
+> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
 
 Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems.
 
 It is not a runtime SDK or application framework. It is a governance layer that enforces disciplined delivery through constitutional governance, role boundaries, task contracts, compliance evidence, release traceability, and documentation integrity.
+
+It also requires AI assistance accountability without attribution: governed work must identify the accountable human owner and review trail without crediting a tool, model, vendor, automation, or agent.
 
 ## Portable Architecture
 
@@ -34,6 +36,8 @@ Authority flows downward:
 | 7 | `wiki/*.md` | Derived summary content. Not canonical. |
 
 Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate documentation surfaces introduced for portability, except for canonical portable policy registries explicitly designated under `core/policies/`. They do not amend the constitutional authority hierarchy.
+
+`AI_ASSISTANCE_POLICY.md` supports `COMPLIANCE_POLICY.md` by defining FAE-C012 accountability and non-attribution requirements.
 
 ## Local Validation
 

@@ -1,7 +1,7 @@
 # Documentation
 
 > **Canonical source**: [`DOCUMENTATION_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/DOCUMENTATION_POLICY.md)
-> **Last synced**: 2026-05-10, FAE-GOV-2026-05-10-008 policy paths, docs, changelog, and release accuracy
+> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
 
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
 
@@ -44,6 +44,7 @@ The documentation policy defines these canonical-to-wiki pairs:
 | `FORSETTI_CONSTITUTION.md` | `wiki/Constitution.md` |
 | `AGENTS.md` | `wiki/Agent-Roles.md` and `wiki/Workflow.md` |
 | `COMPLIANCE_POLICY.md` | `wiki/Compliance.md` |
+| `AI_ASSISTANCE_POLICY.md` | `wiki/Compliance.md` |
 | `RELEASE_POLICY.md` | `wiki/Releases.md` |
 | `CHANGE_CONTROL_POLICY.md` | `wiki/Workflow.md` |
 | `DOCUMENTATION_POLICY.md` | `wiki/Documentation.md` |
@@ -60,6 +61,7 @@ Additional core policy sync pairs include:
 | Canonical Source | Wiki Derived Page |
 |---|---|
 | `core/policies/compliance-rules.json` | `wiki/Compliance.md` |
+| `core/policies/ai-assistance-disclosure.json` | `wiki/Compliance.md` |
 | `core/policies/repo-boundaries.json` | `wiki/Workflow.md`, `wiki/Compliance.md` |
 | `core/policies/docs-sync-rules.json` | `wiki/Documentation.md` |
 | `core/policies/versioning-rules.json` | `wiki/Releases.md` |

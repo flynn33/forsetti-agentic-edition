@@ -139,15 +139,15 @@
     },
     {
       "rule_id": "FAE-C012",
-      "title": "AI Assistance Disclosure and Human Accountability",
+      "title": "AI Assistance Accountability and Non-Attribution",
       "severity": "high",
       "decision": "request_changes",
       "responsible_roles": ["builder", "validator", "governance_steward"],
-      "description": "Automated assistance must never replace accountable human or governed role ownership. Repository policy may require contract and evidence disclosure for automated assistance, but source, commit, footer, or contributor attribution to automation is not permitted unless a higher-authority policy explicitly allows it.",
-      "required_evidence": ["accountable owner or role", "task contract reference", "evidence of reviewed outputs", "absence of prohibited source or contributor attribution"],
-      "validation": "Confirm accountable ownership, contract traceability, review evidence, and absence of prohibited attribution lines.",
-      "remediation": "Remove prohibited attribution, add accountable ownership evidence, or request an explicit governance exception.",
-      "related_policy_paths": ["COMPLIANCE_POLICY.md", "AGENTS.md"]
+      "description": "AI-assisted work must never replace accountable human ownership or governed role accountability. Attribution credit to tools, models, vendors, automation, or agents is prohibited in source files, generated code comments, commit messages, changelog entries, release notes, README notices, contributor lists, authorship metadata, and documentation prose.",
+      "required_evidence": ["accountable human owner", "acting governed role", "task contract or remediation phase reference", "review evidence", "validation evidence", "approval evidence when required", "absence of prohibited attribution credit"],
+      "validation": "Confirm accountable ownership, contract or phase traceability, review evidence, validation evidence, required approval evidence, and absence of prohibited attribution credit.",
+      "remediation": "Remove prohibited attribution credit and add missing accountability, review, validation, or required approval evidence.",
+      "related_policy_paths": ["AI_ASSISTANCE_POLICY.md", "COMPLIANCE_POLICY.md", "AGENTS.md", "core/policies/ai-assistance-disclosure.json"]
     }
   ]
 }

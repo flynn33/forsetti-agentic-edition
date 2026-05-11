@@ -39,6 +39,7 @@ Forsetti Agentic Edition exists to prevent these failures through explicit gover
 - Task contracts and scope binding
 - Repository change control and approval workflows
 - Compliance evidence and validation requirements
+- AI assistance accountability without attribution
 - Versioning discipline and release integrity
 - Changelog requirements and release traceability
 - Documentation synchronization and drift prevention
@@ -120,6 +121,8 @@ Hosted workflow execution is convenience automation. Required compliance evidenc
 - `RELEASE_POLICY.md` — Versioning discipline, changelog requirements, release readiness
 - `DOCUMENTATION_POLICY.md` — Canonical sources, wiki role, synchronization rules
 
+`AI_ASSISTANCE_POLICY.md` is a compliance support policy under `COMPLIANCE_POLICY.md`. It defines FAE-C012 accountability and non-attribution requirements.
+
 ---
 
 ## Role Model
@@ -164,6 +167,7 @@ This framework operates with a **strict default posture**.
 
 ```
 ├── AGENTS.md
+├── AI_ASSISTANCE_POLICY.md
 ├── CHANGE_CONTROL_POLICY.md
 ├── CODE_OF_DELIVERY.md
 ├── COMPLIANCE_POLICY.md
@@ -200,6 +204,7 @@ This framework operates with a **strict default posture**.
   ├── contracts/
     ├── task-contract-template.json
   ├── policies/
+    ├── ai-assistance-disclosure.json
     ├── changelog-rules.json
     ├── compliance-rules.json
     ├── docs-sync-rules.json
@@ -221,6 +226,7 @@ This framework operates with a **strict default posture**.
     ├── README.md
 ├── policies/
   ├── agent-roles.json
+  ├── ai-assistance-disclosure.json
   ├── changelog-rules.json
   ├── compliance-rules.json
   ├── docs-sync-rules.json
@@ -269,6 +275,7 @@ Read the policy document relevant to your current task:
 
 - Making changes? Read `CHANGE_CONTROL_POLICY.md`
 - Validating work? Read `COMPLIANCE_POLICY.md`
+- Recording AI-assisted work? Read `AI_ASSISTANCE_POLICY.md`
 - Preparing a release? Read `RELEASE_POLICY.md`
 - Updating documentation? Read `DOCUMENTATION_POLICY.md`
 
