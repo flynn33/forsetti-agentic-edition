@@ -1,0 +1,9 @@
+.forsetti/remediation-v3/final-acceptance-decision.md
+.forsetti/remediation-v3/final-validation-changed-files.txt
+.forsetti/remediation-v3/final-validation-contract-result.json
+.forsetti/remediation-v3/final-validation-report.md
+.forsetti/remediation-v3/final-validation-validator-result.json
+.forsetti/remediation-v3/final-validation.json
+changelog/CHANGELOG.md
+contracts/FAE-TASK-2026-05-12-014-final-validation-audit.md
+wiki/Changelog.md

@@ -1,13 +1,24 @@
 # Changelog
 
 > **Canonical source**: `changelog/CHANGELOG.md`
-> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-013 platform overlay guidance
+> **Last synced**: 2026-05-12, FAE-TASK-2026-05-12-014 final validation audit
 
 All notable changes to the Forsetti Agentic Edition governance framework are documented in this file.
 
 The changelog is a governance record. Entries must be accurate, specific, and traceable.
 
 ## [Unreleased]
+
+### Release
+
+**Title**: Record final validation acceptance audit
+**Change Class**: release
+**Version Impact**: none
+**Summary**: Added Phase 09 final validation, regression, readiness, and acceptance audit evidence for the v3 remediation package without changing framework behavior, policy meaning, schema shape, workflow behavior, or consumer obligations.
+**Affected Area**: remediation evidence, release readiness
+**PR Reference**: pending pull request for `test/v3-final-validation`
+**Task Reference**: FAE-TASK-2026-05-12-014
+**Approval Class**: release-critical
 
 ### Documentation
 
