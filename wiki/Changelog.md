@@ -1,7 +1,7 @@
 # Changelog
 
 > **Canonical source**: `changelog/CHANGELOG.md`
-> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-013 platform overlay guidance
+> **Last synced**: 2026-05-12, FAE-TASK-2026-05-12-014 final validation audit
 
 All notable changes to the Forsetti Agentic Edition governance framework are documented in this file.
 
