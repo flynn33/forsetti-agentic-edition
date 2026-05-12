@@ -6,6 +6,17 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ## [Unreleased]
 
+### Release
+
+**Title**: Record final validation acceptance audit
+**Change Class**: release
+**Version Impact**: none
+**Summary**: Added Phase 09 final validation, regression, readiness, and acceptance audit evidence for the v3 remediation package without changing framework behavior, policy meaning, schema shape, workflow behavior, or consumer obligations.
+**Affected Area**: remediation evidence, release readiness
+**PR Reference**: pending pull request for `test/v3-final-validation`
+**Task Reference**: FAE-TASK-2026-05-12-014
+**Approval Class**: release-critical
+
 ### Documentation
 
 **Title**: Document GitHub Actions adapter conversion
