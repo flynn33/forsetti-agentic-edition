@@ -1,0 +1,15 @@
+.forsetti/remediation-v3/phase-08-changed-files.txt
+.forsetti/remediation-v3/phase-08-contract-result.json
+.forsetti/remediation-v3/phase-08-report.md
+.forsetti/remediation-v3/phase-08-validator-result.json
+changelog/CHANGELOG.md
+contracts/FAE-TASK-2026-05-11-013-platform-overlays.md
+core/README.md
+overlays/forsetti-apple/README.md
+overlays/forsetti-windows/README.md
+overlays/generic/README.md
+README.md
+wiki/Changelog.md
+wiki/Glossary.md
+wiki/Home.md
+wiki/Overview.md

@@ -67,9 +67,11 @@ Forsetti Agentic Edition is organized around a portable governance core, optiona
 |---|---|---|
 | Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and future validation interfaces. |
 | Adapters | `adapters/` | Optional host integrations that translate local or hosted platform context into portable validation inputs. |
-| Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning while documenting local expectations. |
+| Overlays | `overlays/` | Host-neutral and platform-specific execution guidance that preserves core governance meaning while documenting local expectations. |
 
 The portable core must not depend on adapters, overlays, hosted workflow runners, IDEs, local MCP servers, container runtimes, or provider-specific tooling. Those tools may support evidence collection in a governed task, but they are not core product dependencies.
+
+Phase 08 expands overlays into usable guidance profiles: `overlays/generic/` for host-neutral work, `overlays/forsetti-apple/` for Apple-platform alignment, and `overlays/forsetti-windows/` for Windows-native execution evidence. Overlays remain subordinate documentation surfaces. They do not define canonical compliance rules, change role authority, or make platform tools portable core dependencies.
 
 GitHub Actions support belongs in `adapters/github-actions/` as an optional adapter surface. It does not define canonical compliance rules. Workflow files under `.github/workflows/` are thin hosted wrappers that preserve GitHub check names and delegate implementation to adapter-owned scripts under `adapters/github-actions/workflows/`.
 

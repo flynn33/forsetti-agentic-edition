@@ -1,7 +1,7 @@
 # Changelog
 
 > **Canonical source**: `changelog/CHANGELOG.md`
-> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
+> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-013 platform overlay guidance
 
 All notable changes to the Forsetti Agentic Edition governance framework are documented in this file.
 
@@ -22,6 +22,15 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Phase 06A Reference**: PR #6, merge commit `0c0a2cf6fa4b99de1bd839332991ec26ba6c354e`, evidence under `.forsetti/remediation-v3/phase-06a-*`
 
 ### Features
+
+**Title**: Add platform overlay guidance profiles
+**Change Class**: feature
+**Version Impact**: minor
+**Summary**: Expanded generic, Apple, and Windows overlays from scaffolds into guidance profiles for host-neutral operation, Apple-platform alignment, and Windows-native evidence collection while preserving portable core boundaries and avoiding product dependency on platform tooling.
+**Affected Area**: overlays, README, wiki, changelog, remediation evidence
+**PR Reference**: pending pull request for `fix/v3-platform-overlays`
+**Task Reference**: FAE-TASK-2026-05-11-013
+**Approval Class**: sensitive
 
 **Title**: Add portable local validator CLI
 **Change Class**: feature

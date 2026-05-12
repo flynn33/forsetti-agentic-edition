@@ -1,7 +1,7 @@
 # Forsetti Agentic Edition Overview
 
 > **Canonical source**: `README.md`
-> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
+> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-013 platform overlay guidance
 
 Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems.
 
@@ -17,9 +17,11 @@ Forsetti Agentic Edition is organized around three layers:
 |---|---|---|
 | Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and local validation interfaces. |
 | Adapters | `adapters/` | Optional host integrations that translate local or hosted platform context into portable validation inputs. |
-| Overlays | `overlays/` | Platform-specific execution guidance that preserves core governance meaning while documenting local expectations. |
+| Overlays | `overlays/` | Host-neutral and platform-specific execution guidance that preserves core governance meaning while documenting local expectations. |
 
 GitHub Actions support is an optional adapter surface under `adapters/github-actions/`. It does not define canonical compliance rules. Workflow files under `.github/workflows/` are thin hosted wrappers that preserve check names and delegate implementation to scripts in `adapters/github-actions/workflows/`.
+
+The overlay profiles under `overlays/generic/`, `overlays/forsetti-apple/`, and `overlays/forsetti-windows/` document host-neutral, Apple-platform, and Windows-native execution guidance. They do not amend compliance outcomes, task contract requirements, validator behavior, or role authority.
 
 ## Core Documents
 
@@ -53,7 +55,7 @@ The repository now includes:
 - `core/contracts/task-contract-template.json` and `core/schemas/task-contract.schema.json` for enforceable task contract structure.
 - `core/validator/contract_rules.ps1` for local task contract, protected path, documentation sync, changelog, and version evidence enforcement.
 - `adapters/github-actions/` for optional GitHub Actions integration documentation and workflow adapter scripts.
-- `overlays/generic/`, `overlays/forsetti-apple/`, and `overlays/forsetti-windows/` for platform overlay scaffolds.
+- `overlays/generic/`, `overlays/forsetti-apple/`, and `overlays/forsetti-windows/` for platform overlay guidance profiles.
 - Root governance, policy, standards, contracts, schemas, scripts, changelog, and wiki documentation.
 
 ## Operating Model

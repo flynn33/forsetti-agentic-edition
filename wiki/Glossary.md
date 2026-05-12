@@ -1,7 +1,7 @@
 # Glossary
 
-> **Canonical sources**: repository governance documents and Phase 01 scaffold documents referenced by each term
-> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
+> **Canonical sources**: repository governance documents and overlay guidance documents referenced by each term
+> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-013 platform overlay guidance
 
 Key terms used throughout the Forsetti Agentic Edition governance framework.
 
@@ -41,7 +41,7 @@ Key terms used throughout the Forsetti Agentic Edition governance framework.
 
 **Non-Attribution**: The prohibition on crediting a tool, model, vendor, automation, or agent as author, contributor, reviewer, validator, approver, releaser, maintainer, or source of work. Defined in `AI_ASSISTANCE_POLICY.md`.
 
-**Platform Overlay**: Platform-specific guidance that narrows local execution expectations while preserving portable core governance meaning.
+**Platform Overlay**: Host-neutral or platform-specific guidance under `overlays/` that narrows local execution expectations while preserving portable core governance meaning. Phase 08 defines generic, Apple-platform, and Windows-native overlay profiles.
 
 **Portable Core**: The host-neutral Forsetti layer under `core/`. It must not depend on adapters, overlays, hosted workflows, IDEs, local MCP servers, container runtimes, or provider-specific tooling.
 
