@@ -2,258 +2,68 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://forsetti.dev/schemas/agentic-edition/validator-result.schema.json",
   "title": "Forsetti Agentic Edition Validator Result",
-  "description": "Machine-readable result emitted by the portable local Forsetti validator.",
   "type": "object",
   "required": [
-    "schema_version",
-    "validator",
-    "invocation",
-    "summary",
+    "status",
     "findings"
   ],
   "properties": {
-    "schema_version": {
-      "type": "string",
-      "const": "1.0"
+    "status": {
+      "enum": [
+        "pass",
+        "request_changes",
+        "block"
+      ]
     },
-    "validator": {
-      "type": "object",
-      "required": [
-        "name",
-        "version"
-      ],
-      "properties": {
-        "name": {
-          "type": "string",
-          "const": "forsetti_validate"
-        },
-        "version": {
-          "type": "string",
-          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
-        }
-      },
-      "additionalProperties": false
-    },
-    "invocation": {
-      "type": "object",
-      "required": [
-        "repo_root",
-        "mode",
-        "strict",
-        "contract_path",
-        "changed_files_path",
-        "changed_files_count",
-        "timestamp_utc",
-        "engine",
-        "ps_version"
-      ],
-      "properties": {
-        "repo_root": {
-          "type": "string",
-          "minLength": 1
-        },
-        "mode": {
-          "type": "string",
-          "enum": [
-            "all",
-            "files",
-            "structure",
-            "json",
-            "policies",
-            "policy",
-            "docs",
-            "schemas",
-            "schema",
-            "scripts",
-            "contract",
-            "contracts"
-          ]
-        },
-        "strict": {
-          "type": "boolean"
-        },
-        "contract_path": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "changed_files_path": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "changed_files_count": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "timestamp_utc": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "engine": {
-          "type": "string",
-          "minLength": 1
-        },
-        "ps_version": {
-          "type": "string",
-          "minLength": 1
-        }
-      },
-      "additionalProperties": false
-    },
-    "summary": {
-      "type": "object",
-      "required": [
-        "status",
-        "total",
-        "passed",
-        "warnings",
-        "errors",
-        "duration_ms"
-      ],
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": [
-            "pass",
-            "request_changes",
-            "block"
-          ]
-        },
-        "total": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "passed": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "warnings": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "errors": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "duration_ms": {
-          "type": "integer",
-          "minimum": 0
-        }
-      },
-      "additionalProperties": false
+    "mode": {
+      "type": "string"
     },
     "findings": {
       "type": "array",
       "items": {
         "type": "object",
         "required": [
-          "finding_id",
           "rule_id",
-          "policy_rule_id",
-          "condition_id",
-          "gate_id",
           "severity",
-          "status",
-          "category",
-          "path",
-          "message",
-          "evidence",
-          "remediation_hint"
+          "decision",
+          "message"
         ],
         "properties": {
-          "finding_id": {
-            "type": "string",
-            "minLength": 1
-          },
           "rule_id": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "pattern": "^FAE-C[0-9]{3}$"
-          },
-          "policy_rule_id": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "minLength": 1
-          },
-          "condition_id": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "minLength": 1
-          },
-          "gate_id": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "minLength": 1
+            "type": "string"
           },
           "severity": {
-            "type": "string",
             "enum": [
               "info",
-              "warning",
-              "error"
+              "low",
+              "medium",
+              "high",
+              "critical"
             ]
           },
-          "status": {
-            "type": "string",
+          "decision": {
             "enum": [
               "pass",
-              "warn",
-              "fail"
-            ]
-          },
-          "category": {
-            "type": "string",
-            "enum": [
-              "structure",
-              "json",
-              "policy",
-              "docs",
-              "schema",
-              "scripts",
-              "contract",
-              "scope",
-              "approval",
-              "changelog",
-              "evidence"
-            ]
-          },
-          "path": {
-            "type": [
-              "string",
-              "null"
+              "request_changes",
+              "block"
             ]
           },
           "message": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "evidence": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
-          "remediation_hint": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "remediation": {
+            "type": "string"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": true
 }

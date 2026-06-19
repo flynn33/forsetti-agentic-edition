@@ -138,3 +138,7 @@ Names must reduce interpretation risk.
 - Prefer consistency over variety.
 
 A naming violation is a compliance issue. Names are not cosmetic — they are governance infrastructure.
+
+## Forsetti Enforcement Names
+
+Forsetti rule IDs use `FAE-F###`. Canonical edition profile files use `forsetti-apple-<version>.profile.json` and `forsetti-windows-<version>.profile.json`. Manifest schema files use `module-manifest-<schema-version>.schema.json`.

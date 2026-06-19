@@ -1,0 +1,90 @@
+{
+  "generated_utc": "2026-06-19T16:56:42.257977+00:00",
+  "source_trees": {
+    "forsetti-agentic-edition-main": {
+      "path": "/volumes/nvme/github/ffae",
+      "exists": true,
+      "status": {
+        "ok": true,
+        "output": "## main...origin/main\n M AGENTS.md\n M COMPLIANCE_POLICY.md\n M FORSETTI_CONSTITUTION.md\n M README.md\n M VISION.md\n M agents/architect.md\n M agents/builder.md\n M agents/docs-manager.md\n M agents/release-manager.md\n M agents/validator.md\n M changelog/CHANGELOG.md\n M contracts/task-contract-template.md\n M core/AGENTS.md\n M core/README.md\n M core/contracts/task-contract-template.json\n M core/schemas/task-contract.schema.json\n M core/schemas/validator-result.schema.json\n M core/validator/README.md\n M core/validator/forsetti_validate.ps1\n M overlays/forsetti-apple/README.md\n M overlays/forsetti-windows/README.md\n M overlays/generic/README.md\n M schemas/task-contract.schema.json\n M scripts/validate-repo.ps1\n M standards/changelog-standard.md\n M standards/documentation-standard.md\n M standards/naming-standard.md\n M standards/review-standard.md\n M standards/versioning-standard.md\n M wiki/Compliance.md\n M wiki/Glossary.md\n M wiki/Home.md\n M wiki/Overview.md\n M wiki/Workflow.md\n?? ACCOUNTABILITY_POLICY.md\n?? core/contracts/forsetti-project-context-template.json\n?? core/enforcement/\n?? core/policies/accountability-rules.json\n?? core/policies/agent-enforcement-actions.json\n?? core/policies/capability-rules.json\n?? core/policies/dependency-boundary-rules.json\n?? core/policies/forsetti-enforcement-rules.json\n?? core/policies/manifest-rules.json\n?? core/policies/mcp-provider-policy.json\n?? core/policies/mcp-resolution-order.json\n?? core/policies/module-isolation-rules.json\n?? core/policies/public-api-rules.json\n?? core/policies/runtime-requirement-rules.json\n?? core/policies/service-access-rules.json\n?? core/policies/ui-contribution-rules.json\n?? core/schemas/edition-profile.schema.json\n?? core/schemas/forsetti-project-context.schema.json\n?? core/schemas/module-manifest-1.1.schema.json\n?? core/validator/rules/\n?? editions/\n?? policies/accountability-rules.json\n?? policies/agent-enforcement-actions.json\n?? policies/capability-rules.json\n?? policies/dependency-boundary-rules.json\n?? policies/forsetti-enforcement-rules.json\n?? policies/manifest-rules.json\n?? policies/mcp-provider-policy.json\n?? policies/mcp-resolution-order.json\n?? policies/module-isolation-rules.json\n?? policies/public-api-rules.json\n?? policies/runtime-requirement-rules.json\n?? policies/service-access-rules.json\n?? policies/ui-contribution-rules.json\n?? schemas/module-manifest-1.1.schema.json\n?? standards/mcp-local-helper-standard.md\n?? tests/"
+      },
+      "head": {
+        "ok": true,
+        "output": "c3d54ef (HEAD -> main, origin/main, origin/HEAD) Revise software license terms and conditions"
+      },
+      "tracked_file_count": 179
+    },
+    "Forsetti-Framework-Mac-iOS-main": {
+      "path": "/volumes/nvme/GitHub/forsetti-framework-Mac-iOS",
+      "exists": true,
+      "status": {
+        "ok": true,
+        "output": "## docs/wiki-page-archive...origin/docs/wiki-page-archive"
+      },
+      "head": {
+        "ok": true,
+        "output": "2d78414 (HEAD -> docs/wiki-page-archive, origin/docs/wiki-page-archive) docs: add wiki page archive"
+      },
+      "tracked_file_count": 110
+    },
+    "Forsetti-Framework-Windows-main": {
+      "path": "/volumes/nvme/GitHub/Forsetti-Framework-Windows",
+      "exists": true,
+      "status": {
+        "ok": true,
+        "output": "## alignment/windows-runtime-boundaries...origin/alignment/windows-runtime-boundaries"
+      },
+      "head": {
+        "ok": true,
+        "output": "19ab804 (HEAD -> alignment/windows-runtime-boundaries, origin/alignment/windows-runtime-boundaries) Fix repository surface check inputs"
+      },
+      "tracked_file_count": 166
+    },
+    "conflicting-local-windows-tree-not-used": {
+      "path": "/volumes/nvme/GitHub/MCOS/Forsetti-Framework-Windows-main/Forsetti-Framework-Windows-main",
+      "exists": true,
+      "status": {
+        "ok": true,
+        "output": "## fix/bug-campaign-2026-06...origin/fix/bug-campaign-2026-06"
+      },
+      "head": {
+        "ok": true,
+        "output": "66d9dcb (HEAD -> fix/bug-campaign-2026-06, origin/fix/bug-campaign-2026-06) Remove test crash-localization scaffolding now that the suite is green"
+      },
+      "tracked_file_count": null
+    }
+  },
+  "framework_versions": {
+    "apple": {
+      "version": "0.1.3",
+      "evidence": "version.txt and README.md in Apple source tree"
+    },
+    "windows": {
+      "version": "0.2.0",
+      "evidence": "vcpkg.json and Windows source tree manifest 1.1 examples"
+    }
+  },
+  "manifest_versions": {
+    "apple": {
+      "schema": "1.1",
+      "template": "1.1"
+    },
+    "windows": {
+      "schema": "1.1",
+      "template": "1.1"
+    }
+  },
+  "boundary": {
+    "ffae_is_governance_only": true,
+    "apple_runtime_changes_in_scope": false,
+    "windows_runtime_changes_in_scope": false
+  },
+  "path_mismatches": [
+    "Previous validator mode set lacked project-context, edition-profile, manifest, dependencies, capabilities, module-isolation, and evidence modes.",
+    "Previous validator findings used legacy status/remediation_hint fields without required decision/evidence/remediation fields.",
+    "Older remediation-v2 and remediation-v3 evidence remains historical and is not the active package output path."
+  ],
+  "local_source_conflicts": [
+    "A nested Windows tree under MCOS still shows schema 1.0 examples and was not used as the Windows 0.2.0 manifest 1.1 profile source."
+  ]
+}

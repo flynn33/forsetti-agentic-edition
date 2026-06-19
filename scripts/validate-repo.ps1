@@ -2,11 +2,14 @@
 
 [CmdletBinding()]
 param(
-    [ValidateSet("all", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts", "contract", "contracts")]
+    [ValidateSet("all", "repo", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts", "contract", "contracts", "project-context", "edition-profile", "manifest", "dependencies", "capabilities", "module-isolation", "evidence")]
     [string]$Mode = "all",
     [string]$OutputJson,
     [switch]$Strict,
     [string]$ContractPath,
+    [string]$ProjectContextPath,
+    [string]$EditionProfilePath,
+    [string]$ManifestPath,
     [Alias("ChangedFiles")]
     [string[]]$ChangedFile,
     [string]$ChangedFilesPath
@@ -41,6 +44,15 @@ if (-not [string]::IsNullOrWhiteSpace($OutputJson)) {
 }
 if (-not [string]::IsNullOrWhiteSpace($ContractPath)) {
     $validatorArgs.ContractPath = $ContractPath
+}
+if (-not [string]::IsNullOrWhiteSpace($ProjectContextPath)) {
+    $validatorArgs.ProjectContextPath = $ProjectContextPath
+}
+if (-not [string]::IsNullOrWhiteSpace($EditionProfilePath)) {
+    $validatorArgs.EditionProfilePath = $EditionProfilePath
+}
+if (-not [string]::IsNullOrWhiteSpace($ManifestPath)) {
+    $validatorArgs.ManifestPath = $ManifestPath
 }
 if (@($ChangedFile).Count -gt 0) {
     $validatorArgs.ChangedFile = $ChangedFile

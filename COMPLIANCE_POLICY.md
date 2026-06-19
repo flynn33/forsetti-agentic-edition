@@ -78,6 +78,16 @@ Every meaningful change must include a changelog entry with the required fields,
 
 Decision: request changes.
 
+---
+
+## Forsetti Enforcement Rules
+
+The canonical Forsetti-specific enforcement registry is `core/policies/forsetti-enforcement-rules.json`, mirrored at `policies/forsetti-enforcement-rules.json`.
+
+Rules `FAE-F001` through `FAE-F020` extend the generic `FAE-C###` compliance model for Forsetti app/module work. They cover required project context, selected edition/version profile, supported target platform, manifest 1.1 validation, manifest/code identity alignment, module isolation, direct dependency prohibition, direct data sharing prohibition, declared capability use, runtime requirements, public API-only use, sealed framework internals, one-way dependency direction, UI/app active surface invariants, service module UI contribution prohibition, constructor injection, hidden globals/service-location, platform-native toolchain evidence, required verification commands, and completion evidence mapped to the selected profile.
+
+Forsetti enforcement rules are blocking when they protect sealed-runtime, manifest, dependency, capability, public API, or module-isolation invariants. The local validator must emit rule IDs, severity, decision, message, evidence, and remediation.
+
 ### FAE-C006: Breaking Change Disclosure Mandate
 
 A change that alters existing governance rules, required fields, default behavior, schemas, workflow enforcement, or consumer obligations must be explicitly classified as breaking-change with major version impact unless the Release Manager documents a higher-authority exception.

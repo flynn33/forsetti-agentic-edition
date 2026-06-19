@@ -15,6 +15,7 @@
     "reviewer_role",
     "change_class",
     "approval_class",
+    "forsetti_project_context",
     "objective",
     "business_reason",
     "scope",
@@ -243,6 +244,9 @@
     },
     "completion_summary_requirements": {
       "$ref": "#/$defs/non_empty_string_array"
+    },
+    "forsetti_project_context": {
+      "$ref": "forsetti-project-context.schema.json"
     }
   },
   "allOf": [

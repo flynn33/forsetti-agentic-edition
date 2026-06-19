@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/schemas/agentic-edition/edition-profile.schema.json",
+  "title": "Forsetti Edition Profile",
+  "type": "object",
+  "required": [
+    "edition",
+    "frameworkVersion",
+    "supportedPlatforms",
+    "nativeTools",
+    "publicProducts",
+    "manifest",
+    "capabilities",
+    "dependencyRules",
+    "verificationCommands"
+  ],
+  "properties": {
+    "edition": {
+      "enum": [
+        "apple",
+        "windows",
+        "shared"
+      ]
+    },
+    "frameworkVersion": {
+      "type": "string"
+    },
+    "supportedPlatforms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "nativeLanguage": {
+      "type": "string"
+    },
+    "nativeTools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "publicProducts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "manifest": {
+      "type": "object",
+      "required": [
+        "currentSchemaVersion",
+        "currentTemplateVersion",
+        "moduleTypes",
+        "requiredFields"
+      ],
+      "properties": {
+        "currentSchemaVersion": {
+          "type": "string"
+        },
+        "currentTemplateVersion": {
+          "type": "string"
+        },
+        "moduleTypes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "service",
+              "ui",
+              "app"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "dependencyRules": {
+      "type": "object"
+    },
+    "verificationCommands": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

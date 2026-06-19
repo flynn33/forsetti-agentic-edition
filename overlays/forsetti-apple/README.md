@@ -1,59 +1,23 @@
-# Forsetti Apple Overlay
+# Forsetti Apple Governance Overlay
 
-The Forsetti Apple overlay is the Apple-platform alignment profile for Apple-platform work in Forsetti Agentic Edition.
+This overlay applies only to iOS and macOS work governed by the Apple edition profile.
 
-## Purpose
+## Binding Profile
 
-Use this overlay for macOS, iOS, iPadOS, watchOS, tvOS, and visionOS repositories that need Forsetti governance while preserving native Apple implementation patterns.
+Use `editions/apple/forsetti-apple-0.1.3.profile.json` unless the human owner provides an updated Apple profile. The profile binds framework version `0.1.3`, manifest schema/template `1.1`, supported platforms, public products, capabilities, dependency rules, and verification commands.
 
-This overlay defines platform alignment guidance only. It does not amend the root constitution, compliance policy, task contract requirements, release policy, or validator behavior.
+## Allowed Platform Surface
 
-## Platform Alignment Principles
+Swift, SwiftUI, Foundation, Apple frameworks, Xcode, Swift Package Manager, SwiftLint, and XCTest may be used in correct layers and modules. App-owned modules may use Apple-native APIs only when capabilities and runtime requirements are declared and bounded by the manifest.
 
-Apple-aligned work must preserve these platform alignment principles:
+## Core Boundary
 
-1. **Native-first execution**: prefer native Apple toolchains and platform capabilities when they produce stronger local evidence.
-2. **Contract-first delivery**: every meaningful change remains governed by a task contract before implementation.
-3. **Boundary-first design**: isolate platform-specific behavior from portable core governance.
-4. **Policy-first enforcement**: policy manifests and repository governance define obligations before local tools or host adapters.
-5. **Host-agnostic modules**: reusable governance logic must not depend on Apple-only APIs unless explicitly scoped to this overlay.
-6. **Capability enforcement**: platform capabilities should be explicit, least-privilege, and testable.
-7. **Module identity validation**: platform modules should have stable names, ownership, and validation evidence.
-8. **Module-scoped context**: evidence and configuration should stay close to the module or contract they support.
-9. **Single active surface**: prefer one active UI, app, or automation surface unless the task contract documents a multi-surface model.
+`ForsettiCore` must remain platform/UI independent. It must not import SwiftUI, UIKit, AppKit, StoreKit, or `ForsettiPlatform`. Consumer code must depend on public Forsetti products and must not patch framework internals.
 
-## Native Implementation Guidance
+## Manifest and Runtime Requirements
 
-Apple repositories may use:
+Manifest schema/template `1.1` is expected. Modules must declare runtime requirements for I/O, UI surface, and data isolation. UI and app modules must declare the active UI runtime surface. Service modules must not contribute UI.
 
-- Xcode, XCTest, Swift Package Manager, and platform simulators
-- macOS shell tooling and local scripts
-- signing, entitlements, and sandbox checks when relevant
-- platform-specific accessibility, security, and privacy validation
-- native build logs and test reports as evidence
+## Evidence
 
-These tools support evidence collection. They do not become portable core dependencies.
-
-## Evidence Expectations
-
-Apple overlay evidence should identify:
-
-- the task contract and changed-file scope
-- the native toolchain used
-- build, test, validation, or simulator results
-- signing, entitlement, or permission checks when relevant
-- known platform limitations or skipped checks
-- reviewer decisions
-
-Evidence must be specific enough for a reviewer to reproduce or evaluate the result.
-
-## Boundary
-
-This overlay must not:
-
-- redefine Forsetti compliance outcomes
-- change task contract structure
-- add role authority
-- weaken documentation or changelog obligations
-- require Apple tooling for non-Apple repositories
-- move host-specific assumptions into the portable core
+Apple tasks must provide profile selection, manifest evidence, capability declarations, dependency boundary evidence, module-isolation evidence, public API evidence, and the Apple verification commands required by the selected profile when practical.

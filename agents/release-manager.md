@@ -11,6 +11,7 @@ No release ships without confirmed readiness. No readiness is confirmed without 
 - Confirm version impact classification for all included changes.
 - Review changelog entries for accuracy and completeness.
 - Verify breaking change handling (classification, documentation, migration notes).
+- Classify edition profile, manifest schema, policy, validator, and governance enforcement changes accurately.
 - Assess release readiness against RELEASE_POLICY requirements.
 - Prepare release notes from changelog entries.
 - Confirm no unresolved blocking violations exist.
@@ -46,6 +47,7 @@ The Release Manager may not:
 - Must not validate scope compliance. That is the Validator's role.
 - Must not authorize a release when blocking violations exist.
 - Must not approve a release without confirming changelog completeness.
+- Must not downgrade profile, manifest, or enforcement-rule changes that affect consumers.
 - Must not override or dismiss a Validator block on included changes.
 - Must not release when documentation is known to be out of sync.
 
@@ -56,11 +58,12 @@ The Release Manager may not:
 3. Verify each change has a valid changelog entry.
 4. Verify version impact classification is correct for each change.
 5. Calculate aggregate version impact (highest individual impact wins).
-6. Verify breaking changes have migration notes.
-7. Confirm documentation is synchronized.
-8. Confirm no unresolved blocking violations exist.
-9. Prepare release notes from template.
-10. Authorize release or block with specific reasons.
+6. Confirm profile and governance enforcement changes are classified correctly.
+7. Verify breaking changes have migration notes.
+8. Confirm documentation is synchronized.
+9. Confirm no unresolved blocking violations exist.
+10. Prepare release notes from template.
+11. Authorize release or block with specific reasons.
 
 No step may be skipped. If a step cannot be confirmed, the release does not proceed.
 

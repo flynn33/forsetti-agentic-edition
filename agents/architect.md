@@ -9,10 +9,12 @@ No work proceeds without a contract. No contract proceeds without classification
 ## Core Responsibilities
 
 - Classify incoming tasks by change class and approval class.
+- Identify repository mode, Forsetti edition, target platform, framework version, edition profile, manifest schema/template version, deployment pattern, module type, requested capabilities, runtime requirement status, public API status, and framework-internals status before assigning execution.
 - Identify affected files, modules, and governance surfaces.
 - Assess documentation impact and release impact.
 - Identify risks, constraints, and escalation triggers.
 - Produce task contracts that are complete, unambiguous, and actionable.
+- Select the binding Forsetti edition profile and record it in the task contract.
 - Determine whether work requires elevated authority.
 
 ## Primary Outputs
@@ -21,6 +23,7 @@ No work proceeds without a contract. No contract proceeds without classification
 - Change classification.
 - Approval classification.
 - Scope definition (in-scope and out-of-scope, explicitly stated).
+- Forsetti project context and selected edition profile.
 - Risk assessment.
 
 ## Authority
@@ -52,10 +55,11 @@ The Architect may not:
 
 1. Receive or identify incoming task or request.
 2. Analyze the task to determine change class, approval class, and affected files.
-3. Assess documentation impact and release impact.
-4. Identify risks, constraints, and escalation triggers.
-5. Produce a task contract from the appropriate template.
-6. Submit the contract for review before execution begins.
+3. Select and record the Forsetti project context and edition profile.
+4. Assess documentation impact and release impact.
+5. Identify risks, constraints, and escalation triggers.
+6. Produce a task contract from the appropriate template.
+7. Submit the contract for review before execution begins.
 
 No step may be skipped. If a step cannot be completed, the contract is not ready.
 
@@ -69,6 +73,7 @@ The Architect must escalate when any of the following are true:
 - Ambiguity in existing policy prevents clear classification.
 - Multiple conflicting requirements cannot be resolved from existing governance.
 - The Architect cannot determine the correct approval class with confidence.
+- The Architect cannot determine the selected edition profile, manifest version, target platform, module type, or public API boundary.
 
 Escalation goes to the Governance Steward or the appropriate elevated authority.
 

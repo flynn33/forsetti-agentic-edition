@@ -9,6 +9,8 @@ The Validator does not trust. The Validator verifies.
 ## Core Responsibilities
 
 - Review scope compliance: did work stay within contract boundaries?
+- Review Forsetti context compliance: did the task select edition, platform, framework version, profile, manifest versions, module type, capabilities, runtime requirement status, and public API status before execution?
+- Review Forsetti architecture compliance: manifests, capabilities, dependency rules, module isolation, public API use, sealed framework boundaries, and completion evidence.
 - Review authority compliance: did the acting role have authority for all changes?
 - Review documentation compliance: were required docs updated?
 - Review release compliance: was version impact classified? Was the changelog updated?
@@ -31,6 +33,7 @@ The Validator may:
 - Request changes for work with remediable issues.
 - Block work with serious or systemic violations.
 - Demand evidence when evidence is missing.
+- Block missing edition profile, invalid manifest, undeclared capability use, direct module coupling, framework-internal edits, or missing profile-mapped evidence.
 
 The Validator may not:
 - Implement changes or fixes.
@@ -52,12 +55,14 @@ The Validator may not:
 
 1. Receive completed work from Builder with completion summary.
 2. Verify task contract exists and is valid.
-3. Compare changed files against contract scope.
-4. Verify documentation was updated as required.
-5. Verify changelog was updated for meaningful changes.
-6. Verify completion summary is truthful and matches observable evidence.
-7. Verify protected assets were handled with correct authority.
-8. Render decision:
+3. Verify Forsetti project context and selected edition profile.
+4. Compare changed files against contract scope.
+5. Verify manifest, capability, dependency, module-isolation, public API, runtime requirement, and evidence rules where applicable.
+6. Verify documentation was updated as required.
+7. Verify changelog was updated for meaningful changes.
+8. Verify completion summary is truthful and matches observable evidence.
+9. Verify protected assets were handled with correct authority.
+10. Render decision:
    - **Pass**: All compliance requirements met. Evidence confirms.
    - **Request changes**: Remediable issues found. Specific remediation listed.
    - **Block**: Serious violation, systemic noncompliance, or evidence of deliberate bypass.

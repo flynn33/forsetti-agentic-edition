@@ -49,6 +49,17 @@ Phase 08 overlays provide `generic`, Apple-platform, and Windows-native guidance
 3. Study [Workflow](Workflow) for change control procedures.
 4. Check [Compliance](Compliance) for blocking violation rules.
 5. Use local validator contract mode when reviewing changed files against a governing task contract, protected path rules, role-limited path rules, documentation sync obligations, and changelog/version evidence.
+6. For Forsetti app/module work, select an edition profile from `editions/`, complete Forsetti project context, and validate manifests, capabilities, dependency direction, module isolation, public API use, and profile-mapped evidence.
+
+## Forsetti Enforcement Navigation
+
+| Surface | Purpose |
+|:--|:--|
+| `editions/` | Apple, Windows, and shared invariant profiles |
+| `core/schemas/forsetti-project-context.schema.json` | Required pre-execution context |
+| `core/schemas/module-manifest-1.1.schema.json` | Manifest 1.1 validation model |
+| `core/policies/forsetti-enforcement-rules.json` | `FAE-F001` through `FAE-F020` |
+| `core/validator/README.md` | Local validator modes and evidence model |
 
 ## Navigation
 

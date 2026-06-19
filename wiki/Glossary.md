@@ -41,6 +41,16 @@ Key terms used throughout the Forsetti Agentic Edition governance framework.
 
 **Non-Attribution**: The prohibition on crediting a tool, model, vendor, automation, or agent as author, contributor, reviewer, validator, approver, releaser, maintainer, or source of work. Defined in `AI_ASSISTANCE_POLICY.md`.
 
+**Edition Profile**: A machine-readable Forsetti profile under `editions/` that binds edition name, framework version, platforms, native toolchain, public products, manifest versions, module types, capabilities, dependency rules, and verification commands.
+
+**Forsetti Project Context**: The required pre-execution context for Forsetti work: repository mode, edition, target platform, framework version, edition profile, manifest versions, deployment pattern, module type, requested capabilities, runtime requirement status, public API status, and framework-internals status.
+
+**Manifest 1.1**: The Forsetti module manifest model requiring schema/template `1.1`, module identity, module type, supported platforms, capabilities, entry point, and runtime requirements for I/O, UI, and data isolation.
+
+**Module Isolation**: The invariant that modules do not import, include, call, store data with, or directly reference other module implementation symbols. Intermodule interaction must use Forsetti orchestration contracts.
+
+**Public API Boundary**: The requirement that consumer code uses public Forsetti products/contracts and does not patch sealed framework internals.
+
 **Platform Overlay**: Host-neutral or platform-specific guidance under `overlays/` that narrows local execution expectations while preserving portable core governance meaning. Phase 08 defines generic, Apple-platform, and Windows-native overlay profiles.
 
 **Portable Core**: The host-neutral Forsetti layer under `core/`. It must not depend on adapters, overlays, hosted workflows, IDEs, local MCP servers, container runtimes, or provider-specific tooling.

@@ -89,6 +89,16 @@ Unauthorized scope expansion is a blocking violation.
 
 The local validator can enforce changed files against a governing task contract with `-Mode contract`, `-ContractPath`, and either `-ChangedFile` or `-ChangedFilesPath`. Contract mode also checks required outputs, evidence artifacts, documentation and changelog obligations, and protected-path approval requirements.
 
+## Forsetti Project Context Gate
+
+Before Builder execution, the Architect must record repository mode, Forsetti edition, target platform, framework version, selected edition profile, manifest schema/template version, deployment pattern, module type, requested capabilities, runtime requirement status, public API status, and framework-internals status.
+
+Missing edition, framework version, supported target platform, manifest version, or module type blocks execution. The selected edition profile and shared invariants override lower task instructions.
+
+## Forsetti Validation Flow
+
+The local validator is the canonical enforcement entry point. GitHub Actions are optional wrappers around local governance. Target repository checks use `project-context`, `edition-profile`, `manifest`, `dependencies`, `capabilities`, `module-isolation`, and `evidence` modes as applicable.
+
 ---
 
 ## Protected Assets

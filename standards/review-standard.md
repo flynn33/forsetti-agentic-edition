@@ -95,3 +95,16 @@ Review findings must be documented in PR comments, a compliance report, or anoth
 ## Governing Principle
 
 Reviews are governance verification, not gatekeeping. A review that blocks work without citing a policy violation is an abuse of the review process. A review that approves work despite known violations is a compliance failure. The standard is objective compliance, verified through evidence.
+
+## Forsetti Enforcement Review
+
+Reviews of Forsetti app/module work must verify:
+
+- the task contract includes Forsetti project context;
+- the selected edition profile matches target platform and framework version;
+- manifest schema/template `1.1` is valid where a manifest is in scope;
+- capability-using behavior maps to declared capabilities;
+- runtime requirements cover I/O, UI, and data isolation;
+- modules do not directly couple to other module implementations;
+- consumer code uses public Forsetti APIs only;
+- completion evidence maps to required profile verification commands.

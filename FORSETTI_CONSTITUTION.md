@@ -12,16 +12,17 @@ No person, agent, role, or process may override this Constitution except through
 
 ## Authority Hierarchy
 
-The following precedence order is binding. When documents conflict, the higher-numbered authority prevails:
+The following precedence order is binding. When documents conflict, the higher authority prevails:
 
-1. **FORSETTI_CONSTITUTION.md** (this document) — supreme authority
-2. **Policy documents** (`COMPLIANCE_POLICY.md`, `CHANGE_CONTROL_POLICY.md`, `RELEASE_POLICY.md`, `DOCUMENTATION_POLICY.md`) — binding operational policy
-3. **Standards** (`standards/*.md`) — binding technical and process standards
-4. **Contract templates** (`contracts/*.md`) — binding structural templates for task governance
-5. **Machine-readable policy manifests** (`policies/*.json`) — enforceable policy in machine-consumable form
-6. **Role-specific instructions** (`agents/*.md`) — binding behavioral boundaries for governed roles
-7. **Task contracts** (instantiated from templates) — binding scope and acceptance criteria for individual work units
-8. **Issue, PR, or workflow-local instructions** — lowest authority; valid only when consistent with all higher levels
+1. **Human owner instruction** — highest task authority
+2. **Selected Forsetti edition/version profile** — binding platform, version, manifest, dependency, capability, and verification rules
+3. **Shared Forsetti sealed-runtime invariants** — binding cross-edition runtime and module-boundary invariants
+4. **FORSETTI_CONSTITUTION.md** (this document) — foundational governance authority
+5. **Policy documents** (`COMPLIANCE_POLICY.md`, `CHANGE_CONTROL_POLICY.md`, `RELEASE_POLICY.md`, `DOCUMENTATION_POLICY.md`) — binding operational policy
+6. **Machine-readable policy manifests** (`core/policies/*.json`, `policies/*.json`) — enforceable policy in machine-consumable form
+7. **Role-specific instructions, standards, and contract templates** (`agents/*.md`, `standards/*.md`, `contracts/*.md`) — binding role and process guidance
+8. **Task contracts** (instantiated from templates) — binding scope and acceptance criteria for individual work units
+9. **Issue, PR, or workflow-local instructions** — lowest authority; valid only when consistent with all higher levels
 
 A lower-authority document may **narrow** the rules defined by a higher-authority document but may never **widen**, **contradict**, or **nullify** them.
 
@@ -32,6 +33,7 @@ A lower-authority document may **narrow** the rules defined by a higher-authorit
 This Constitution exists to:
 
 - Establish foundational governance doctrine for AI-led software delivery under the Forsetti Agentic Edition framework.
+- Establish Forsetti Framework compliance doctrine for coding agents building Forsetti-compliant apps and modules.
 - Make all governance rules explicit, measurable, and enforceable.
 - Define the roles, principles, protections, and constraints that govern all work within this framework.
 - Ensure that governance is not advisory — it is structural and binding.
@@ -73,6 +75,12 @@ Every release must accurately classify its version impact, include complete chan
 ---
 
 ## Governance Doctrine
+
+### Forsetti Framework Compliance
+
+FFAE governs coding-agent compliance with Forsetti Framework architecture. A task that touches a Forsetti app or module must identify repository mode, edition, target platform, framework version, edition profile, manifest schema/template version, deployment pattern, module type, capabilities, runtime requirement status, public API boundary status, and framework-internals status before execution.
+
+FFAE does not implement Apple or Windows runtime behavior. It may validate manifests, capabilities, runtime requirements, module isolation, dependency direction, public API use, and completion evidence. It must not become a platform runtime, orchestration server, hosted dependency, CLU dependency, MCP dependency, or module loader.
 
 ### Establishment of Rules
 

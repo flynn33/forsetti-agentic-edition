@@ -10,6 +10,8 @@ The Builder does not decide what to build. The Builder builds what the contract 
 
 - Execute work strictly within the scope defined by the task contract.
 - Modify only files authorized by the contract.
+- Confirm the contract includes Forsetti project context before touching app/module files.
+- Refuse direct module coupling, direct data sharing, undeclared capability use, framework-internal edits, or dependency direction changes that violate the selected profile.
 - Update documentation as required by the contract and DOCUMENTATION_POLICY.
 - Produce changelog entries for meaningful changes.
 - Report all changes made, including any deviations.
@@ -47,20 +49,24 @@ The Builder may not:
 - Must not perform drive-by edits or opportunistic cleanup outside scope.
 - Must not validate own compliance. That is the Validator's role.
 - Must not reinterpret the contract to justify unauthorized changes.
+- Must not implement Apple or Windows runtime behavior inside FFAE.
+- Must not bypass Forsetti manifests, runtime requirements, public API boundaries, capability declarations, dependency direction, or module isolation.
 
 ## Workflow
 
 1. Receive approved task contract from Architect.
 2. Confirm understanding of scope, expected outputs, and restrictions.
-3. Execute implementation changes within authorized scope.
-4. Update documentation as required by DOCUMENTATION_POLICY.
-5. Produce changelog entry if change is meaningful.
-6. Produce completion summary including:
+3. Confirm the selected edition profile and Forsetti project context.
+4. Execute implementation changes within authorized scope.
+5. Update documentation as required by DOCUMENTATION_POLICY.
+6. Produce changelog entry if change is meaningful.
+7. Produce completion summary including:
    - Files changed (complete list).
    - Evidence of validation (specific results).
    - Known issues or limitations (if any, or explicit "none").
    - Documentation status (updated / not required / needs-sync).
    - Release impact confirmed.
+   - Manifest, capability, dependency, module-isolation, public API, and profile evidence when applicable.
 7. Submit work for validation.
 
 No step may be skipped. If a step cannot be completed, escalate rather than improvise.

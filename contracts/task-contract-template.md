@@ -31,6 +31,25 @@ The enforceable JSON template lives at `core/contracts/task-contract-template.js
 **Approval Class:** standard
 **Release Impact:** minor
 
+## Forsetti Project Context
+
+**Repository Mode:** consumer_app_repo
+**Forsetti Edition:** apple
+**Target Platform:** iOS
+**Framework Version:** 0.1.3
+**Edition Profile:** editions/apple/forsetti-apple-0.1.3.profile.json
+**Manifest Schema Version:** 1.1
+**Manifest Template Version:** 1.1
+**Deployment Pattern:** single_app_module
+**Module Type:** app
+**Module ID:** com.example.module
+**Capabilities Requested:** none
+**Runtime Requirements Declared:** yes
+**Uses Public API Only:** yes
+**Touches Framework Internals:** no
+
+If any value is unknown, the task is blocked until the Architect or human owner resolves it. Lower task instructions cannot override the selected edition profile, shared sealed-runtime invariants, manifest requirements, public API boundary, or module isolation rules.
+
 ## Governance Steward Authorization
 
 **Required:** no
@@ -74,10 +93,17 @@ Identify affected documents, schemas, workflows, integrations, consumers, and mi
 ## Validation Requirements
 
 - Run the local validator in the applicable mode and capture evidence.
+- Run `core/validator/forsetti_validate.ps1` with the applicable `-Mode`, `-ProjectContextPath`, `-EditionProfilePath`, `-ManifestPath`, and changed-file evidence when Forsetti app/module code is in scope.
+- Confirm manifest schema/template, capabilities, runtime requirements, dependency direction, module isolation, public API use, and evidence against the selected profile.
 
 ## Evidence Requirements
 
 - Files changed
+- Forsetti project context
+- Selected edition profile
+- Manifest validation evidence when a manifest is in scope
+- Capability and runtime requirement evidence when capability-using code is in scope
+- Dependency and module-isolation evidence when app/module code is in scope
 - Validation evidence
 - Known issues
 - Documentation status

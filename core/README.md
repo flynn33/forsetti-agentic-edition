@@ -13,6 +13,9 @@ The core owns:
 - contract-first execution
 - role authority boundaries
 - scope binding
+- Forsetti project context requirements
+- edition profile selection
+- manifest, capability, runtime requirement, dependency, module-isolation, and public API enforcement concepts
 - canonical compliance policy registry
 - compliance evidence requirements
 - release impact classification
@@ -59,6 +62,14 @@ Phase 02 establishes host-neutral policy manifests under `core/policies/`:
 | File | Purpose |
 |---|---|
 | `core/policies/ai-assistance-disclosure.json` | Canonical support policy for AI assistance accountability and non-attribution. |
+| `core/policies/forsetti-enforcement-rules.json` | Canonical registry for `FAE-F001` through `FAE-F020`. |
+| `core/policies/manifest-rules.json` | Manifest 1.1 enforcement summary. |
+| `core/policies/runtime-requirement-rules.json` | Runtime requirement enforcement summary. |
+| `core/policies/module-isolation-rules.json` | Module isolation enforcement summary. |
+| `core/policies/dependency-boundary-rules.json` | Dependency direction enforcement summary. |
+| `core/policies/public-api-rules.json` | Public API boundary enforcement summary. |
+| `core/policies/capability-rules.json` | Capability declaration enforcement summary. |
+| `core/policies/mcp-provider-policy.json` | Local tool provider governance. |
 | `core/policies/compliance-rules.json` | Canonical registry for `FAE-C001` through `FAE-C012`. |
 | `core/policies/repo-boundaries.json` | Portable repository boundary and approval-class manifest. |
 | `core/policies/docs-sync-rules.json` | Portable copy of documentation sync requirements. |
@@ -78,6 +89,8 @@ The root validation scripts delegate to the core validator. The validator runs f
 Phase 05 adds enforceable gate metadata to the boundary, documentation sync, changelog, and versioning manifests. Contract mode consumes the boundary manifest for protected and role-limited paths, consumes the docs sync manifest for same-change derived documentation checks, and checks changelog entries against the task contract before merge.
 
 Phase 07 adds the canonical support manifest for AI assistance accountability and non-attribution at `core/policies/ai-assistance-disclosure.json`.
+
+The current validator supports `repo`, `contract`, `project-context`, `edition-profile`, `manifest`, `dependencies`, `capabilities`, `module-isolation`, `evidence`, and `all` modes. These modes let FFAE validate itself and target Forsetti app/module repositories without requiring hosted workflows.
 
 Phase 08 expands platform overlay guidance under `overlays/generic/`, `overlays/forsetti-apple/`, and `overlays/forsetti-windows/`. Those overlays narrow local evidence expectations for host-neutral, Apple-platform, and Windows-native work while remaining dependent on the portable core.
 

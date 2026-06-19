@@ -1,0 +1,26 @@
+{
+  "generated_utc": "2026-06-19T16:56:42.440101+00:00",
+  "roots": {
+    "forsetti-agentic-edition-main": {
+      "exists": true,
+      "files_checked": 87,
+      "errors": []
+    },
+    "Forsetti-Framework-Mac-iOS-main": {
+      "exists": true,
+      "files_checked": 38,
+      "errors": []
+    },
+    "Forsetti-Framework-Windows-main": {
+      "exists": true,
+      "files_checked": 27,
+      "errors": []
+    },
+    "conflicting-local-windows-tree-not-used": {
+      "exists": true,
+      "files_checked": 6,
+      "errors": []
+    }
+  },
+  "status": "pass"
+}

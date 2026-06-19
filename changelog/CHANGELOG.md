@@ -6,6 +6,21 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ## [Unreleased]
 
+### Breaking Changes
+
+**Title**: Breaking: Add Forsetti edition-profile enforcement
+**Change Class**: breaking-change
+**Version Impact**: major
+**Summary**: Added Forsetti project context requirements, Apple and Windows edition profiles, shared sealed-runtime invariants, manifest 1.1 schema validation, Forsetti enforcement rules `FAE-F001` through `FAE-F020`, and local validator modes for profile, manifest, dependency, capability, module-isolation, and evidence checks.
+**Affected Area**: core schemas, core policies, edition profiles, task contracts, validator, agents, overlays, wiki, standards
+**PR Reference**: pending
+**Task Reference**: FFAE-GOVERNANCE-ENFORCEMENT-REMEDIATION
+**Approval Class**: governance-class
+**breaking_change**: true
+**migration_note**: Consumers that create or validate FFAE task contracts must now provide Forsetti project context before app/module execution and must map completion evidence to the selected Apple or Windows edition profile. Validator consumers must accept the new target-repository modes and `FAE-F###` findings.
+**Migration Guidance**: Update contract producers to include `forsetti_project_context`, select an edition profile from `editions/`, provide manifest 1.1 evidence where applicable, declare capability and runtime requirement evidence, and run the local validator modes that match the changed files.
+**Affected Consumers**: Task contract authors, local validator integrations, hosted workflow adapters, documentation reviewers, release reviewers, downstream repositories that adopt FFAE for Forsetti app/module governance.
+
 ### Release
 
 **Title**: Record final validation acceptance audit
