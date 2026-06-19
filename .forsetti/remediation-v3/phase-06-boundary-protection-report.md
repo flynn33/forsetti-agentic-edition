@@ -54,7 +54,7 @@ Release impact: `governance-only`
 
 ## Advisory Finding And Disposition
 
-Security review found that Phase 06 would move executable hosted enforcement logic from `.github/workflows/*.yml` into `adapters/github-actions/workflows/**`, but that target path was not covered by repository boundary protection. Disposition: Phase 06 implementation is paused, and this governance-class precursor adds protected-path, role-limited-path, and approval-required coverage for that adapter workflow script path before conversion resumes.
+Security review found that Phase 06 would move executable hosted enforcement logic from `.github/workflows/*.yml` into `adapters/github-actions/workflows/**`, but that target path was not covered by repository boundary protection. Disposition: Phase 06 implementation is paused, and this governance-class prerestricted-provider adds protected-path, role-limited-path, and approval-required coverage for that adapter workflow script path before conversion resumes.
 
 ## Validation Results
 

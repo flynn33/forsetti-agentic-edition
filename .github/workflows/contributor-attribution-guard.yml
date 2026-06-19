@@ -1,4 +1,4 @@
-name: AI Contributor Guard
+name: Contributor Guard
 
 on:
   pull_request:
@@ -11,8 +11,8 @@ permissions:
   pull-requests: read
 
 jobs:
-  ai-attribution-rejection:
-    name: Reject AI Contributor Attribution
+  attribution-rejection:
+    name: Reject Contributor Attribution
     runs-on: ubuntu-latest
     if: github.actor != 'github-actions[bot]'
     steps:
@@ -24,4 +24,4 @@ jobs:
 
       - name: Check for restricted contributor attribution
         shell: pwsh
-        run: ./adapters/github-actions/workflows/check-ai-contributor-attribution.ps1
+        run: ./adapters/github-actions/workflows/check-contributor-attribution.ps1

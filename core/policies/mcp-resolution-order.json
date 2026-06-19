@@ -2,7 +2,7 @@
   "order": [
     "local",
     "local_wrapper",
-    "openai_supplied_after_local_first",
+    "provider_supplied_after_local_first",
     "approved_exception"
   ],
   "blocked": [

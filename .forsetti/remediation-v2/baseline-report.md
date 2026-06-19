@@ -2,8 +2,8 @@
 
 Generated: 2026-05-08
 Branch: `audit/remediation-v2-baseline`
-Repository root: `A:\Codex\Forsetti-Framwork-Agentic-Edition`
-Remediation package: `A:\Codex\forsetti-codex-remediation-package-v2`
+Repository root: `A:\Workspace\Forsetti-Framwork-Agentic-Edition`
+Remediation package: `A:\Workspace\forsetti-remediation-package-v2`
 
 ## Status
 
@@ -11,7 +11,7 @@ The current repository is not yet remediated. This phase is evidence-only and in
 
 ## Repository Root Identification
 
-The repository root was identified as `A:\Codex\Forsetti-Framwork-Agentic-Edition`. The following required root indicators are present:
+The repository root was identified as `A:\Workspace\Forsetti-Framwork-Agentic-Edition`. The following required root indicators are present:
 
 - `README.md`
 - `AGENTS.md`
@@ -58,7 +58,7 @@ Forsetti Agentic Edition - Repo Validation
   ERROR: Missing required file: FORSETTI_CONSTITUTION.md
   ...
 [2/6] Validating JSON files...
-  ERROR: Invalid JSON: A:\Codex\package-lock.json
+  ERROR: Invalid JSON: A:\Workspace\package-lock.json
 ...
 [5/6] Checking labels.json sync...
   ERROR: One or both labels.json files missing.
@@ -67,7 +67,7 @@ Validation Complete
 FAILED - 57 error(s) must be resolved.
 ```
 
-Interpretation: the PowerShell script computes `$RepoRoot` as `A:\Codex`, not the repository root, so it reports present repository files as missing and scans `A:\Codex\package-lock.json`.
+Interpretation: the PowerShell script computes `$RepoRoot` as `A:\Workspace`, not the repository root, so it reports present repository files as missing and scans `A:\Workspace\package-lock.json`.
 
 ### Bash Validator
 
@@ -110,9 +110,9 @@ Direct occurrences observed:
 
 Prohibited source-line rejection occurrences observed:
 
-- `.github/workflows/ai-contributor-guard.yml:1`: contributor guard workflow title.
-- `.github/workflows/ai-contributor-guard.yml:11`: source-line rejection job title.
-- `.github/workflows/ai-contributor-guard.yml:213`: source-line rejection error message requiring human authorship.
+- `.github/workflows/contributor-attribution-guard.yml:1`: contributor guard workflow title.
+- `.github/workflows/contributor-attribution-guard.yml:11`: source-line rejection job title.
+- `.github/workflows/contributor-attribution-guard.yml:213`: source-line rejection error message requiring human authorship.
 
 ## Compliance Rule Mismatches
 

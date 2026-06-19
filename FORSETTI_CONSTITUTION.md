@@ -32,7 +32,7 @@ A lower-authority document may **narrow** the rules defined by a higher-authorit
 
 This Constitution exists to:
 
-- Establish foundational governance doctrine for AI-led software delivery under the Forsetti Agentic Edition framework.
+- Establish foundational governance doctrine for agentic software delivery under the Forsetti Agentic Edition framework.
 - Establish Forsetti Framework compliance doctrine for coding agents building Forsetti-compliant apps and modules.
 - Make all governance rules explicit, measurable, and enforceable.
 - Define the roles, principles, protections, and constraints that govern all work within this framework.

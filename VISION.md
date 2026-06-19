@@ -8,17 +8,17 @@
 
 ## 1. Mission
 
-Forsetti Agentic Edition exists to make AI-led software delivery **disciplined, reviewable, and governable**.
+Forsetti Agentic Edition exists to make agentic software delivery **disciplined, reviewable, and governable**.
 
-It establishes a repository operating model in which AI coding agents and human contributors work within explicit boundaries, under explicit contracts, and toward outcomes that can be validated, reviewed, and traced.
+It establishes a repository operating model in which coding agents and human contributors work within explicit boundaries, under explicit contracts, and toward outcomes that can be validated, reviewed, and traced.
 
-The framework does not assume AI agents are unreliable. It assumes that **all contributors** — human and agent alike — produce better outcomes when operating under clear governance, defined authority, and required evidence. Governance is not punishment. It is infrastructure.
+The framework does not assume coding agents are unreliable. It assumes that **all contributors** — human and agent alike — produce better outcomes when operating under clear governance, defined authority, and required evidence. Governance is not punishment. It is infrastructure.
 
 ---
 
 ## 2. Problem Statement
 
-AI coding agents, when operating without governance, produce common failure patterns:
+Coding agents, when operating without governance, produce common failure patterns:
 
 ### 2.1 Uncontrolled Scope Expansion
 
@@ -50,15 +50,15 @@ Changes are merged without proper version classification or changelog entries. R
 
 ### 2.8 Frequency and Visibility
 
-These failures are not unique to AI agents. Human contributors produce them too. But AI agents produce them at **higher frequency** and **lower visibility** than human contributors. Higher frequency because agents work faster and touch more files per session. Lower visibility because agents do not naturally flag their own governance gaps, and human reviewers may not catch failures that are distributed across many small changes.
+These failures are not unique to coding agents. Human contributors produce them too. But coding agents produce them at **higher frequency** and **lower visibility** than human contributors. Higher frequency because agents work faster and touch more files per session. Lower visibility because agents do not naturally flag their own governance gaps, and human reviewers may not catch failures that are distributed across many small changes.
 
 This combination — high frequency, low visibility — makes governance essential rather than optional.
 
 ---
 
-## 3. Vision for Disciplined AI-Led Delivery
+## 3. Vision for Disciplined Agentic Delivery
 
-We envision repositories where AI agents behave as **disciplined engineering participants** rather than improvisational assistants.
+We envision repositories where coding agents behave as **disciplined engineering participants** rather than improvisational assistants.
 
 In that model:
 
@@ -90,7 +90,7 @@ Every governance rule is machine-checkable where practical. CI workflows enforce
 
 ## 4. Strategic Goal
 
-Establish a governance framework that can be adopted by **any repository** using AI coding agents, providing:
+Establish a governance framework that can be adopted by **any repository** using coding agents, providing:
 
 1. **A constitutional foundation** for governance rules — a single highest-authority document that establishes principles, not just procedures.
 
@@ -110,7 +110,7 @@ Establish a governance framework that can be adopted by **any repository** using
 
 ### 5.1 Contracted Operation
 
-AI agents operate under contract, not improvisation. Every meaningful task has a defined scope, defined authority, and defined expected outputs. Agents that exceed scope are flagged. Agents that operate without contracts are non-compliant.
+Coding agents operate under contract, not improvisation. Every meaningful task has a defined scope, defined authority, and defined expected outputs. Agents that exceed scope are flagged. Agents that operate without contracts are non-compliant.
 
 ### 5.2 End-to-End Traceability
 
@@ -166,13 +166,13 @@ The framework is not an issue tracker, sprint planner, or project management sys
 
 ## 7. Long-Term Aspiration
 
-Forsetti Agentic Edition aspires to become the **standard governance layer for AI-assisted software delivery**.
+Forsetti Agentic Edition aspires to become the **standard governance layer for governed agentic software delivery**.
 
-That means a framework that any team can adopt — regardless of language, platform, or domain — to bring discipline, traceability, and accountability to repositories where AI agents participate in planning, building, validating, documenting, and releasing software.
+That means a framework that any team can adopt — regardless of language, platform, or domain — to bring discipline, traceability, and accountability to repositories where coding agents participate in planning, building, validating, documenting, and releasing software.
 
-The aspiration is not market dominance. It is **operational clarity**. Every team using AI coding agents faces the problems described in Section 2. Forsetti Agentic Edition provides a structured, adoptable, extensible answer to those problems.
+The aspiration is not market dominance. It is **operational clarity**. Every team using coding agents faces the problems described in Section 2. Forsetti Agentic Edition provides a structured, adoptable, extensible answer to those problems.
 
-The framework will evolve as AI agent capabilities evolve. As agents become more capable, the governance model adapts — not by removing governance, but by raising the bar for what "disciplined delivery" means in that context.
+The framework will evolve as agent capabilities evolve. As agents become more capable, the governance model adapts — not by removing governance, but by raising the bar for what "disciplined delivery" means in that context.
 
 Governance scales with capability. More capable agents deserve more rigorous governance, not less.
 

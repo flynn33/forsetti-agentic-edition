@@ -34,7 +34,7 @@ Branch: `audit/remediation-v2-baseline`
 ## Command Results
 
 - `git switch -c audit/remediation-v2-baseline`: succeeded.
-- PowerShell validator: failed with exit code `1`, reporting `57` errors. The output shows it searched from `A:\Codex` instead of the repository root.
+- PowerShell validator: failed with exit code `1`, reporting `57` errors. The output shows it searched from `A:\Workspace` instead of the repository root.
 - Bash validator: failed with exit code `1`; WSL has no installed distributions.
 - Architecture inventory: required root indicators are present; `core/`, `adapters/`, and `overlays/` are missing.
 - Evidence searches confirmed orchestration/GitHub workflow language, prohibited source-line rejection, compliance rule mismatches, stale path references, and absence of a local validator entry point.

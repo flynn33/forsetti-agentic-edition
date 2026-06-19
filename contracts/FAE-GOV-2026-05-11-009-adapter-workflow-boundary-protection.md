@@ -43,7 +43,7 @@ Phase 06 will move executable GitHub Actions enforcement logic from `.github/wor
 
 ## Downstream Impact Assessment
 
-Future adapter workflow script changes must be made under an authorized task contract with sensitive approval or higher. This precursor does not convert hosted workflows and does not change current workflow execution behavior.
+Future adapter workflow script changes must be made under an authorized task contract with sensitive approval or higher. This prerestricted-provider does not convert hosted workflows and does not change current workflow execution behavior.
 
 ## Scope
 
@@ -69,7 +69,7 @@ Future adapter workflow script changes must be made under an authorized task con
 - Core validator behavior changes
 - Policy schema changes
 - Constitutional amendments
-- AI assistance disclosure policy changes
+- accountability policy changes
 - Platform overlay generation
 - Docker, WSL, and Playwright setup
 
@@ -97,7 +97,7 @@ Future adapter workflow script changes must be made under an authorized task con
 - Run the repository validator in strict mode.
 - Run contract enforcement against this task contract and the changed-file set.
 - Confirm `adapters/github-actions/workflows/**` is included in protected paths, role-limited path mappings, and approval-required mappings.
-- Confirm no workflow conversion or adapter script implementation is included in this precursor.
+- Confirm no workflow conversion or adapter script implementation is included in this prerestricted-provider.
 
 ## Evidence Requirements
 
@@ -107,7 +107,7 @@ The boundary protection report must include:
 - files changed
 - commands run
 - tooling used
-- advisory reviewer finding that triggered this precursor
+- advisory reviewer finding that triggered this prerestricted-provider
 - validation results
 - unresolved issues
 - acceptance gate status
@@ -116,8 +116,8 @@ The boundary protection report must include:
 
 - Stay within this contract scope unless amended first.
 - Preserve the no-attribution rule.
-- Do not convert GitHub Actions workflows in this precursor.
-- Do not create adapter workflow scripts in this precursor.
+- Do not convert GitHub Actions workflows in this prerestricted-provider.
+- Do not create adapter workflow scripts in this prerestricted-provider.
 - Keep root and core repository boundary manifests byte-identical.
 
 ## Risks
@@ -129,7 +129,7 @@ The boundary protection report must include:
 
 - Additional protected assets must be modified outside this contract.
 - Local validation fails and cannot be remediated within this scope.
-- Workflow conversion becomes necessary to complete this precursor.
+- Workflow conversion becomes necessary to complete this prerestricted-provider.
 
 ## Definition of Done
 

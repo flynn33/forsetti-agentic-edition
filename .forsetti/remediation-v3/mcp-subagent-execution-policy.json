@@ -8,7 +8,7 @@
     "localFirstRequired": true,
     "localExistingDecision": "allow",
     "localWrapperDecision": "allow_when_scoped",
-    "openaiFallbackDecision": "allow_after_local_first_evidence",
+    "providerFallbackDecision": "allow_after_local_first_evidence",
     "thirdPartyDecision": "deny_without_explicit_human_approval",
     "unknownProviderDecision": "deny"
   },
@@ -55,7 +55,7 @@
     "keyboard and mouse control",
     "computer control",
     "Docker control",
-    "user-level Codex config mutations"
+    "user-level local host config mutations"
   ],
   "stopConditions": [
     "required outputs cannot be produced",

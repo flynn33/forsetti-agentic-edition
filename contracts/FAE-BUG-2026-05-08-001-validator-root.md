@@ -34,7 +34,7 @@
 
 ## Bug Description
 
-**Value:** `scripts/validate-repo.ps1` computes `$RepoRoot` as the parent of the parent of `$PSScriptRoot`. Because the script lives under `scripts/`, this resolves to `A:\Codex` instead of `A:\Codex\Forsetti-Framwork-Agentic-Edition`. After the root calculation is corrected, the script also checks two stale workflow filenames that no longer match the repository.
+**Value:** `scripts/validate-repo.ps1` computes `$RepoRoot` as the parent of the parent of `$PSScriptRoot`. Because the script lives under `scripts/`, this resolves to the parent workspace instead of the Forsetti Agentic Edition repository root. After the root calculation is corrected, the script also checks two stale workflow filenames that no longer match the repository.
 
 ## Expected Behavior
 
@@ -42,7 +42,7 @@
 
 ## Actual Behavior
 
-**Value:** The Windows validator scans `A:\Codex`, reports required repository files as missing, and attempts to parse unrelated JSON such as `A:\Codex\package-lock.json`. Once root resolution is corrected, it reports missing `.github/workflows/changelog-check.yml` and `.github/workflows/docs-sync-check.yml` even though the repository has `.github/workflows/changelog-validation.yml` and `.github/workflows/docs-sync-agent.yml`.
+**Value:** The Windows validator scans the parent workspace, reports required repository files as missing, and attempts to parse unrelated JSON outside the repository. Once root resolution is corrected, it reports missing `.github/workflows/changelog-check.yml` and `.github/workflows/docs-sync-check.yml` even though the repository has `.github/workflows/changelog-validation.yml` and `.github/workflows/docs-sync-agent.yml`.
 
 ## Root Cause
 

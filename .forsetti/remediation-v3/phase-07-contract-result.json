@@ -5,10 +5,10 @@
     "version": "0.2.0"
   },
   "invocation": {
-    "repo_root": "A:\\Codex\\Forsetti-Framwork-Agentic-Edition",
+    "repo_root": "A:\\Workspace\\Forsetti-Framwork-Agentic-Edition",
     "mode": "contract",
     "strict": true,
-    "contract_path": "contracts/FAE-GOV-2026-05-11-012-ai-assistance-accountability.md",
+    "contract_path": "contracts/FAE-GOV-2026-05-11-012-accountability-no-attribution.md",
     "changed_files_path": ".forsetti/remediation-v3/phase-07-changed-files.txt",
     "changed_files_count": 23,
     "timestamp_utc": "2026-05-11T19:42:21.4585966Z",
@@ -47,7 +47,7 @@
       "severity": "info",
       "status": "pass",
       "category": "contract",
-      "path": "contracts/FAE-GOV-2026-05-11-012-ai-assistance-accountability.md",
+      "path": "contracts/FAE-GOV-2026-05-11-012-accountability-no-attribution.md",
       "message": "Task contract contains required governance fields.",
       "evidence": "task_id=FAE-GOV-2026-05-11-012; approval_class=governance-class",
       "remediation_hint": null
@@ -61,7 +61,7 @@
       "severity": "info",
       "status": "pass",
       "category": "scope",
-      "path": "contracts/FAE-GOV-2026-05-11-012-ai-assistance-accountability.md",
+      "path": "contracts/FAE-GOV-2026-05-11-012-accountability-no-attribution.md",
       "message": "Changed files are authorized by the task contract scope.",
       "evidence": "Checked 23 changed paths.",
       "remediation_hint": null
@@ -75,7 +75,7 @@
       "severity": "info",
       "status": "pass",
       "category": "approval",
-      "path": "contracts/FAE-GOV-2026-05-11-012-ai-assistance-accountability.md",
+      "path": "contracts/FAE-GOV-2026-05-11-012-accountability-no-attribution.md",
       "message": "Protected-path approval checks passed.",
       "evidence": "Protected paths checked: 8; approval_class=governance-class",
       "remediation_hint": null
@@ -89,7 +89,7 @@
       "severity": "info",
       "status": "pass",
       "category": "approval",
-      "path": "contracts/FAE-GOV-2026-05-11-012-ai-assistance-accountability.md",
+      "path": "contracts/FAE-GOV-2026-05-11-012-accountability-no-attribution.md",
       "message": "Role-limited path checks passed.",
       "evidence": "Role-limited path matches checked: 13; acting_role=builder",
       "remediation_hint": null
@@ -103,7 +103,7 @@
       "severity": "info",
       "status": "pass",
       "category": "evidence",
-      "path": "contracts/FAE-GOV-2026-05-11-012-ai-assistance-accountability.md",
+      "path": "contracts/FAE-GOV-2026-05-11-012-accountability-no-attribution.md",
       "message": "Required outputs exist or are pending from the current validator invocation.",
       "evidence": "Checked 7 required outputs.",
       "remediation_hint": null
@@ -117,7 +117,7 @@
       "severity": "info",
       "status": "pass",
       "category": "docs",
-      "path": "contracts/FAE-GOV-2026-05-11-012-ai-assistance-accountability.md",
+      "path": "contracts/FAE-GOV-2026-05-11-012-accountability-no-attribution.md",
       "message": "Documentation and changelog obligations are represented in the changed-file set.",
       "evidence": "readme=True; wiki=True; changelog=True",
       "remediation_hint": null

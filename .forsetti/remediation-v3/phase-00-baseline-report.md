@@ -18,7 +18,7 @@ Current baseline findings:
 - No portable local validator entry point exists under `core/validator/`.
 - `policies/compliance-rules.json` defines only `FAE-C001` through `FAE-C010`; `FAE-C011` and `FAE-C012` are absent.
 - `COMPLIANCE_POLICY.md` and `wiki/Compliance.md` assign old titles/meanings to `FAE-C001` through `FAE-C010`, conflicting with `policies/compliance-rules.json`.
-- `.github/workflows/ai-contributor-guard.yml` rejects certain contributor metadata and says the repository requires human authorship only.
+- `.github/workflows/contributor-attribution-guard.yml` rejects certain contributor metadata and says the repository requires human authorship only.
 - `policies/repo-boundaries.json` and `policies/docs-sync-rules.json` reference stale paths such as `CONSTITUTION.md`, root `CHANGELOG.md`, `docs/**`, `docs/wiki/**`, `RELEASE_NOTES.md`, and `src/**`.
 - `VERSION` remains `1.0.0`; `changelog/CHANGELOG.md` only contains the 1.0.0 foundation release and still references GitHub workflow enforcement.
 
@@ -38,9 +38,9 @@ Historical v2 evidence exists under `.forsetti/remediation-v2/` and is preserved
 | `git remote -v; git log -1 --oneline; git branch --show-current` | Succeeded; remote is `origin`, latest commit is `cbaadf6`, branch is `audit/v3-baseline-evidence`. |
 | PowerShell path inventory for repository indicators and required architecture paths | Succeeded; root indicators present, `core/`, `adapters/`, and `overlays/` missing. |
 | `Get-Command git,rg,powershell,py,node,npm,code,dotnet` | Succeeded; local tools found. |
-| `codex mcp list` | Succeeded; configured MCP entries listed, but this active session did not expose new MCP namespaces after configuration. |
+| `local-host mcp list` | Succeeded; configured MCP entries listed, but this active session did not expose new MCP namespaces after configuration. |
 | `Get-ChildItem -Force .forsetti -Recurse -File` | Succeeded; v2 evidence exists, v3 evidence did not exist before this phase output. |
-| `powershell -ExecutionPolicy Bypass -File .\scripts\validate-repo.ps1` | Failed with exit code 1; script resolves repo root incorrectly and reports 57 errors against `A:\Codex`. |
+| `powershell -ExecutionPolicy Bypass -File .\scripts\validate-repo.ps1` | Failed with exit code 1; script resolves repo root incorrectly and reports 57 errors against `A:\Workspace`. |
 | `bash .\scripts\validate-repo.sh` | Failed with exit code 1; WSL has no installed distributions. |
 | `rg --files --hidden -g '!/.git/*'` | Succeeded; included hidden `.github` paths and v2 evidence. |
 | Search for orchestration language, GitHub workflow enforcement, contributor metadata guardrails, and rule gaps | Succeeded; found evidence in README, wiki, and workflows. |
@@ -61,7 +61,7 @@ Historical v2 evidence exists under `.forsetti/remediation-v2/` and is preserved
 | File search via local `rg.exe` and PowerShell `Select-String` | existing local tooling | Local search tools were available and used directly. | Repository inventory and drift searches. | Used. |
 | Terminal/shell via PowerShell | existing local tooling | Local shell was available and used directly. | Run validation, discovery, and evidence commands. | Used. |
 | Persistent context via `.forsetti/remediation-v3/` evidence files | locally created evidence wrapper | Active memory MCP namespace was not available in this already-running session; filesystem-backed phase evidence is reasonable for Phase 00. | Persist phase decision/evidence. | Used. |
-| Configured MCP list from `codex mcp list` | existing configured local/stdio entries | Entries are configured, but not callable as active namespaces in this running chat. | Record configured MCP state for v3 evidence. | Recorded only. |
+| Configured MCP list from `local-host mcp list` | existing configured local/stdio entries | Entries are configured, but not callable as active namespaces in this running chat. | Record configured MCP state for v3 evidence. | Recorded only. |
 
 No non-local third-party provider was used.
 
@@ -90,7 +90,7 @@ No non-local third-party provider was used.
 | JSON outputs parse | pass | `py -m json.tool .forsetti\remediation-v3\phase-00-baseline.json` succeeded; required schema keys were also checked with local Python. |
 | Work is in scope for Phase 00 | pass | Only evidence files under `.forsetti/remediation-v3/` were created. |
 | No non-local third-party provider used without approval | pass | Commands used local tooling and configured local/stdio MCP inventory only. |
-| No product dependency on MCP, OpenAI tooling, GitHub Actions, or sub-agents introduced | pass | No product files were modified. |
+| No product dependency on MCP, provider-specific tooling, GitHub Actions, or sub-agents introduced | pass | No product files were modified. |
 | Reviewer findings reconciled | pass | Sub-agent findings are included and reconciled above. |
 
 ## Remaining issues

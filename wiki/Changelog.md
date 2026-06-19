@@ -32,6 +32,7 @@ flowchart LR
 | Documentation | GitHub Actions adapter conversion documentation | `patch` | Documentation and traceability alignment. |
 | Features | Platform overlay guidance profiles | `minor` | Additive Apple, Windows, and generic guidance profiles. |
 | Features | Portable local validator CLI | `minor` | New repository-local validator entry point. |
+| Breaking Changes | Accountability policy surface canonicalization | `major` | Consumers must use `ACCOUNTABILITY_POLICY.md` and `accountability-rules.json` as the canonical policy surfaces. |
 | Breaking Changes | Accountability without attribution credit | `major` | Consumers must maintain human accountability evidence and avoid attribution credit. |
 | Breaking Changes | Policy path, documentation, changelog, and release gates | `major` | Consumers must accept expanded manifest and validator result fields. |
 | Breaking Changes | Task contract scope, approval, and evidence enforcement | `major` | Consumers must provide richer task-contract and changed-file evidence. |
@@ -51,7 +52,7 @@ pie showData
     "none" : 1
     "patch" : 3
     "minor" : 2
-    "major" : 4
+    "major" : 5
     "governance-only" : 2
 ```
 

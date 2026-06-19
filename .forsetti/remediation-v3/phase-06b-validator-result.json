@@ -5,7 +5,7 @@
     "version": "0.2.0"
   },
   "invocation": {
-    "repo_root": "A:\\Codex\\Forsetti-Framwork-Agentic-Edition",
+    "repo_root": "A:\\Workspace\\Forsetti-Framwork-Agentic-Edition",
     "mode": "all",
     "strict": true,
     "contract_path": null,

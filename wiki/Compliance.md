@@ -3,7 +3,7 @@
 [![Rules](https://img.shields.io/badge/rules-FAE--C%20%2B%20FAE--F-7c3aed)](Compliance) [![Decision](https://img.shields.io/badge/decision-pass%20%7C%20request%20changes%20%7C%20block-0f766e)](Compliance)
 
 > **Canonical source**: [`COMPLIANCE_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/COMPLIANCE_POLICY.md)
-> **Machine-readable registries**: `core/policies/compliance-rules.json`, `core/policies/forsetti-enforcement-rules.json`
+> **Machine-readable registries**: `core/policies/compliance-rules.json`, `core/policies/forsetti-enforcement-rules.json`, `core/policies/accountability-rules.json`
 
 ---
 
@@ -30,7 +30,7 @@ flowchart TB
 
 | Family | Range | Governs | Typical Outcome |
 |---|---|---|---|
-| Core compliance | `FAE-C001` - `FAE-C012` | contracts, scope, roles, protected paths, changelog, evidence, release classification | block or request changes |
+| Core compliance | `FAE-C001` - `FAE-C012` | contracts, scope, roles, protected paths, changelog, evidence, release classification, accountability | block or request changes |
 | Forsetti enforcement | `FAE-F001` - `FAE-F020` | project context, profiles, manifests, capabilities, module isolation, dependency direction, public API use | block when architectural invariants are violated |
 | Policy gates | manifest-local IDs | protected paths, changelog format, docs sync, version impact | policy-specific pass/request/block |
 
@@ -60,6 +60,30 @@ flowchart TB
 | `FAE-F018` | Native toolchain | Verification ignores selected platform toolchain. |
 | `FAE-F019` | Required commands | Profile-required verification does not run or is not disclosed. |
 | `FAE-F020` | Completion evidence | Evidence does not map to the selected edition profile. |
+
+---
+
+## Accountability Gate
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#111827","primaryTextColor":"#ffffff","primaryBorderColor":"#f59e0b","lineColor":"#92400e","secondaryColor":"#fffbeb","tertiaryColor":"#f8fafc"}}}%%
+flowchart LR
+    Artifact["Repository artifact"] --> Scan{"Attribution credit present?"}
+    Scan -->|yes| Request["REQUEST CHANGES"]
+    Scan -->|no| Evidence{"Accountability evidence complete?"}
+    Evidence -->|no| Request
+    Evidence -->|yes| Owner["human owner + governed role"]
+    Owner --> Trace["contract or phase reference"]
+    Trace --> Proof["review + validation + required approval evidence"]
+    Proof --> Decision["compliance decision"]
+```
+
+| Surface | Required Alignment |
+|---|---|
+| `ACCOUNTABILITY_POLICY.md` | Governs FAE-C012 accountability and non-attribution requirements. |
+| `core/policies/accountability-rules.json` | Canonical machine-readable accountability manifest. |
+| `policies/accountability-rules.json` | Byte-identical compatibility mirror. |
+| `wiki/Compliance.md` | Derived explanation of the accountability gate; never overrides canonical policy. |
 
 ---
 

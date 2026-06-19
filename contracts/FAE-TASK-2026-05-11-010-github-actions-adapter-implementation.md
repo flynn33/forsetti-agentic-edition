@@ -81,7 +81,7 @@ Phase 06A affects GitHub-hosted workflow behavior and adapter execution. Existin
 - core validator behavioral changes unless directly required for governed workflow enforcement
 - contract template or schema changes
 - platform overlay generation
-- AI assistance disclosure policy changes
+- accountability policy changes
 - Docker, WSL, and Playwright setup
 - product dependency on MCP servers, hosted workflows, provider services, or advisory reviewers
 

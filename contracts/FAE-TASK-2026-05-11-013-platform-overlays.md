@@ -74,7 +74,7 @@ This is an additive, backward-compatible feature. Downstream consumers may opt i
 - `FORSETTI_CONSTITUTION.md`
 - `AGENTS.md`
 - `COMPLIANCE_POLICY.md`
-- `AI_ASSISTANCE_POLICY.md`
+- `ACCOUNTABILITY_POLICY.md`
 - `CHANGE_CONTROL_POLICY.md`
 - `RELEASE_POLICY.md`
 - `DOCUMENTATION_POLICY.md`

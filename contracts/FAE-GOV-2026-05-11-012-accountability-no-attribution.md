@@ -1,10 +1,10 @@
-# Task Contract: Phase 07 AI Assistance Accountability and Non-Attribution
+# Task Contract: Phase 07 Accountability and Non-Attribution
 
 ## Contract Identity
 
 **Task ID:** FAE-GOV-2026-05-11-012
 **Phase:** 07
-**Branch:** fix/v3-ai-accountability-no-attribution
+**Branch:** fix/v3-accountability-no-attribution
 **Created:** 2026-05-11
 **Repository:** Forsetti Agentic Edition
 
@@ -39,7 +39,7 @@
 
 ## Objective
 
-Establish a no-attribution accountability policy for AI-assisted work. The policy must preserve accountable human ownership, governed role traceability, contract or remediation phase reference, review evidence, validation evidence, and required approval evidence while prohibiting attribution credit in governed delivery surfaces.
+Establish a no-attribution accountability policy for assisted work. The policy must preserve accountable human ownership, governed role traceability, contract or remediation phase reference, review evidence, validation evidence, and required approval evidence while prohibiting attribution credit in governed delivery surfaces.
 
 ## Business Reason
 
@@ -51,7 +51,7 @@ The existing FAE-C012 rule establishes the principle that assistance must not re
 
 ## Proposed Rule
 
-Create `AI_ASSISTANCE_POLICY.md` as a compliance support policy under `COMPLIANCE_POLICY.md`, and create `core/policies/ai-assistance-disclosure.json`, with `policies/ai-assistance-disclosure.json` as a byte-identical compatibility mirror. Update FAE-C012 and derived documentation so governed accountability records must identify only the accountable human owner, acting governed role, contract ID or remediation phase ID, review evidence, validation evidence, and approval evidence required by path, role, or approval-class policy.
+Create `ACCOUNTABILITY_POLICY.md` as a compliance support policy under `COMPLIANCE_POLICY.md`, and create `core/policies/accountability-rules.json`, with `policies/accountability-rules.json` as a byte-identical compatibility mirror. Update FAE-C012 and derived documentation so governed accountability records must identify only the accountable human owner, acting governed role, contract ID or remediation phase ID, review evidence, validation evidence, and approval evidence required by path, role, or approval-class policy.
 
 Attribution credit to tools, models, vendors, automation, or agents is prohibited in source files, generated code comments, commit messages, changelog entries, release notes, README notices, contributor lists, authorship metadata, and documentation prose.
 
@@ -67,14 +67,14 @@ This is a breaking governance change for compliance consumers because it adds ex
 
 ### In Scope
 
-- `contracts/FAE-GOV-2026-05-11-012-ai-assistance-accountability.md`
-- `AI_ASSISTANCE_POLICY.md`
+- `contracts/FAE-GOV-2026-05-11-012-accountability-no-attribution.md`
+- `ACCOUNTABILITY_POLICY.md`
 - `COMPLIANCE_POLICY.md`
 - `DOCUMENTATION_POLICY.md`
 - `README.md`
 - `core/README.md`
-- `core/policies/ai-assistance-disclosure.json`
-- `policies/ai-assistance-disclosure.json`
+- `core/policies/accountability-rules.json`
+- `policies/accountability-rules.json`
 - `core/policies/compliance-rules.json`
 - `policies/compliance-rules.json`
 - `core/policies/docs-sync-rules.json`
@@ -105,9 +105,9 @@ This is a breaking governance change for compliance consumers because it adds ex
 
 ## Required Outputs
 
-- `AI_ASSISTANCE_POLICY.md`
-- `core/policies/ai-assistance-disclosure.json`
-- `policies/ai-assistance-disclosure.json`
+- `ACCOUNTABILITY_POLICY.md`
+- `core/policies/accountability-rules.json`
+- `policies/accountability-rules.json`
 - `.forsetti/remediation-v3/phase-07-report.md`
 - `.forsetti/remediation-v3/phase-07-changed-files.txt`
 - `.forsetti/remediation-v3/phase-07-validator-result.json`
@@ -127,7 +127,7 @@ This is a breaking governance change for compliance consumers because it adds ex
 - Confirm root policy mirrors remain byte-identical to their `core/policies/` counterparts.
 - Run the repository validator in strict mode.
 - Run contract enforcement against this task contract and the changed-file set.
-- Confirm `AI_ASSISTANCE_POLICY.md` and FAE-C012 prohibit attribution credit across the required surfaces.
+- Confirm `ACCOUNTABILITY_POLICY.md` and FAE-C012 prohibit attribution credit across the required surfaces.
 - Confirm accountability evidence requires a human accountable owner, governed role, contract or phase reference, review evidence, validation evidence, and required approval evidence.
 - Confirm no product dependency on MCP servers, remote providers, hosted workflows, IDEs, or advisory subagents was introduced.
 - Confirm breaking-change migration guidance and affected consumers are present in the changelog.
@@ -184,7 +184,7 @@ The Phase 07 report must include:
 - [ ] JSON outputs parse.
 - [ ] Policy mirrors are byte-identical.
 - [ ] FAE-C012 is updated consistently in Markdown and JSON policy registries.
-- [ ] AI assistance accountability policy prohibits attribution credit across required surfaces.
+- [ ] Accountability policy prohibits attribution credit across required surfaces.
 - [ ] Accountability evidence requires a human accountable owner and review trail.
 - [ ] README, wiki, glossary, and changelog updates are complete.
 - [ ] Breaking-change migration guidance and affected consumers are documented.

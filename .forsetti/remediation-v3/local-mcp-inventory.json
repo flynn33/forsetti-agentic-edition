@@ -14,7 +14,7 @@
       "activeNamespace": false,
       "phaseGateClassification": "local_existing",
       "decision": "allow_local_equivalent_restrict_configured_entry",
-      "evidence": "codex mcp get filesystem; direct PowerShell path checks and evidence file writes"
+      "evidence": "local-host mcp get filesystem; direct PowerShell path checks and evidence file writes"
     },
     {
       "id": "terminal-shell",
@@ -70,7 +70,7 @@
   "configuredServers": [
     {
       "id": "filesystem",
-      "command": "npx -y @modelcontextprotocol/server-filesystem A:\\Codex\\Forsetti-Framwork-Agentic-Edition A:\\Codex\\forsetti-codex-remediation-package-v2",
+      "command": "npx -y @modelcontextprotocol/server-filesystem A:\\Workspace\\Forsetti-Framwork-Agentic-Edition A:\\Workspace\\forsetti-remediation-package-v2",
       "package": "@modelcontextprotocol/server-filesystem",
       "versionsFound": ["2026.1.14"],
       "packageJsonSha256": ["a7fb83c2a8000d1d69e632f6c7ce150db8ea615df9e605bc8a14ac78832cab9e"],
@@ -166,7 +166,7 @@
     },
     {
       "id": "sqlite",
-      "command": "npx -y mcp-sqlite C:\\Users\\james\\.codex\\sqlite\\forsetti-agentic-edition.sqlite",
+      "command": "npx -y mcp-sqlite C:\\Users\\james\\.local-config\\sqlite\\forsetti-agentic-edition.sqlite",
       "package": "mcp-sqlite",
       "versionsFound": ["1.0.9"],
       "packageJsonSha256": ["5e3342051ddb34f42a3bc5dc278437530d8c8cc69b33b3d042b24ba65cdfba8d"],
@@ -203,7 +203,7 @@
     "unversioned or mutable package-backed MCP command",
     "browser, desktop, keyboard/mouse, or computer-control tooling with screen, DOM, browser, or GUI data exposure",
     "Docker control involving image pulls or third-party images",
-    "mutation to user-level Codex config"
+    "mutation to user-level local host config"
   ],
   "denied": [
     "unknown provider identity",
@@ -213,7 +213,7 @@
     "introducing product dependency on MCP servers, hosted tooling, GitHub Actions, or helper roles"
   ],
   "unresolvedIssues": [
-    "Configured npx MCP commands are not pinned in Codex config.",
+    "Configured npx MCP commands are not pinned in local host config.",
     "The filesystem MCP configured scope includes the v2 remediation package path but not the v3 package path.",
     "Active MCP namespaces are not available in this already-running session.",
     "Docker MCP is configured but Docker CLI/Desktop is not installed."

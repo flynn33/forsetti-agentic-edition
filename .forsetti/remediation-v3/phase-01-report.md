@@ -56,7 +56,7 @@ All required Phase 01 scaffold outputs were produced:
 
 - `git switch -c fix/v3-portable-core-scaffold` - passed.
 - `code -r .; code --goto core\README.md:1; code --goto overlays\forsetti-windows\README.md:1; code --status` - opened the workspace in Visual Studio Code and confirmed workspace/file watcher state.
-- `codex mcp list` - confirmed configured MCP entries available to the Codex host.
+- `local-host mcp list` - confirmed configured MCP entries available to the local host.
 - `rg --files` and targeted `rg` scans - used for file inventory, output discovery, and source-line checks.
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate-repo.ps1` - passed with 0 errors and 0 warnings.
 - `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate-repo.ps1` - passed with 0 errors and 0 warnings.
@@ -78,8 +78,8 @@ All required Phase 01 scaffold outputs were produced:
 ## Local-First and Fallback Decisions
 
 - No non-local third-party provider was used.
-- No product dependency on MCP servers, OpenAI tooling, GitHub Actions, sub-agents, Docker, WSL, Visual Studio, Visual Studio Code, or any local IDE was introduced.
-- Local MCP entries were inspected through `codex mcp list`; the current running thread did not expose separate MCP namespaces for all configured entries, so equivalent local-first tooling was used and documented.
+- No product dependency on MCP servers, provider-specific tooling, GitHub Actions, sub-agents, Docker, WSL, Visual Studio, Visual Studio Code, or any local IDE was introduced.
+- Local MCP entries were inspected through `local-host mcp list`; the current running thread did not expose separate MCP namespaces for all configured entries, so equivalent local-first tooling was used and documented.
 - Docker and WSL were not used because Phase 01 is a documentation scaffold and does not require container or Linux-distribution execution.
 
 ## Sub-Agents Used
@@ -128,7 +128,7 @@ All required Phase 01 scaffold outputs were produced:
 - JSON outputs parse: pass.
 - Work is in scope for this phase: pass for the intended staged payload; pre-existing untracked evidence is excluded.
 - No non-local third-party provider used without approval: pass.
-- No product dependency on MCP, OpenAI tooling, GitHub Actions, or sub-agents introduced: pass.
+- No product dependency on MCP, provider-specific tooling, GitHub Actions, or sub-agents introduced: pass.
 - Reviewer findings reconciled: pass.
 
 ## Documentation Status

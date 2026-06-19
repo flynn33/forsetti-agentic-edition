@@ -8,8 +8,8 @@ This policy governs MCP and helper-role use during v3 remediation. It is evidenc
 
 1. Use existing local tooling first.
 2. Use a locally created wrapper only when direct local tooling is insufficient and the wrapper is scoped.
-3. Use OpenAI-supplied fallback tooling only after local-first absence, failure, or unreasonable local creation is documented.
-4. Require explicit human approval for OpenAI-recommended third-party tooling, non-local third-party MCP servers, and non-local third-party helper providers.
+3. Use provider-supplied fallback tooling only after local-first absence, failure, or unreasonable local creation is documented.
+4. Require explicit human approval for provider-recommended third-party tooling, non-local third-party MCP servers, and non-local third-party helper providers.
 5. Deny unknown providers.
 
 ## Allowed Without Extra Approval

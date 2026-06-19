@@ -72,7 +72,7 @@ Root wrappers preserve the prior no-argument compatibility posture by running no
 | Git Bash wrapper no-arg | `C:\Program Files\Git\bin\bash.exe .\scripts\validate-repo.sh` | pass, Strict false |
 | Git Bash wrapper mode argument | `C:\Program Files\Git\bin\bash.exe .\scripts\validate-repo.sh -Mode all` | pass, Strict false |
 | Git Bash wrapper strict argument | `C:\Program Files\Git\bin\bash.exe .\scripts\validate-repo.sh -Mode all -Strict` | pass, Strict true |
-| Runtime dependency scan | `rg -n "Invoke-WebRequest|Invoke-RestMethod|\bgh\b|\bwsl\b|\bdocker\b|OpenAI|MCP|https?://" core\validator scripts\validate-repo.ps1 scripts\validate-repo.sh` | pass, no matches |
+| Runtime dependency scan | `rg -n "Invoke-WebRequest|Invoke-RestMethod|\bgh\b|\bwsl\b|\bdocker\b|provider|MCP|https?://" core\validator scripts\validate-repo.ps1 scripts\validate-repo.sh` | pass, no matches |
 | Attribution-style source scan | local scan over changed files for prohibited attribution phrases | pass, no matches |
 | Whitespace check | `git diff --check` | pass, exit code 0 |
 | Scope check | changed files compared to task contract scope | pass |

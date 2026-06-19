@@ -61,7 +61,7 @@ A README that requires additional context to understand the repository is below 
 
 ## Policy Document Quality
 
-Policy documents must define behavior and rejection conditions. A policy must be operationally specific — specific enough that an AI agent can follow it without interpretation, and specific enough that a reviewer can verify compliance against it.
+Policy documents must define behavior and rejection conditions. A policy must be operationally specific — specific enough that an agent can follow it without interpretation, and specific enough that a reviewer can verify compliance against it.
 
 A policy that says "do good things" without defining what that means operationally is below standard. A policy that says "changes should be reviewed" without defining what the review must check is below standard.
 

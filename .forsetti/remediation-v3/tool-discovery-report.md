@@ -11,7 +11,7 @@
 
 Windows-native discovery completed for the local host. This phase did not attempt functional remediation and did not introduce product dependencies.
 
-The machine has substantial local tooling available: Visual Studio Community 2026, Visual Studio Community 2022, Visual Studio Build Tools 2022, MSBuild, .NET SDKs, VS Code, Git, GitHub CLI, Node/npm/npx, `py` with Visual Studio Python, bundled Codex Python/Node runtimes, Chrome, Edge, ripgrep, winget, and local Playwright availability.
+The machine has substantial local tooling available: Visual Studio Community 2026, Visual Studio Community 2022, Visual Studio Build Tools 2022, MSBuild, .NET SDKs, VS Code, Git, GitHub CLI, Node/npm/npx, `py` with Visual Studio Python, bundled Python/Node runtimes, Chrome, Edge, ripgrep, winget, and local Playwright availability.
 
 Known host or repository limitations were also confirmed:
 
@@ -72,7 +72,7 @@ The build-error-resolver helper advised recording Phase 00A as blocked unless a 
 | `git status --short --branch` | Succeeded; branch is `audit/v3-windows-tool-discovery`; `.forsetti/` remains untracked. |
 | `Get-Date`, `$PSVersionTable`, OS runtime checks | Succeeded; host and shell information captured. |
 | `Get-Command` for shell, editor, build, runtime, browser, search, and package tools | Succeeded; PATH inventory captured. |
-| Direct path checks under Program Files, Program Files (x86), LocalAppData, and bundled Codex runtime paths | Succeeded; Visual Studio, MSBuild, browsers, bundled Python, and bundled Node found. |
+| Direct path checks under Program Files, Program Files (x86), LocalAppData, and bundled runtime paths | Succeeded; Visual Studio, MSBuild, browsers, bundled Python, and bundled Node found. |
 | `vswhere -all -products * -requires Microsoft.Component.MSBuild -format json` | Succeeded; Visual Studio and Build Tools instances captured. |
 | `vswhere -all -products * -find **\MSBuild.exe` and `**\devenv.exe` | Succeeded; direct MSBuild and IDE paths captured. |
 | `code --version` | Succeeded; VS Code 1.115.0. |
@@ -93,7 +93,7 @@ The build-error-resolver helper advised recording Phase 00A as blocked unless a 
 | Repository manifest search | Succeeded; only validator scripts found. |
 | Display enumeration with `System.Windows.Forms.Screen` | Succeeded; one primary display found. |
 | Direct screenshot capture check | Failed; host security blocked the script. |
-| `codex mcp list` | Succeeded; configured MCP entries recorded, but not used as active callable namespaces in this session. |
+| `local-host mcp list` | Succeeded; configured MCP entries recorded, but not used as active callable namespaces in this session. |
 | `load_workspace_dependencies` | Succeeded; bundled Python and Node runtime paths captured. |
 
 ## MCP/tooling used
@@ -106,7 +106,7 @@ The build-error-resolver helper advised recording Phase 00A as blocked unless a 
 | `screen-capture-vision` via Windows display APIs | existing local tooling | local allowed | Check display and screenshot capability. | Limited: display enumeration passed, screenshot capture blocked by host security. |
 | `persistent-context` via `.forsetti/remediation-v3/` evidence files | local evidence path | local allowed | Persist Phase 00A results. | Used. |
 | Workspace dependency locator | bundled local tooling | local allowed | Identify bundled Python and Node runtimes. | Used. |
-| Configured MCP inventory from `codex mcp list` | configured local/stdio entries | record only | Record available configured entries. | Recorded only; not claimed as active namespaces. |
+| Configured MCP inventory from `local-host mcp list` | configured local/stdio entries | record only | Record available configured entries. | Recorded only; not claimed as active namespaces. |
 
 No non-local third-party provider was used.
 

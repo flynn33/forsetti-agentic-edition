@@ -2,7 +2,7 @@
 .forsetti/remediation-v3/phase-06a-contract-result.json
 .forsetti/remediation-v3/phase-06a-report.md
 .forsetti/remediation-v3/phase-06a-validator-result.json
-.github/workflows/ai-contributor-guard.yml
+.github/workflows/contributor-attribution-guard.yml
 .github/workflows/changelog-agent.yml
 .github/workflows/changelog-validation.yml
 .github/workflows/docs-sync-agent.yml
@@ -13,7 +13,7 @@
 .github/workflows/version-guard.yml
 .github/workflows/wiki-designer-agent.yml
 adapters/github-actions/workflows/assign-version-release.ps1
-adapters/github-actions/workflows/check-ai-contributor-attribution.ps1
+adapters/github-actions/workflows/check-contributor-attribution.ps1
 adapters/github-actions/workflows/check-changelog-entry.ps1
 adapters/github-actions/workflows/check-pr-template.ps1
 adapters/github-actions/workflows/check-protected-paths.ps1
