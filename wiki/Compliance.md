@@ -1,99 +1,98 @@
 # Compliance
 
+[![Rules](https://img.shields.io/badge/rules-FAE--C%20%2B%20FAE--F-7c3aed)](Compliance) [![Decision](https://img.shields.io/badge/decision-pass%20%7C%20request%20changes%20%7C%20block-0f766e)](Compliance)
+
 > **Canonical source**: [`COMPLIANCE_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/COMPLIANCE_POLICY.md)
-> **Additional sources**: `AI_ASSISTANCE_POLICY.md`, `core/policies/compliance-rules.json`, `core/policies/ai-assistance-disclosure.json`
-> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
-
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
+> **Machine-readable registries**: `core/policies/compliance-rules.json`, `core/policies/forsetti-enforcement-rules.json`
 
 ---
 
-## Compliance Doctrine
+## Decision Lattice
 
-Compliance is determined by evidence, not confidence, assertion, or intent. A change is compliant only when required policy conditions are satisfied and evidence is present, current, and verifiable.
-
----
-
-## Canonical Rule Registry
-
-The canonical machine-readable compliance registry is `core/policies/compliance-rules.json`. The root file `policies/compliance-rules.json` is a compatibility mirror and must remain byte-for-byte identical to the core registry until the root policy hierarchy is amended.
-
-FAE-C012 is supported by `AI_ASSISTANCE_POLICY.md` and the canonical manifest `core/policies/ai-assistance-disclosure.json`.
-
----
-
-## Compliance Outcomes
-
-| Outcome | Meaning |
-|---|---|
-| Pass | Required conditions are met and evidence is present. |
-| Request Changes | Issues are fixable within current scope and must be corrected before approval. |
-| Block | A fundamental violation prevents progress until resolved and re-evaluated. |
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#111827","primaryTextColor":"#ffffff","primaryBorderColor":"#a78bfa","lineColor":"#475569","secondaryColor":"#f5f3ff","tertiaryColor":"#ecfeff"}}}%%
+flowchart TB
+    Claim["Completion or compliance claim"] --> Evidence{"Evidence present?"}
+    Evidence -->|no| Block["BLOCK"]
+    Evidence -->|yes| Scope{"Scope and authority valid?"}
+    Scope -->|no| Block
+    Scope -->|yes| Profile{"Forsetti profile and context valid?"}
+    Profile -->|no| Block
+    Profile -->|yes| Rules{"Rule findings"}
+    Rules -->|critical invariant violated| Block
+    Rules -->|fixable documentation or metadata gap| Request["REQUEST CHANGES"]
+    Rules -->|all required conditions met| Pass["PASS"]
+```
 
 ---
 
-## Compliance Rules
+## Rule Families
 
-| Rule | Title | Decision |
+| Family | Range | Governs | Typical Outcome |
+|---|---|---|---|
+| Core compliance | `FAE-C001` - `FAE-C012` | contracts, scope, roles, protected paths, changelog, evidence, release classification | block or request changes |
+| Forsetti enforcement | `FAE-F001` - `FAE-F020` | project context, profiles, manifests, capabilities, module isolation, dependency direction, public API use | block when architectural invariants are violated |
+| Policy gates | manifest-local IDs | protected paths, changelog format, docs sync, version impact | policy-specific pass/request/block |
+
+---
+
+## Forsetti Enforcement Matrix
+
+| Rule | Focus | Blocks When |
 |---|---|---|
-| FAE-C001 | Task Contract Required Before Execution | block |
-| FAE-C002 | Scope Boundary Enforcement | block |
-| FAE-C003 | Role Separation Enforcement | block |
-| FAE-C004 | Protected Asset Governance Gate | block |
-| FAE-C005 | Changelog Entry Required for Substantive Changes | request changes |
-| FAE-C006 | Breaking Change Disclosure Mandate | block |
-| FAE-C007 | Completion Summary Truthfulness | block |
-| FAE-C008 | Documentation Sync Compliance | request changes |
-| FAE-C009 | Version Classification Accuracy | request changes |
-| FAE-C010 | Governance Change Isolation | block |
-| FAE-C011 | Evidence and Validation Integrity | block |
-| FAE-C012 | AI Assistance Accountability and Non-Attribution | request changes |
+| `FAE-F001` | Project context | Edition/profile/platform/module context is missing. |
+| `FAE-F002` | Edition profile | Apple or Windows profile is absent or malformed. |
+| `FAE-F003` | Target platform | Platform does not match selected profile. |
+| `FAE-F004` | Manifest validity | Manifest is missing, invalid, or unsupported. |
+| `FAE-F005` | Manifest/code identity | Code identity and manifest identity diverge. |
+| `FAE-F006` | Module isolation | Module boundaries are pierced. |
+| `FAE-F007` | Direct dependency | Module-to-module direct dependency appears. |
+| `FAE-F008` | Data sharing | Direct shared storage or database coupling appears. |
+| `FAE-F009` | Capabilities | Code uses undeclared capability behavior. |
+| `FAE-F010` | Runtime requirements | I/O, UI, or data-isolation requirements are absent. |
+| `FAE-F011` | Public API | Consumer code uses non-public Forsetti internals. |
+| `FAE-F012` | Sealed internals | Framework internals are patched or edited. |
+| `FAE-F013` | Dependency direction | Reverse or lateral framework dependency appears. |
+| `FAE-F014` | UI/app surface | UI/app modules lack required active surface evidence. |
+| `FAE-F015` | Service UI boundary | Service modules contribute UI directly. |
+| `FAE-F016` | Injection | Dependencies bypass constructor injection. |
+| `FAE-F017` | Hidden globals | Service-location or hidden global access appears. |
+| `FAE-F018` | Native toolchain | Verification ignores selected platform toolchain. |
+| `FAE-F019` | Required commands | Profile-required verification does not run or is not disclosed. |
+| `FAE-F020` | Completion evidence | Evidence does not map to the selected edition profile. |
 
 ---
 
-## AI Assistance Accountability
+## Evidence Standard
 
-AI-assisted work remains accountable to the human owner and governed role operating under the task contract. The accountability record must identify only the accountable human owner, acting governed role, contract ID or remediation phase ID, review evidence, validation evidence, and required approval evidence.
-
-Attribution credit to a tool, model, vendor, automation, or agent is prohibited in source files, generated code comments, commit messages, changelog entries, release notes, README notices, contributor lists, authorship metadata, and documentation prose.
-
----
-
-## Required Evidence
-
-Completion claims must identify files changed, validation results, known issues, documentation status, release impact, and scope compliance.
-
-Scope evidence compares changed files against the task contract. Documentation evidence confirms required documentation and wiki sync. Release evidence confirms version impact, changelog accuracy, and migration guidance for breaking changes. Governance evidence confirms protected-path authority and governance isolation. Evidence integrity confirms that validation artifacts are current, specific, and traceable.
-
-## Policy Gate Evidence
-
-Machine-readable policy manifests can define local gate metadata in addition to canonical `FAE-C###` compliance rule IDs. Validator findings include policy-local rule IDs, condition IDs, and gate IDs when a manifest supplies that data.
-
-Policy gates cover protected path approval, role-limited path authority, policy mirror integrity, documentation sync, changelog entry completeness, changelog history integrity, and version classification consistency. The repository boundary manifest also protects GitHub Actions adapter workflow scripts before hosted enforcement logic is moved into that adapter surface. These gates make the evidence behind a pass, request-changes, or block decision traceable to a specific manifest condition.
-
-## Forsetti Enforcement Rules
-
-`core/policies/forsetti-enforcement-rules.json` is the canonical Forsetti-specific registry. It defines `FAE-F001` through `FAE-F020` for project context, edition profile selection, target platform support, manifest validity, manifest/code identity, module isolation, direct dependency and direct data sharing prohibition, declared capability use, runtime requirements, public API-only use, sealed framework internals, one-way dependency direction, UI/app active surface invariants, service module UI prohibition, constructor injection, hidden globals/service-location, platform-native toolchain evidence, required verification commands, and profile-mapped completion evidence.
-
-The local validator must emit rule ID, severity, decision, message, evidence, and remediation for Forsetti findings.
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#0f172a","primaryTextColor":"#ffffff","primaryBorderColor":"#34d399","lineColor":"#047857","secondaryColor":"#ecfdf5","tertiaryColor":"#f8fafc"}}}%%
+flowchart LR
+    Files["Changed files"] --> Scope["Scope evidence"]
+    Contract["Task contract"] --> Scope
+    Context["Project context"] --> Profile["Profile evidence"]
+    Manifest["Manifest 1.1"] --> Profile
+    Commands["Build/test/validator commands"] --> Validation["Validation evidence"]
+    Docs["Docs/changelog/wiki"] --> Drift["Documentation evidence"]
+    Scope --> Decision["Compliance decision"]
+    Profile --> Decision
+    Validation --> Decision
+    Drift --> Decision
+```
 
 ---
 
-## Role Responsibilities
+<details>
+<summary><strong>High-Risk Signals</strong></summary>
 
-| Role | Compliance Responsibility |
-|---|---|
-| Architect | Defines measurable compliance criteria and reviews sensitive or breaking changes. |
-| Builder | Produces evidence, updates documentation, creates changelog entries, and reports status accurately. |
-| Validator | Evaluates compliance and renders pass, request-changes, or block decisions. |
-| Release Manager | Confirms version impact, changelog integrity, and release readiness. |
-| Documentation Manager | Confirms documentation sync and detects documentation drift. |
-| Governance Steward | Authorizes governance-class changes and resolves governance ambiguity. |
+- A changed file lives under `core/policies`, `core/schemas`, `core/contracts`, `core/validator`, `schemas`, `scripts`, or root policy documents.
+- A task changes governance rules and implementation behavior together.
+- A completion claim says a command passed but the command was not run.
+- A manifest changes without edition-profile evidence.
+- A module imports, includes, calls, or stores data directly with another module.
+
+</details>
 
 ---
 
-<sub>
-
-**Navigation**: [Home](Home) | [Constitution](Constitution) | [Agent Roles](Agent-Roles) | [Workflow](Workflow) | [Documentation](Documentation) | [Compliance](Compliance) | [Releases](Releases) | [Changelog](Changelog) | [Glossary](Glossary)
-
-</sub>
+**Navigation**: [Home](Home) | [Overview](Overview) | [Workflow](Workflow) | [Agent Roles](Agent-Roles) | [Documentation](Documentation) | [Releases](Releases) | [Glossary](Glossary)

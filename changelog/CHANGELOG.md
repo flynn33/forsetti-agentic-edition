@@ -34,6 +34,15 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ### Documentation
 
+**Title**: Refresh live wiki visual system
+**Change Class**: docs
+**Version Impact**: patch
+**Summary**: Replaced raw wiki mirrors with curated high-density navigation pages, architecture diagrams, logic-flow diagrams, decision matrices, and a durable publication adapter that syncs the repository wiki mirror to the live GitHub Wiki.
+**Affected Area**: wiki, documentation sync, GitHub Actions adapter
+**PR Reference**: pending
+**Task Reference**: FAE-GOV-2026-06-19-001
+**Approval Class**: governance-class
+
 **Title**: Document GitHub Actions adapter conversion
 **Change Class**: docs
 **Version Impact**: patch
@@ -66,17 +75,17 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ### Breaking Changes
 
-**Title**: Breaking: Establish AI assistance accountability without attribution
+**Title**: Breaking: Establish accountability without attribution credit
 **Change Class**: breaking-change
 **Version Impact**: major
-**Summary**: Added a compliance support policy and machine-readable manifest requiring a human accountable owner, governed role, contract or phase reference, review evidence, validation evidence, and required approval evidence while prohibiting attribution credit to tools, models, vendors, automation, or agents across governed delivery surfaces. Consumers must now collect and validate the accountability record for AI-assisted work.
+**Summary**: Added a compliance support policy and machine-readable manifest requiring a human accountable owner, governed role, contract or phase reference, review evidence, validation evidence, and required approval evidence while prohibiting attribution credit across governed delivery surfaces. Consumers must now collect and validate the accountability record for assisted work.
 **Affected Area**: compliance, policies, documentation, wiki, changelog
-**PR Reference**: pending pull request for `fix/v3-ai-accountability-no-attribution`
+**PR Reference**: pending pull request for accountability-without-attribution work
 **Task Reference**: FAE-GOV-2026-05-11-012
 **Approval Class**: governance-class
 **breaking_change**: true
-**migration_note**: Consumers that process FAE-C012 must require a human accountable owner, acting governed role, contract ID or remediation phase ID, review evidence, validation evidence, and required approval evidence, and must reject attribution credit to tools, models, vendors, automation, or agents on governed delivery surfaces.
-**Migration Guidance**: Update contract templates, review checklists, validator integrations, changelog and release review procedures, and PR review practices that evaluate FAE-C012 so they distinguish accountability evidence from attribution credit. Do not record tool, model, vendor, automation, or agent names as authors, contributors, reviewers, validators, approvers, releasers, maintainers, or sources of work.
+**migration_note**: Consumers that process FAE-C012 must require a human accountable owner, acting governed role, contract ID or remediation phase ID, review evidence, validation evidence, and required approval evidence, and must reject attribution credit on governed delivery surfaces.
+**Migration Guidance**: Update contract templates, review checklists, validator integrations, changelog and release review procedures, and PR review practices that evaluate FAE-C012 so they distinguish accountability evidence from attribution credit. Do not record implementation sources as authors, contributors, reviewers, validators, approvers, releasers, maintainers, or sources of work.
 **Affected Consumers**: Contract authors, validators, documentation reviewers, release reviewers, policy manifest consumers, downstream repositories that mirror Forsetti policy JSON, and optional adapters or checks that evaluate FAE-C012.
 
 **Title**: Breaking: Encode policy path, documentation, changelog, and release gates
@@ -114,8 +123,8 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Task Reference**: FAE-GOV-2026-05-08-005
 **Approval Class**: governance-class
 **breaking_change**: true
-**migration_note**: Consumers that referenced old Markdown rule meanings must update to the canonical registry: `FAE-C003` is Role Separation Enforcement, `FAE-C004` is Protected Asset Governance Gate, `FAE-C005` is Changelog Entry Required for Substantive Changes, `FAE-C006` is Breaking Change Disclosure Mandate, `FAE-C007` is Completion Summary Truthfulness, `FAE-C008` is Documentation Sync Compliance, `FAE-C009` is Version Classification Accuracy, `FAE-C010` is Governance Change Isolation, `FAE-C011` is Evidence and Validation Integrity, and `FAE-C012` is AI Assistance Accountability and Non-Attribution.
-**Migration Guidance**: Consumers that referenced old Markdown rule meanings must update to the canonical registry: `FAE-C003` is Role Separation Enforcement, `FAE-C004` is Protected Asset Governance Gate, `FAE-C005` is Changelog Entry Required for Substantive Changes, `FAE-C006` is Breaking Change Disclosure Mandate, `FAE-C007` is Completion Summary Truthfulness, `FAE-C008` is Documentation Sync Compliance, `FAE-C009` is Version Classification Accuracy, `FAE-C010` is Governance Change Isolation, `FAE-C011` is Evidence and Validation Integrity, and `FAE-C012` is AI Assistance Accountability and Non-Attribution.
+**migration_note**: Consumers that referenced old Markdown rule meanings must update to the canonical registry: `FAE-C003` is Role Separation Enforcement, `FAE-C004` is Protected Asset Governance Gate, `FAE-C005` is Changelog Entry Required for Substantive Changes, `FAE-C006` is Breaking Change Disclosure Mandate, `FAE-C007` is Completion Summary Truthfulness, `FAE-C008` is Documentation Sync Compliance, `FAE-C009` is Version Classification Accuracy, `FAE-C010` is Governance Change Isolation, `FAE-C011` is Evidence and Validation Integrity, and `FAE-C012` is Accountability and Non-Attribution.
+**Migration Guidance**: Consumers that referenced old Markdown rule meanings must update to the canonical registry: `FAE-C003` is Role Separation Enforcement, `FAE-C004` is Protected Asset Governance Gate, `FAE-C005` is Changelog Entry Required for Substantive Changes, `FAE-C006` is Breaking Change Disclosure Mandate, `FAE-C007` is Completion Summary Truthfulness, `FAE-C008` is Documentation Sync Compliance, `FAE-C009` is Version Classification Accuracy, `FAE-C010` is Governance Change Isolation, `FAE-C011` is Evidence and Validation Integrity, and `FAE-C012` is Accountability and Non-Attribution.
 **Affected Consumers**: Validators, policy readers, documentation sync checks, workflow adapters, contract authors, and release reviewers that consume compliance rule identifiers or policy manifests.
 
 ### Governance
@@ -167,7 +176,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Title**: Forsetti Agentic Edition v1.0.0 — Foundation Release
 **Change Class**: feature
 **Version Impact**: major
-**Summary**: Initial release of the Forsetti Agentic Edition governance framework, establishing the complete governance layer for AI-led software delivery. Includes constitutional governance, 5 governed roles, contract-driven workflow, compliance model, release policy, documentation policy, machine-readable policy manifests, JSON validation schemas, GitHub workflow enforcement, and wiki seed layer.
+**Summary**: Initial release of the Forsetti Agentic Edition governance framework, establishing the complete governance layer for governed software delivery. Includes constitutional governance, 5 governed roles, contract-driven workflow, compliance model, release policy, documentation policy, machine-readable policy manifests, JSON validation schemas, GitHub workflow enforcement, and wiki seed layer.
 **Affected Area**: All — complete framework establishment
 
 **Included Components**:

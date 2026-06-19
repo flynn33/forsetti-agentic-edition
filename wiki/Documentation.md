@@ -1,98 +1,83 @@
 # Documentation
 
+[![Docs](https://img.shields.io/badge/docs-canonical%20%2B%20derived-0f766e)](Documentation) [![Wiki](https://img.shields.io/badge/wiki-live%20surface-2563eb)](Home)
+
 > **Canonical source**: [`DOCUMENTATION_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/DOCUMENTATION_POLICY.md)
-> **Last synced**: 2026-05-11, FAE-GOV-2026-05-11-012 AI assistance accountability policy
-
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
+> **Publication model**: repository docs and the live GitHub Wiki are separate surfaces that must be aligned intentionally.
 
 ---
 
-## Purpose
+## Documentation Topology
 
-Documentation is part of delivery. A change that affects understanding, usage, operation, governance, or release history is incomplete until the required documentation is updated or explicitly tracked under the policy.
-
-This page summarizes `DOCUMENTATION_POLICY.md` for wiki navigation. The repository policy file remains authoritative.
-
----
-
-## Canonical Source Rule
-
-Repository markdown files are authoritative. Wiki pages are derived publishing surfaces that summarize, orient, and cross-reference repository sources.
-
-If a wiki page, external page, cached copy, screenshot, conversation log, or third-party reference conflicts with repository markdown, the repository markdown is authoritative until the conflicting surface is corrected.
-
----
-
-## Wiki Requirements
-
-Wiki pages must:
-
-- Reference the canonical source they derive from.
-- Include a last-synced marker.
-- Summarize and link to canonical sources rather than replacing them.
-- Avoid introducing binding requirements that do not exist in a canonical source.
-- Stay synchronized when canonical sources change.
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#111827","primaryTextColor":"#ffffff","primaryBorderColor":"#67e8f9","lineColor":"#0f766e","secondaryColor":"#ecfeff","tertiaryColor":"#f8fafc"}}}%%
+flowchart TB
+    Canon["Canonical repository sources"] --> Mirror["repo wiki/ mirror"]
+    Canon --> Readme["README and policy docs"]
+    Canon --> Standards["standards and contracts"]
+    Mirror --> Live["GitHub Wiki repo"]
+    Readme --> Review["Documentation Manager review"]
+    Standards --> Review
+    Live --> Review
+    Review --> Decision{"No drift?"}
+    Decision -->|yes| Pass["documentation pass"]
+    Decision -->|no| Repair["sync required"]
+```
 
 ---
 
-## Required Sync Pairs
+## Publication Surfaces
 
-The documentation policy defines these canonical-to-wiki pairs:
-
-| Canonical Source | Wiki Derived Page |
-|---|---|
-| `FORSETTI_CONSTITUTION.md` | `wiki/Constitution.md` |
-| `AGENTS.md` | `wiki/Agent-Roles.md` and `wiki/Workflow.md` |
-| `COMPLIANCE_POLICY.md` | `wiki/Compliance.md` |
-| `AI_ASSISTANCE_POLICY.md` | `wiki/Compliance.md` |
-| `RELEASE_POLICY.md` | `wiki/Releases.md` |
-| `CHANGE_CONTROL_POLICY.md` | `wiki/Workflow.md` |
-| `DOCUMENTATION_POLICY.md` | `wiki/Documentation.md` |
-| `README.md` | `wiki/Overview.md` |
-
-When a canonical source has multiple derived wiki pages, all derived pages must be updated or tracked for sync.
-
-The canonical machine-readable sync manifest is `core/policies/docs-sync-rules.json`, with `policies/docs-sync-rules.json` as a byte-identical root mirror. The manifest expands the table above into enforceable sync pairs for role files, standards, changelog records, and canonical core policy manifests.
-
-Machine-readable sync pairs include stable rule IDs, trigger paths, required derived paths, required evidence, rejection conditions, and failure actions. Contract-mode validation uses those pairs to request changes when a canonical source changes without the required derived wiki update or an approved deferral.
-
-Additional core policy sync pairs include:
-
-| Canonical Source | Wiki Derived Page |
-|---|---|
-| `core/policies/compliance-rules.json` | `wiki/Compliance.md` |
-| `core/policies/ai-assistance-disclosure.json` | `wiki/Compliance.md` |
-| `core/policies/repo-boundaries.json` | `wiki/Workflow.md`, `wiki/Compliance.md` |
-| `core/policies/docs-sync-rules.json` | `wiki/Documentation.md` |
-| `core/policies/versioning-rules.json` | `wiki/Releases.md` |
-| `core/policies/changelog-rules.json` | `wiki/Changelog.md` |
+| Surface | Path | Purpose | Publish Mode |
+|---|---|---|---|
+| Canonical docs | root markdown, `core/`, `standards/`, `contracts/` | binding source of truth | PR-based repository changes |
+| Wiki mirror | `wiki/*.md` | curated derived pages kept with repository review | PR-based repository changes |
+| Live wiki | `forsetti-agentic-edition.wiki.git` | public GitHub Wiki pages | direct wiki repository publish |
+| Workflow adapter | `adapters/github-actions/workflows/sync-wiki-pages.ps1` | optional hosted publication support | wrapper around repository-local content |
 
 ---
 
-## Documentation Impact
+## Page System
 
-Every pull request must declare documentation impact. The review must account for README, wiki, governance document, glossary, and changelog obligations.
-
-Required documentation depends on change class. Governance and breaking changes require wiki and changelog updates; README and glossary updates are required when the change affects repository overview or introduces new governance terminology.
-
----
-
-## Drift
-
-Documentation drift exists when documented state diverges from repository state. Drift includes stale references, missing wiki sync, README inaccuracy, glossary inconsistency, wiki contradiction, and orphaned documentation.
-
-Detected drift must be reported or fixed in the current change. Unreported drift is a compliance issue.
+| Page | Role | Must Stay Aligned With |
+|---|---|---|
+| [Home](Home) | command center | README, current wiki topology |
+| [Overview](Overview) | architecture map | README, `core/`, `editions/`, overlays |
+| [Workflow](Workflow) | execution model | AGENTS, change control, documentation policy |
+| [Compliance](Compliance) | enforcement model | compliance policy, policy registries |
+| [Agent Roles](Agent-Roles) | authority model | AGENTS and role files |
+| [Releases](Releases) | release readiness | release policy and changelog |
+| [Glossary](Glossary) | shared terms | current policy and schema names |
 
 ---
 
-## Review Authority
+## Drift Control
 
-The Validator and Documentation Manager roles can request changes for documentation violations. Documentation rejection can only be resolved by fixing the violation, showing that the rejection condition does not apply, or obtaining an explicit governance exception through the governance change process.
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#0f172a","primaryTextColor":"#ffffff","primaryBorderColor":"#f59e0b","lineColor":"#92400e","secondaryColor":"#fffbeb","tertiaryColor":"#f8fafc"}}}%%
+flowchart LR
+    Change["Meaningful change"] --> Impact{"Docs affected?"}
+    Impact -->|no| Note["state not required"]
+    Impact -->|yes| Canon["update canonical docs"]
+    Canon --> Mirror["update wiki mirror"]
+    Mirror --> Live["publish live wiki"]
+    Live --> Check["link and content checks"]
+    Check --> Evidence["completion evidence"]
+```
 
 ---
 
-<sub>
+## GitHub Wiki Limits and Best Use
 
-**Navigation**: [Home](Home) | [Constitution](Constitution) | [Agent Roles](Agent-Roles) | [Workflow](Workflow) | [Documentation](Documentation) | [Compliance](Compliance) | [Releases](Releases) | [Changelog](Changelog) | [Glossary](Glossary)
+GitHub Wiki pages do not support custom CSS, custom JavaScript, or application-style effects. The highest-quality durable surface is achieved with:
 
-</sub>
+- Mermaid diagrams for architecture, flow, state, and sequence views.
+- Dense but readable tables for decision matrices.
+- Badges for quick status scanning.
+- `<details>` sections for progressive disclosure.
+- Strong page-to-page navigation.
+- Consistent canonical-source notes and boundary statements.
+
+---
+
+**Navigation**: [Home](Home) | [Overview](Overview) | [Workflow](Workflow) | [Compliance](Compliance) | [Agent Roles](Agent-Roles) | [Releases](Releases) | [Glossary](Glossary)

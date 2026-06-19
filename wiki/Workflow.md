@@ -1,151 +1,104 @@
 # Workflow
 
-> **Canonical sources**: [`AGENTS.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/AGENTS.md), [`CHANGE_CONTROL_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CHANGE_CONTROL_POLICY.md)
-> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-011 GitHub Actions adapter documentation sync
+[![Flow](https://img.shields.io/badge/flow-contract%20before%20action-2563eb)](Workflow) [![Evidence](https://img.shields.io/badge/evidence-before%20completion-0f766e)](Compliance)
 
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![License](https://img.shields.io/badge/license-see%20repo-lightgrey)](https://github.com/flynn33/forsetti-agentic-edition/blob/main/LICENSE.md)
-
----
-
-## Purpose
-
-Workflow is governed by two canonical sources:
-
-- `AGENTS.md` defines the operating sequence, role model, role boundaries, and completion summary requirements.
-- `CHANGE_CONTROL_POLICY.md` defines change classes, approval classes, scope control, protected assets, and rejection conditions.
-
-This page summarizes those sources for navigation. The repository files remain authoritative.
+> **Canonical sources**: [`AGENTS.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/AGENTS.md), [`CHANGE_CONTROL_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CHANGE_CONTROL_POLICY.md), [`DOCUMENTATION_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/DOCUMENTATION_POLICY.md)
 
 ---
 
-## Operating Sequence
+## Execution Pipeline
 
-Before meaningful work begins, the agent must identify the task, classify the change, determine whether a task contract exists or is needed, confirm the acting and reviewer roles, confirm the approval class, confirm scope, execute within that scope, update required documentation, add a changelog entry when required, produce evidence, and submit for validation.
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#1e293b","primaryTextColor":"#ffffff","primaryBorderColor":"#93c5fd","lineColor":"#334155","secondaryColor":"#eef2ff","tertiaryColor":"#f8fafc"}}}%%
+sequenceDiagram
+    participant Owner as Human Owner
+    participant Architect
+    participant Builder
+    participant Validator
+    participant Release as Release Manager
+    participant Docs as Documentation Manager
 
-This sequence is mandatory for meaningful changes. Work without a governing contract is not reviewable under the compliance model.
+    Owner->>Architect: Request governed work
+    Architect->>Architect: classify change and approval class
+    Architect->>Architect: select Forsetti profile and context
+    Architect->>Builder: issue bounded task contract
+    Builder->>Builder: implement inside scope only
+    Builder->>Builder: update docs, changelog, evidence
+    Builder->>Validator: submit artifacts and validation proof
+    Validator->>Validator: check scope, rules, manifests, evidence
+    Validator-->>Builder: request changes or block if needed
+    Validator->>Release: pass release-impact evidence
+    Release->>Docs: confirm changelog and documentation state
+    Docs-->>Owner: aligned delivery surface
+```
 
 ---
 
-## Role Boundaries
+## State Machine
 
-Five governed roles operate in the repository:
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#0f172a","primaryTextColor":"#ffffff","primaryBorderColor":"#38bdf8","lineColor":"#2563eb","secondaryColor":"#f1f5f9","tertiaryColor":"#ecfeff"}}}%%
+stateDiagram-v2
+    [*] --> Intake
+    Intake --> Classified
+    Classified --> ContextBound: Forsetti project context complete
+    ContextBound --> Contracted: scope and approval set
+    Contracted --> Execution
+    Execution --> Evidence
+    Evidence --> Validation
+    Validation --> Passed: all gates pass
+    Validation --> RequestChanges: fixable issue
+    Validation --> Blocked: hard violation
+    RequestChanges --> Execution
+    Blocked --> Classified: repair governance basis
+    Passed --> ReleaseReview
+    ReleaseReview --> DocumentationReview
+    DocumentationReview --> [*]
+```
 
-| Role | Authority | Responsibility |
+---
+
+## Mandatory Gates
+
+| Gate | Owner | Blocks When |
 |---|---|---|
-| Architect | Planning | Creates task contracts, classifies changes, and defines scope |
-| Builder | Execution | Implements authorized work within contract scope |
-| Validator | Verification | Reviews compliance and renders pass, request-changes, or block |
-| Release Manager | Release | Confirms version classification and release readiness |
-| Documentation Manager | Documentation | Reviews wiki sync, README integrity, and documentation drift |
-
-An elevated Governance Steward authority exists for constitutional amendments and governance-class changes.
-
-Agents must respect role boundaries. Builders do not validate their own work.
+| Classification | Architect | Change class, approval class, or release impact is missing. |
+| Forsetti context | Architect | Edition, platform, framework version, module type, or manifest version is missing. |
+| Scope | Architect + Builder | Changed files exceed contract scope. |
+| Implementation | Builder | Work touches sealed internals, undeclared capability use, or direct module coupling. |
+| Validation | Validator | Evidence is absent, stale, failed, or does not map to the profile. |
+| Documentation | Documentation Manager | README, wiki, glossary, changelog, or standards drift from behavior. |
+| Release | Release Manager | Version impact or migration guidance is inaccurate. |
 
 ---
 
-## Change Classes
+## Validator Mode Map
 
-Every meaningful change is classified before execution:
-
-| Change Class | Use |
-|---|---|
-| feature | Adds a new governance capability or governed artifact |
-| bugfix | Corrects an error without changing rule intent |
-| refactor | Restructures content without changing meaning or enforcement |
-| docs | Updates documentation without modifying policy rules |
-| governance | Modifies constitutional, policy, compliance, or protected governance content |
-| release | Prepares a release |
-| metadata | Changes whitespace, formatting, punctuation, or non-functional settings only |
-| breaking-change | Changes rules, structures, or enforcement in a way consumers must adapt to |
-
-When classification is uncertain, the higher-risk classification is used.
+| Mode | Use | Evidence Input |
+|---|---|---|
+| `repo` | FFAE repository structure and mirrors | repository root |
+| `contract` | task contract, changed files, protected paths | contract path, changed-file evidence |
+| `project-context` | required Forsetti context | project context JSON |
+| `edition-profile` | Apple/Windows profile shape and versions | edition profile JSON |
+| `manifest` | module manifest 1.1 | manifest JSON |
+| `dependencies` | dependency direction and public API use | changed files |
+| `capabilities` | capability use versus declarations | changed files and manifest |
+| `module-isolation` | module-to-module coupling | changed files |
+| `evidence` | completion evidence mapped to profile | contract and validation artifacts |
+| `all` | repo plus available target checks | all available inputs |
 
 ---
 
-## Approval Classes
+## Failure Handling
 
-Approval class determines the required review authority:
-
-| Approval Class | Applies To |
-|---|---|
-| Standard | Routine feature, bugfix, refactor, docs, or metadata changes |
-| Sensitive | Higher-risk changes affecting multiple policy areas, schemas, role instructions, or workflows |
-| Governance-Class | Constitutional, compliance, policy, or protected governance changes |
-| Emergency | Time-critical fixes with required post-hoc validation |
-| Release-Critical | Release preparation governed by the Release Manager |
-
-Governance-class changes require elevated handling and must not be bundled with unrelated work.
+| Finding | Decision | Next Move |
+|---|---|---|
+| Missing contract or context | block | Stop and create the missing governance basis. |
+| Protected path without approval | block | Add required approval or split the work. |
+| Documentation drift | request changes | Update the affected documentation surface. |
+| Missing evidence | block | Run or disclose the required validation. |
+| Unavailable tool | request changes or block by policy | State exact command and reason, then provide alternate evidence if allowed. |
 
 ---
 
-## Scope Control
-
-Scope is defined by the task contract. Files outside that scope must not be modified.
-
-If additional scope becomes necessary, the Builder must identify the need, request a contract amendment from the Architect, and wait for the amended scope before modifying the newly authorized files.
-
-Unauthorized scope expansion is a blocking violation.
-
-The local validator can enforce changed files against a governing task contract with `-Mode contract`, `-ContractPath`, and either `-ChangedFile` or `-ChangedFilesPath`. Contract mode also checks required outputs, evidence artifacts, documentation and changelog obligations, and protected-path approval requirements.
-
-## Forsetti Project Context Gate
-
-Before Builder execution, the Architect must record repository mode, Forsetti edition, target platform, framework version, selected edition profile, manifest schema/template version, deployment pattern, module type, requested capabilities, runtime requirement status, public API status, and framework-internals status.
-
-Missing edition, framework version, supported target platform, manifest version, or module type blocks execution. The selected edition profile and shared invariants override lower task instructions.
-
-## Forsetti Validation Flow
-
-The local validator is the canonical enforcement entry point. GitHub Actions are optional wrappers around local governance. Target repository checks use `project-context`, `edition-profile`, `manifest`, `dependencies`, `capabilities`, `module-isolation`, and `evidence` modes as applicable.
-
----
-
-## Protected Assets
-
-Protected assets require the approval class defined by `CHANGE_CONTROL_POLICY.md`. Examples include constitutional files, root policy documents, agent instructions, policy manifests, schemas, CODEOWNERS, and GitHub workflows.
-
-Policy manifests under `core/policies/*.json` are canonical portable policy registries and require governance-class handling. Policy manifests under `policies/*.json` require governance-class handling when they encode constitutional, compliance, or policy rules; root files that mirror `core/policies/*.json` are compatibility mirrors and must not redefine canonical rule meaning.
-
-Protected asset handling is enforced by `FAE-C004` in the canonical compliance registry. Role separation is enforced separately by `FAE-C003`.
-
-Local protected-path checks use `core/policies/repo-boundaries.json` as the manifest-driven source for approval requirements. When multiple rules match a path, the most restrictive approval requirement applies.
-
-The repository boundary manifest now includes pre-merge gate data for protected paths, role-limited paths, governance isolation, and policy mirror integrity. It also covers enforcement surfaces such as `core/validator/**`, `core/schemas/*.json`, `core/contracts/**`, `contracts/*-template.md`, `schemas/*.json`, `scripts/**`, and `adapters/github-actions/workflows/**`.
-
-Contract-mode validation also checks role-limited paths. A path can be in scope and still fail validation when the task contract acting role is not authorized for that path family.
-
-## Hosted Workflow Adapter
-
-GitHub Actions workflows are optional hosted wrappers. The workflow YAML preserves triggers, job identifiers, and check names, while implementation logic lives in `adapters/github-actions/workflows/`.
-
-Adapter scripts compute changed-file evidence with local `git diff`, read repository policy manifests, and invoke `core/validator/forsetti_validate.ps1` where hosted checks need local validation behavior. Hosted execution does not replace task-contract evidence or Validator review.
-
----
-
-## Required Delivery Evidence
-
-A completion summary must include:
-
-- Files changed
-- Evidence of validation
-- Known issues or an explicit none
-- Documentation status
-- Release impact
-- Scope compliance
-
-Claims of completion must match the evidence. Partial completion must be stated as partial.
-
----
-
-## Rejection Conditions
-
-A change is rejected or blocked when it lacks a task contract, modifies files outside scope, omits required documentation or changelog entries, lacks version impact classification, touches protected assets without authority, contradicts evidence, hides known failures, silently underclassifies a breaking change, or bundles governance changes with unrelated work.
-
----
-
-<sub>
-
-**Navigation**: [Home](Home) | [Constitution](Constitution) | [Agent Roles](Agent-Roles) | [Workflow](Workflow) | [Documentation](Documentation) | [Compliance](Compliance) | [Releases](Releases) | [Changelog](Changelog) | [Glossary](Glossary)
-
-</sub>
+**Navigation**: [Home](Home) | [Overview](Overview) | [Compliance](Compliance) | [Agent Roles](Agent-Roles) | [Documentation](Documentation) | [Releases](Releases) | [Glossary](Glossary)

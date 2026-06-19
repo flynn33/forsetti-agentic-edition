@@ -1,66 +1,82 @@
 # Forsetti Agentic Edition
 
-> **Canonical source**: `README.md`
-> **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-013 platform overlay guidance
+[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![Governance](https://img.shields.io/badge/governance-local--first-0f766e)](Compliance) [![Profiles](https://img.shields.io/badge/edition%20profiles-Apple%200.1.3%20%7C%20Windows%200.2.0-4f46e5)](Overview) [![Validator](https://img.shields.io/badge/validator-repo%20%7C%20contract%20%7C%20target-9333ea)](Workflow)
 
-## Welcome
+> **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
+> **Wiki purpose**: high-signal orientation for the live GitHub Wiki. Repository files remain authoritative.
 
-This wiki provides navigational documentation for the Forsetti Agentic Edition governance framework. Repository markdown files are canonical. Wiki pages are derived orientation surfaces.
+---
 
-## Portable Architecture
+## Command Center
 
-| Layer | Path | Purpose |
-|:-----|:-----|:--------|
-| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, enforceable task contract structure, evidence requirements, canonical policy registries with pre-merge gate metadata, and local validation interfaces. |
-| Adapters | `adapters/` | Optional host integrations that translate platform context into portable validation inputs. GitHub Actions workflow implementation lives in `adapters/github-actions/workflows/`. |
-| Overlays | `overlays/` | Host-neutral and platform-specific execution guidance that preserves core governance meaning. |
+Forsetti Agentic Edition is a governance-only enforcement framework for Forsetti-compliant applications and modules. It does not implement Apple or Windows runtime behavior. It governs context, profiles, manifests, capabilities, dependency direction, module isolation, public API boundaries, evidence, and release integrity.
 
-GitHub Actions workflow files are wrappers around adapter-owned scripts. They preserve hosted check names while keeping enforcement logic and local-validator invocation outside the portable core.
+| Start Here | Use When | Visual Focus |
+|---|---|---|
+| [Overview](Overview) | You need the system map and architecture boundaries. | Layer map, source-truth flow, validation surfaces |
+| [Workflow](Workflow) | You need the execution path from request to completion. | State machine, sequence flow, evidence gates |
+| [Compliance](Compliance) | You need rule outcomes and enforcement families. | Decision lattice, C/F rule matrix, blocker map |
+| [Agent Roles](Agent-Roles) | You need role authority and handoff boundaries. | Role lattice, RACI matrix, escalation paths |
+| [Documentation](Documentation) | You need wiki and documentation sync rules. | Publication pipeline, drift control, page topology |
+| [Releases](Releases) | You need version impact and release readiness. | Release gate model, impact matrix |
 
-Phase 08 overlays provide `generic`, Apple-platform, and Windows-native guidance profiles. They remain subordinate to root governance documents and canonical core policy registries.
+---
 
-## Quick Navigation
+## Operating Map
 
-| Page | Description | Source |
-|:-----|:------------|:-------|
-| [Overview](Overview) | Repository overview, structure, and portable architecture | `README.md` |
-| [Constitution](Constitution) | Foundational principles, authority hierarchy, and governance doctrine | `FORSETTI_CONSTITUTION.md` |
-| [Agent Roles](Agent-Roles) | The governed roles, their authorities, and boundaries | `AGENTS.md`, `agents/*.md` |
-| [Workflow](Workflow) | Change control lifecycle, approval classes, and documentation policy | `CHANGE_CONTROL_POLICY.md`, `DOCUMENTATION_POLICY.md` |
-| [Compliance](Compliance) | Canonical compliance registry, evidence requirements, accountability policy, and outcomes | `COMPLIANCE_POLICY.md`, `AI_ASSISTANCE_POLICY.md`, `core/policies/compliance-rules.json` |
-| [Releases](Releases) | Versioning model, release readiness, and impact classification | `RELEASE_POLICY.md` |
-| [Changelog](Changelog) | Version history and change records | `changelog/CHANGELOG.md` |
-| [Glossary](Glossary) | Key terms and definitions | Various |
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#0f172a","primaryTextColor":"#f8fafc","primaryBorderColor":"#38bdf8","lineColor":"#2563eb","secondaryColor":"#eef2ff","secondaryTextColor":"#111827","tertiaryColor":"#ecfeff"}}}%%
+flowchart LR
+    A["Human owner instruction"] --> B["Forsetti project context"]
+    B --> C["Selected edition profile"]
+    C --> D["Shared sealed-runtime invariants"]
+    D --> E["Task contract"]
+    E --> F["Builder execution"]
+    F --> G["Local validator"]
+    G --> H{"Compliance decision"}
+    H -->|pass| I["Review and release path"]
+    H -->|request changes| F
+    H -->|block| J["Stop and repair governance violation"]
 
-## Core Principles
+    C --> C1["Apple 0.1.3"]
+    C --> C2["Windows 0.2.0"]
+    G --> G1["manifest"]
+    G --> G2["capabilities"]
+    G --> G3["module isolation"]
+    G --> G4["evidence"]
+```
 
-1. **Contract Before Action** - No meaningful work begins without a governing contract.
-2. **Scope Is Binding** - Work stays within defined boundaries.
-3. **Truthfulness Is Mandatory** - Status claims must match evidence.
-4. **Governance Overrides Convenience** - Required process is not optional.
-5. **Documentation Is Part of Delivery** - Documentation drift is a compliance issue.
-6. **Compliance Must Be Measurable** - Evidence determines compliance.
-7. **Release Integrity Is Non-Negotiable** - Release claims require validation.
+---
 
-## Getting Started
+## Visual Index
 
-1. Read [Constitution](Constitution) to understand governance principles.
-2. Review [Agent Roles](Agent-Roles) to understand role boundaries.
-3. Study [Workflow](Workflow) for change control procedures.
-4. Check [Compliance](Compliance) for blocking violation rules.
-5. Use local validator contract mode when reviewing changed files against a governing task contract, protected path rules, role-limited path rules, documentation sync obligations, and changelog/version evidence.
-6. For Forsetti app/module work, select an edition profile from `editions/`, complete Forsetti project context, and validate manifests, capabilities, dependency direction, module isolation, public API use, and profile-mapped evidence.
+| Page | Primary Diagram | What It Proves |
+|---|---|---|
+| [Overview](Overview) | Portable architecture graph | FFAE is governance-only and profile-bound. |
+| [Workflow](Workflow) | Request-to-validation sequence | Execution cannot bypass context, contract, or evidence. |
+| [Compliance](Compliance) | Outcome and rule-family lattice | Pass, request-changes, and block are evidence decisions. |
+| [Agent Roles](Agent-Roles) | Role authority matrix | Builders execute; Validators verify; Governance Steward escalates. |
+| [Documentation](Documentation) | Wiki publication pipeline | Repo wiki mirror and live wiki are separate publish surfaces. |
+| [Releases](Releases) | Release readiness gate | Version impact and changelog evidence are mandatory. |
+| [Glossary](Glossary) | Concept relationship map | Terms are connected to enforcement behavior. |
 
-## Forsetti Enforcement Navigation
+---
 
-| Surface | Purpose |
-|:--|:--|
-| `editions/` | Apple, Windows, and shared invariant profiles |
-| `core/schemas/forsetti-project-context.schema.json` | Required pre-execution context |
-| `core/schemas/module-manifest-1.1.schema.json` | Manifest 1.1 validation model |
-| `core/policies/forsetti-enforcement-rules.json` | `FAE-F001` through `FAE-F020` |
-| `core/validator/README.md` | Local validator modes and evidence model |
+## Fast Path
 
-## Navigation
+1. Choose the [edition profile](Overview): Apple `0.1.3` or Windows `0.2.0`.
+2. Complete Forsetti project context before implementation.
+3. Bind work to a task contract and authorized scope.
+4. Validate manifests, capabilities, dependency direction, public API use, module isolation, and evidence.
+5. Publish documentation and changelog updates in the same change set.
+6. Report limitations precisely; unavailable checks are not passing checks.
 
-[Home](Home) | [Overview](Overview) | [Constitution](Constitution) | [Agent Roles](Agent-Roles) | [Workflow](Workflow) | [Compliance](Compliance) | [Releases](Releases) | [Changelog](Changelog) | [Glossary](Glossary)
+---
+
+## Boundary Statement
+
+FFAE is the governance layer. It does not become the platform runtime, module loader, orchestration server, CLU dependency, MCP dependency, hosted enforcement service, or Apple/Windows framework implementation. Runtime behavior belongs to the downstream Forsetti framework repositories.
+
+---
+
+**Navigation**: [Overview](Overview) | [Workflow](Workflow) | [Compliance](Compliance) | [Agent Roles](Agent-Roles) | [Documentation](Documentation) | [Releases](Releases) | [Changelog](Changelog) | [Glossary](Glossary)
