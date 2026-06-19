@@ -68,7 +68,7 @@
       "selectedProviderType": "package_backed_local_stdio_entry",
       "selectedProviderName": "@modelcontextprotocol/server-filesystem",
       "decision": "restricted_allow_scoped",
-      "localFirstEvidence": "codex mcp get filesystem succeeded; package version 2026.1.14 and package.json hash captured.",
+      "localFirstEvidence": "local-host mcp get filesystem succeeded; package version 2026.1.14 and package.json hash captured.",
       "fallbackUsed": false,
       "approvalRequired": false,
       "riskNotes": "Configured scope omits v3 package path and includes v2 package path."
@@ -78,7 +78,7 @@
       "selectedProviderType": "package_backed_local_stdio_entry",
       "selectedProviderName": "@modelcontextprotocol/server-memory",
       "decision": "restricted_until_active_namespace_and_scope_logged",
-      "localFirstEvidence": "codex mcp get memory succeeded; package version 2026.1.26 and package.json hash captured.",
+      "localFirstEvidence": "local-host mcp get memory succeeded; package version 2026.1.26 and package.json hash captured.",
       "fallbackUsed": false,
       "approvalRequired": false,
       "riskNotes": "Active namespace unavailable in this session."
@@ -88,7 +88,7 @@
       "selectedProviderType": "package_backed_local_stdio_entry",
       "selectedProviderName": "@modelcontextprotocol/server-sequential-thinking",
       "decision": "restricted_until_active_namespace_and_scope_logged",
-      "localFirstEvidence": "codex mcp get sequential-thinking succeeded; package version 2025.12.18 and package.json hash captured.",
+      "localFirstEvidence": "local-host mcp get sequential-thinking succeeded; package version 2025.12.18 and package.json hash captured.",
       "fallbackUsed": false,
       "approvalRequired": false,
       "riskNotes": "Active namespace unavailable in this session."
@@ -98,7 +98,7 @@
       "selectedProviderType": "package_backed_local_stdio_entry",
       "selectedProviderName": "@playwright/mcp",
       "decision": "restricted_to_browser_validation_phases",
-      "localFirstEvidence": "codex mcp get playwright succeeded; local package versions 0.0.75 and 0.0.70 found.",
+      "localFirstEvidence": "local-host mcp get playwright succeeded; local package versions 0.0.75 and 0.0.70 found.",
       "fallbackUsed": false,
       "approvalRequired": false,
       "riskNotes": "Browser state and screenshots can expose local data."
@@ -108,7 +108,7 @@
       "selectedProviderType": "package_backed_local_stdio_entry",
       "selectedProviderName": "chrome-devtools-mcp",
       "decision": "restricted_to_browser_debug_phases",
-      "localFirstEvidence": "codex mcp get chrome-devtools succeeded; local package versions 0.21.0 and 0.25.0 found.",
+      "localFirstEvidence": "local-host mcp get chrome-devtools succeeded; local package versions 0.21.0 and 0.25.0 found.",
       "fallbackUsed": false,
       "approvalRequired": false,
       "riskNotes": "DOM, console, network, and page state can expose local data."
@@ -118,7 +118,7 @@
       "selectedProviderType": "package_backed_local_stdio_entry",
       "selectedProviderName": "@github/computer-use-mcp",
       "decision": "restricted_to_when_shell_file_browser_paths_are_insufficient",
-      "localFirstEvidence": "codex mcp get computer-use succeeded; package version 0.1.26 and package.json hash captured.",
+      "localFirstEvidence": "local-host mcp get computer-use succeeded; package version 0.1.26 and package.json hash captured.",
       "fallbackUsed": false,
       "approvalRequired": false,
       "riskNotes": "Desktop context can expose broad local data."
@@ -128,7 +128,7 @@
       "selectedProviderType": "package_backed_local_stdio_entry_mutable_selector",
       "selectedProviderName": "@wonderwhy-er/desktop-commander@latest",
       "decision": "deny_until_pinned_or_explicitly_approved",
-      "localFirstEvidence": "codex mcp get desktop-commander succeeded; local package version 0.2.40 found.",
+      "localFirstEvidence": "local-host mcp get desktop-commander succeeded; local package version 0.2.40 found.",
       "fallbackUsed": false,
       "approvalRequired": true,
       "riskNotes": "Command uses @latest and has broad desktop/filesystem capability."
@@ -138,7 +138,7 @@
       "selectedProviderType": "package_backed_local_stdio_entry",
       "selectedProviderName": "@cyanheads/git-mcp-server",
       "decision": "prefer_local_git_restrict_mcp_entry",
-      "localFirstEvidence": "codex mcp get git succeeded; package version 2.15.1 and package.json hash captured.",
+      "localFirstEvidence": "local-host mcp get git succeeded; package version 2.15.1 and package.json hash captured.",
       "fallbackUsed": false,
       "approvalRequired": false,
       "riskNotes": "Local git.exe is available and preferred."
@@ -148,17 +148,17 @@
       "selectedProviderType": "package_backed_local_stdio_entry",
       "selectedProviderName": "mcp-sqlite",
       "decision": "restricted_to_explicit_local_evidence_database_needs",
-      "localFirstEvidence": "codex mcp get sqlite succeeded; package version 1.0.9 and package.json hash captured.",
+      "localFirstEvidence": "local-host mcp get sqlite succeeded; package version 1.0.9 and package.json hash captured.",
       "fallbackUsed": false,
       "approvalRequired": false,
-      "riskNotes": "sqlite3 CLI is not on PATH; configured MCP targets a local Codex SQLite file."
+      "riskNotes": "sqlite3 CLI is not on PATH; configured MCP targets a local SQLite file."
     },
     {
       "need": "configured Docker MCP",
       "selectedProviderType": "package_backed_local_stdio_entry",
       "selectedProviderName": "mcp-docker-server",
       "decision": "deny_until_docker_available_and_phase_scope_requires_it",
-      "localFirstEvidence": "codex mcp get docker succeeded; package version 1.0.1 and package.json hash captured; Docker CLI/Desktop absent.",
+      "localFirstEvidence": "local-host mcp get docker succeeded; package version 1.0.1 and package.json hash captured; Docker CLI/Desktop absent.",
       "fallbackUsed": false,
       "approvalRequired": false,
       "riskNotes": "Docker capability cannot function on this host as currently installed."

@@ -139,15 +139,15 @@
     },
     {
       "rule_id": "FAE-C012",
-      "title": "AI Assistance Accountability and Non-Attribution",
+      "title": "Accountability and Non-Attribution",
       "severity": "high",
       "decision": "request_changes",
       "responsible_roles": ["builder", "validator", "governance_steward"],
-      "description": "AI-assisted work must never replace accountable human ownership or governed role accountability. Attribution credit to tools, models, vendors, automation, or agents is prohibited in source files, generated code comments, commit messages, changelog entries, release notes, README notices, contributor lists, authorship metadata, and documentation prose.",
+      "description": "Assisted work must never replace accountable human ownership or governed role accountability. Attribution credit to tools, models, vendors, automation, or agents is prohibited in source files, generated code comments, commit messages, changelog entries, release notes, README notices, contributor lists, authorship metadata, and documentation prose.",
       "required_evidence": ["accountable human owner", "acting governed role", "task contract or remediation phase reference", "review evidence", "validation evidence", "approval evidence when required", "absence of prohibited attribution credit"],
       "validation": "Confirm accountable ownership, contract or phase traceability, review evidence, validation evidence, required approval evidence, and absence of prohibited attribution credit.",
       "remediation": "Remove prohibited attribution credit and add missing accountability, review, validation, or required approval evidence.",
-      "related_policy_paths": ["AI_ASSISTANCE_POLICY.md", "COMPLIANCE_POLICY.md", "AGENTS.md", "core/policies/ai-assistance-disclosure.json"]
+      "related_policy_paths": ["ACCOUNTABILITY_POLICY.md", "COMPLIANCE_POLICY.md", "AGENTS.md", "core/policies/accountability-rules.json"]
     }
   ]
 }

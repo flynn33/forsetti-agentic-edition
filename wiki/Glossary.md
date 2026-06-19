@@ -31,7 +31,9 @@ flowchart LR
 | Term | Meaning |
 |---|---|
 | Agent | A governed contributor role operating under FFAE rules. |
+| Accountability Evidence | Required proof identifying the accountable human owner, governed role, contract or phase reference, review evidence, validation evidence, and required approval evidence. |
 | Approval Class | Required authority level for a change: standard, sensitive, governance-class, emergency, or release-critical. |
+| Attribution Credit | Prohibited credit that treats a tool, model, vendor, automation, or agent as an author, contributor, reviewer, validator, approver, releaser, maintainer, or source of work. |
 | Capability | A declared permission or behavior surface that must appear in the manifest before code uses it. |
 | Compliance Decision | The result of validation: pass, request changes, or block. |
 | Contract | A task-level governance document defining scope, outputs, evidence, and reviewers. |

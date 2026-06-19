@@ -3,8 +3,8 @@
   "phase_id": "00",
   "generated": "2026-05-08",
   "branch": "audit/remediation-v2-baseline",
-  "repository_root": "A:\\Codex\\Forsetti-Framwork-Agentic-Edition",
-  "remediation_package": "A:\\Codex\\forsetti-codex-remediation-package-v2",
+  "repository_root": "A:\\Workspace\\Forsetti-Framwork-Agentic-Edition",
+  "remediation_package": "A:\\Workspace\\forsetti-remediation-package-v2",
   "status": "not_remediated",
   "phase_scope": "evidence_only",
   "root_indicators_present": [
@@ -42,7 +42,7 @@
       "command": "powershell -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
       "exit_code": 1,
       "result": "failed",
-      "observed_output_summary": "Reported 57 errors, including many present repository files as missing, invalid JSON at A:\\Codex\\package-lock.json, and labels sync missing. The script appears to compute the repository root as A:\\Codex instead of the cloned repository."
+      "observed_output_summary": "Reported 57 errors, including many present repository files as missing, invalid JSON at A:\\Workspace\\package-lock.json, and labels sync missing. The script appears to compute the repository root as A:\\Workspace instead of the cloned repository."
     },
     {
       "command": "bash .\\scripts\\validate-repo.sh",
@@ -55,7 +55,7 @@
     {
       "path": "README.md",
       "line": 9,
-      "text": "Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems."
+      "text": "Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by coding agents, mixed human/agentic teams, and automated software delivery systems."
     },
     {
       "path": "README.md",
@@ -80,17 +80,17 @@
   ],
   "source_line_rejection_occurrences": [
     {
-      "path": ".github/workflows/ai-contributor-guard.yml",
+      "path": ".github/workflows/contributor-attribution-guard.yml",
       "line": 1,
       "text": "contributor guard workflow title"
     },
     {
-      "path": ".github/workflows/ai-contributor-guard.yml",
+      "path": ".github/workflows/contributor-attribution-guard.yml",
       "line": 11,
       "text": "source-line rejection job title"
     },
     {
-      "path": ".github/workflows/ai-contributor-guard.yml",
+      "path": ".github/workflows/contributor-attribution-guard.yml",
       "line": 213,
       "text": "source-line rejection error message requiring human authorship"
     }

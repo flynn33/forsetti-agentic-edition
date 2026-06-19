@@ -1,6 +1,6 @@
 ---
 name: Agent Task
-about: Contract-ready task definition for AI agent execution
+about: Contract-ready task definition for agent execution
 title: "[TASK] "
 labels: "status:needs-contract, role:architect"
 ---

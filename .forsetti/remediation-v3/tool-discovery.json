@@ -142,7 +142,7 @@
       "summary": "Host security blocked the screenshot capture script."
     },
     {
-      "command": "codex mcp list",
+      "command": "local-host mcp list",
       "result": "succeeded",
       "summary": "Configured MCP entries recorded; not claimed as active callable namespaces."
     },
@@ -196,7 +196,7 @@
       "result": "used"
     },
     {
-      "toolOrServer": "configured MCP list from codex mcp list",
+      "toolOrServer": "configured MCP list from local-host mcp list",
       "providerType": "existing_local_mcp_or_tooling",
       "localFirstDecision": "record_only",
       "purpose": "Record configured MCP state.",

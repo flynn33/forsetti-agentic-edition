@@ -82,7 +82,7 @@
 - `DOCUMENTATION_POLICY.md`
 - GitHub workflow conversion
 - Pull request template changes
-- AI contributor guard behavior
+- Contributor attribution guard behavior
 - Local validator implementation
 - Contract schema enforcement implementation
 - Phase 03 through Phase 09 outputs
@@ -130,7 +130,7 @@
 
 - This task modifies protected governance assets and requires governance-class authorization.
 - Phase 02 must not alter GitHub workflow behavior or contributor guard behavior reserved for later phases.
-- Phase 02 must not introduce product dependency on MCP servers, hosted providers, sub-agents, GitHub Actions, or OpenAI tooling.
+- Phase 02 must not introduce product dependency on MCP servers, hosted providers, sub-agents, GitHub Actions, or provider-specific tooling.
 - Root and core compliance registries must not diverge.
 
 ## Escalation Triggers

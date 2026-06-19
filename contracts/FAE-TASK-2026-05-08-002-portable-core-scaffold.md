@@ -75,7 +75,7 @@
 - JSON schemas: `schemas/*.json`
 - GitHub workflow files and issue or pull request templates under `.github/`
 - Validator engine implementation, canonical policy registry implementation, contract enforcement implementation, and GitHub Actions wrapper conversion
-- Any product dependency on MCP servers, OpenAI tooling, GitHub Actions, sub-agents, Docker, WSL, Visual Studio, Visual Studio Code, or other local execution tooling
+- Any product dependency on MCP servers, provider-specific tooling, GitHub Actions, sub-agents, Docker, WSL, Visual Studio, Visual Studio Code, or other local execution tooling
 
 ## Scope Notes
 
@@ -136,7 +136,7 @@
 - Any required output cannot be produced.
 - Validation fails and cannot be remediated within authorized scope.
 - Work requires modifying a protected governance asset.
-- The scaffold would introduce a runtime, hosted-service, MCP, OpenAI, GitHub Actions, IDE, Docker, WSL, or sub-agent dependency.
+- The scaffold would introduce a runtime, hosted-service, MCP, provider-specific tooling, GitHub Actions, IDE, Docker, WSL, or sub-agent dependency.
 - The change becomes breaking for existing consumers.
 - Documentation sync cannot be established or truthfully reported from available evidence.
 

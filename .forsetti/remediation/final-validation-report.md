@@ -21,6 +21,11 @@
 - `find . -path './.git' -prune -o -name '*.json' -print0 | xargs -0 -n1 python3 -m json.tool >/dev/null` completed successfully.
 - `bash -n scripts/validate-repo.sh` completed successfully.
 - `git diff --check` completed successfully.
+- Policy mirror parity completed successfully for accountability, compliance, and docs-sync manifests.
+- Package report completeness audit found 23 required files present and 0 missing.
+- FAE-F enforcement registry audit found 20 ordered rules and 0 missing required fields.
+- Current working-tree attribution scans completed with no restricted provider, model, or tool attribution terms in file contents or filenames.
+- Live GitHub Wiki publication completed at commit `1cd7f8f`.
 - `./scripts/validate-repo.sh` could not execute because no PowerShell host is available on PATH.
 - Repository JSON validation was also recorded in `.forsetti/remediation/json-validation-results.json`.
 
@@ -29,6 +34,8 @@
 - Phase 03: `module_id` is now required as a Forsetti project context property and is enforced by the validator for module-bearing work.
 - Phase 03: `schemas/forsetti-project-context.schema.json` now mirrors the core schema so the root task-contract compatibility schema has a resolvable local reference.
 - Phase 06: `defaultModuleRole` is now encoded by the manifest 1.1 schema and invalid values are blocked by the validator.
+- Phase 14: obsolete duplicate accountability policy names and manifests were removed; canonical references now point to `ACCOUNTABILITY_POLICY.md` and `accountability-rules.json`.
+- Phase 15: derived wiki pages and workflow adapter documentation were aligned to the canonical accountability policy surface.
 
 ## Boundary
 

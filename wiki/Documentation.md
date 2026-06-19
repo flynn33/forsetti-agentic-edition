@@ -44,9 +44,10 @@ flowchart TB
 | [Home](Home) | command center | README, current wiki topology |
 | [Overview](Overview) | architecture map | README, `core/`, `editions/`, overlays |
 | [Workflow](Workflow) | execution model | AGENTS, change control, documentation policy |
-| [Compliance](Compliance) | enforcement model | compliance policy, policy registries |
+| [Compliance](Compliance) | enforcement model | compliance policy, accountability policy, policy registries |
 | [Agent Roles](Agent-Roles) | authority model | AGENTS and role files |
 | [Releases](Releases) | release readiness | release policy and changelog |
+| [Changelog](Changelog) | change ledger | `changelog/CHANGELOG.md` |
 | [Glossary](Glossary) | shared terms | current policy and schema names |
 
 ---

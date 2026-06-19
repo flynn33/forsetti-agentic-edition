@@ -2,13 +2,16 @@
 
 ## Summary
 
-Added accountability policy and accountability rule manifest while preserving no-attribution requirements.
+Canonicalized the accountability policy surface and removed obsolete duplicate policy names while preserving no-attribution requirements.
 
 ## Evidence
 
 - Files changed are visible in `git status --short` and final diff.
 - JSON parse validation is recorded in `.forsetti/remediation/json-validation-results.json`.
 - Local acceptance test command: `python3 -m unittest tests/test_remediation_acceptance.py`.
+- Canonical policy surfaces are `ACCOUNTABILITY_POLICY.md`, `core/policies/accountability-rules.json`, and the byte-identical root mirror.
+- Obsolete duplicate accountability policy files were removed from the working tree.
+- Full working-tree attribution scan completed with no restricted provider, model, or tool attribution terms in current file contents or filenames.
 - PowerShell runtime execution was not available on this host because no `pwsh`, `powershell`, or `powershell.exe` command is on PATH.
 
 ## Boundary Confirmation

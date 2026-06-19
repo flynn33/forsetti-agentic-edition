@@ -2,7 +2,7 @@
   "phaseId": "00B",
   "branch": "audit/v3-mcp-subagent-governance",
   "result": "pass",
-  "rosterSource": "A:\\Codex\\forsetti-codex-mcp-subagent-remediation-plan-v3\\forsetti-codex-mcp-subagent-remediation-plan-v3\\subagents\\subagent-roster.json",
+  "rosterSource": "A:\\Workspace\\forsetti-mcp-subagent-remediation-plan-v3\\forsetti-mcp-subagent-remediation-plan-v3\\subagents\\subagent-roster.json",
   "rosterCount": 27,
   "requiredSubagents": [
     {

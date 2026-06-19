@@ -35,7 +35,7 @@ The following files are canonical sources:
 | `FORSETTI_CONSTITUTION.md` | Foundational governance principles and doctrine |
 | `AGENTS.md` | Agent operating rules, role model, workflow |
 | `COMPLIANCE_POLICY.md` | Compliance model, evidence requirements, blocking violations |
-| `AI_ASSISTANCE_POLICY.md` | AI assistance accountability and non-attribution requirements |
+| `ACCOUNTABILITY_POLICY.md` | Accountability and non-attribution requirements |
 | `CHANGE_CONTROL_POLICY.md` | Change classification, approval workflows, scope control |
 | `RELEASE_POLICY.md` | Versioning discipline, changelog requirements, release readiness |
 | `DOCUMENTATION_POLICY.md` | This document — documentation standards and sync rules |
@@ -89,7 +89,7 @@ When a canonical source file is modified, the corresponding wiki-derived page **
 | `FORSETTI_CONSTITUTION.md` | `wiki/Constitution.md` |
 | `AGENTS.md` | `wiki/Agent-Roles.md`, `wiki/Workflow.md` |
 | `COMPLIANCE_POLICY.md` | `wiki/Compliance.md` |
-| `AI_ASSISTANCE_POLICY.md` | `wiki/Compliance.md` |
+| `ACCOUNTABILITY_POLICY.md` | `wiki/Compliance.md` |
 | `RELEASE_POLICY.md` | `wiki/Releases.md` |
 | `CHANGE_CONTROL_POLICY.md` | `wiki/Workflow.md` |
 | `DOCUMENTATION_POLICY.md` | `wiki/Documentation.md` |

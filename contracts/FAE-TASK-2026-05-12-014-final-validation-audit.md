@@ -83,7 +83,7 @@ The repository owner has directed branch-and-pull-request review for each phase.
 - `FORSETTI_CONSTITUTION.md`
 - `AGENTS.md`
 - `COMPLIANCE_POLICY.md`
-- `AI_ASSISTANCE_POLICY.md`
+- `ACCOUNTABILITY_POLICY.md`
 - `CHANGE_CONTROL_POLICY.md`
 - `RELEASE_POLICY.md`
 - `DOCUMENTATION_POLICY.md`

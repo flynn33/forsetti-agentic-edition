@@ -11,7 +11,7 @@
     ".forsetti/remediation-v3/validator-root-repair-report.md",
     ".forsetti/remediation-v3/validator-root-repair.json"
   ],
-  "problem": "scripts/validate-repo.ps1 resolved the repository root as A:\\Codex instead of the project folder. After that defect was corrected, the script still referenced two stale workflow filenames.",
+  "problem": "scripts/validate-repo.ps1 resolved the repository root as A:\\Workspace instead of the project folder. After that defect was corrected, the script still referenced two stale workflow filenames.",
   "fix": "Resolve the repository root as the parent of the scripts directory, fail fast if FORSETTI_CONSTITUTION.md is not found, and align required workflow filenames with the current repository.",
   "verification": [
     {
@@ -34,7 +34,7 @@
     },
     {
       "check": "Absolute script path from parent workspace",
-      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File A:\\Codex\\Forsetti-Framwork-Agentic-Edition\\scripts\\validate-repo.ps1",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File A:\\Workspace\\Forsetti-Framwork-Agentic-Edition\\scripts\\validate-repo.ps1",
       "result": "pass",
       "evidence": "Independent review reported pass with 0 errors and 0 warnings."
     },
@@ -58,7 +58,7 @@
     },
     {
       "check": "Bundled local Python JSON parse",
-      "command": "C:\\Users\\james\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -m json.tool .forsetti\\remediation-v3\\validator-root-repair.json",
+      "command": "C:\\Users\\james\\.cache\\local-runtimes\\primary-runtime\\dependencies\\python\\python.exe -m json.tool .forsetti\\remediation-v3\\validator-root-repair.json",
       "result": "pass",
       "evidence": "Exit code 0."
     }

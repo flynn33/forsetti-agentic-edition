@@ -2,13 +2,16 @@
 
 ## Summary
 
-Final self-audit questions are answered in final validation report and known limitations.
+Final self-audit questions are answered in the final validation report and known limitations after the accountability and wiki-sync cleanup pass.
 
 ## Evidence
 
 - Files changed are visible in `git status --short` and final diff.
 - JSON parse validation is recorded in `.forsetti/remediation/json-validation-results.json`.
 - Local acceptance test command: `python3 -m unittest tests/test_remediation_acceptance.py`.
+- Package report completeness audit found all 23 required remediation report and evidence files present.
+- FAE-F001 through FAE-F020 exist with required severity, decision, evidence, validation, and remediation fields.
+- Current working-tree content and filename scans found no restricted provider, model, or tool attribution terms.
 - PowerShell runtime execution was not available on this host because no `pwsh`, `powershell`, or `powershell.exe` command is on PATH.
 
 ## Boundary Confirmation

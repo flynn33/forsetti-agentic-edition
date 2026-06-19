@@ -41,7 +41,7 @@
       "result": "pass"
     },
     {
-      "command": "codex mcp list",
+      "command": "local-host mcp list",
       "result": "pass"
     },
     {
@@ -87,8 +87,8 @@
   },
   "provider_decisions": [
     "No non-local third-party provider was used.",
-    "No product dependency on MCP servers, OpenAI tooling, GitHub Actions, sub-agents, Docker, WSL, Visual Studio, Visual Studio Code, or any local IDE was introduced.",
-    "Configured local MCP entries were inspected with codex mcp list; equivalent local-first tooling was used when separate MCP namespaces were not exposed in the running thread.",
+    "No product dependency on MCP servers, provider-specific tooling, GitHub Actions, sub-agents, Docker, WSL, Visual Studio, Visual Studio Code, or any local IDE was introduced.",
+    "Configured local MCP entries were inspected with local-host mcp list; equivalent local-first tooling was used when separate MCP namespaces were not exposed in the running thread.",
     "Docker and WSL were not used because Phase 01 is a documentation scaffold and does not require them."
   ],
   "sub_agents_used": [
@@ -201,7 +201,7 @@
     "json_outputs_parse": "pass",
     "work_in_scope": "pass_for_intended_staged_payload",
     "no_unapproved_non_local_provider": "pass",
-    "no_product_dependency_on_mcp_openai_github_actions_or_subagents": "pass",
+    "no_product_dependency_on_mcp_provider_github_actions_or_subagents": "pass",
     "reviewer_findings_reconciled": "pass"
   }
 }

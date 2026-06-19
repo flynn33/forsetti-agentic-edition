@@ -34,7 +34,7 @@
       "summary": "Local tools found."
     },
     {
-      "command": "codex mcp list",
+      "command": "local-host mcp list",
       "result": "succeeded",
       "summary": "Configured MCP entries listed; active chat tool schema did not expose the new namespaces after configuration."
     },
@@ -47,7 +47,7 @@
       "command": "powershell -ExecutionPolicy Bypass -File .\\scripts\\validate-repo.ps1",
       "result": "failed",
       "exitCode": 1,
-      "summary": "Existing PowerShell validator reports 57 errors because it resolves the repository root as A:\\Codex."
+      "summary": "Existing PowerShell validator reports 57 errors because it resolves the repository root as A:\\Workspace."
     },
     {
       "command": "bash .\\scripts\\validate-repo.sh",
@@ -108,7 +108,7 @@
       "result": "used"
     },
     {
-      "toolOrServer": "configured MCP list from codex mcp list",
+      "toolOrServer": "configured MCP list from local-host mcp list",
       "providerType": "existing_local_mcp_or_tooling",
       "localFirstDecision": "record_only",
       "purpose": "Record configured MCP state.",

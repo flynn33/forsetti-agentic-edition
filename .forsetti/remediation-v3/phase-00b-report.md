@@ -9,7 +9,7 @@
 
 ## Summary
 
-Phase 00B produced the required inventory, decision log, execution policy, and phase report. Local-first evidence was gathered from the Codex MCP config, v3 MCP catalog, v3 helper roster, provider policy, local package cache, active tool surface, and Git state.
+Phase 00B produced the required inventory, decision log, execution policy, and phase report. Local-first evidence was gathered from the local host MCP config, v3 MCP catalog, v3 helper roster, provider policy, local package cache, active tool surface, and Git state.
 
 The safe operating posture is conservative:
 
@@ -39,11 +39,11 @@ The safe operating posture is conservative:
 | `git status --short --branch`, `git diff --name-only`, `git diff --cached --name-only` | Succeeded; `.forsetti/` remains untracked and no staged files exist. |
 | Read Phase 00B Markdown and JSON files | Succeeded; required outputs and required helper/tooling checks captured. |
 | Read MCP operating guide, provider policy, MCP catalog, and helper roster | Succeeded. |
-| `codex mcp --help`, `codex mcp list`, and `codex mcp get <server>` | Succeeded; 10 enabled user-level MCP entries recorded. |
-| Read `C:\Users\james\.codex\config.toml` MCP sections | Succeeded; command and args captured. |
+| `local-host mcp --help`, `local-host mcp list`, and `local-host mcp get <server>` | Succeeded; 10 enabled user-level MCP entries recorded. |
+| Read `C:\Users\james\.local-config\config.toml` MCP sections | Succeeded; command and args captured. |
 | Local package cache search for configured MCP packages | Succeeded; package.json files found for all 10 configured entries. |
 | Local package version and SHA-256 extraction | Succeeded; package name, version, license, and package.json hash captured. |
-| Local path inventory for `.codex`, user Codex agents, skills, and plugins | Succeeded; no project or user `.codex\agents` directory found; skills/plugins exist. |
+| Local path inventory for `.local-config`, user local helper agents, skills, and plugins | Succeeded; no project or user `.local-config\agents` directory found; skills/plugins exist. |
 | Parse v3 JSON package files with `py -m json.tool` | Succeeded for MCP catalog, helper roster, provider policy, and Phase 00B JSON. |
 | Repo scan for configured MCP package names excluding `.forsetti` | Succeeded; no package-level product runtime references found. |
 | Read secondary Phase 00B acceptance-gate reference | Succeeded; found a package inconsistency where that reference still names `.forsetti/remediation-v2/` outputs while the controlling Phase 00B file and phase JSON name `.forsetti/remediation-v3/` outputs. |
@@ -58,7 +58,7 @@ The safe operating posture is conservative:
 | `persistent-context` via `.forsetti/remediation-v3/` | local evidence path | allow | Persist Phase 00B evidence. | Used. |
 | `knowledge-graph` substitute via structured local JSON | local evidence wrapper | allow for Phase 00B | Cross-reference catalog, roster, provider policy, and decisions. | Used; no live graph server claimed. |
 | `local-git` via `git.exe` | existing local tooling | allow | Branch/status/diff evidence. | Used. |
-| Configured MCP entries via `codex mcp list/get` | package-backed local stdio entries | inventory only | Record provider identity and risk status. | Recorded; not invoked as active namespaces. |
+| Configured MCP entries via `local-host mcp list/get` | package-backed local stdio entries | inventory only | Record provider identity and risk status. | Recorded; not invoked as active namespaces. |
 
 No non-local provider was used.
 
@@ -95,7 +95,7 @@ No non-local provider was used.
 
 ## Remaining issues
 
-- Configured `npx` MCP entries are not pinned in the Codex config.
+- Configured `npx` MCP entries are not pinned in the local host config.
 - `desktop-commander` uses `@latest` and is blocked for active use until pinned or explicitly approved.
 - Active MCP namespaces are unavailable in this already-running session.
 - Filesystem MCP configured scope includes the v2 package path but not the v3 package path.

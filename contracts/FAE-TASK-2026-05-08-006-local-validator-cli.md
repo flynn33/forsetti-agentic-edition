@@ -70,7 +70,7 @@
 - GitHub workflow conversion or adapter wrapper changes
 - Task contract enforcement beyond Phase 03 validator scaffolding
 - Protected path policy expansion reserved for Phase 05
-- AI assistance disclosure policy changes reserved for Phase 07
+- accountability policy changes reserved for Phase 07
 - Platform overlay implementation reserved for Phase 08
 - Docker, WSL, hosted services, or non-local third-party providers
 - Changes to constitutional or root policy rule meanings
@@ -116,7 +116,7 @@
 
 ## Risks and Constraints
 
-- The validator must not introduce a product dependency on MCP, OpenAI tooling, GitHub Actions, GitHub CLI, WSL, network access, hosted APIs, sub-agents, or non-local third-party providers.
+- The validator must not introduce a product dependency on MCP, provider-specific tooling, GitHub Actions, GitHub CLI, WSL, network access, hosted APIs, sub-agents, or non-local third-party providers.
 - The root shell wrapper may be unable to run on a host without Bash; this is not a blocker if PowerShell validation passes and Bash availability is truthfully reported.
 - Phase 03 must not implement Phase 04 contract enforcement or Phase 06 GitHub adapter conversion.
 - The validator should read repository files and canonical policy manifests rather than redefining compliance rule meanings.

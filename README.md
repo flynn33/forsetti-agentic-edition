@@ -22,7 +22,7 @@ It is not a runtime SDK, platform implementation, orchestration server, CLU depe
 
 ## Core Problem
 
-AI-led development, without governance, produces predictable failures:
+Agentic development, without governance, produces predictable failures:
 
 - **Uncontrolled scope expansion** — agents change more than requested
 - **Undocumented changes** — modifications without documentation updates
@@ -47,7 +47,7 @@ Forsetti Agentic Edition exists to prevent these failures through explicit gover
 - Module isolation, dependency direction, and public API boundaries
 - Repository change control and approval workflows
 - Compliance evidence and validation requirements
-- AI assistance accountability without attribution
+- No-attribution accountability
 - Versioning discipline and release integrity
 - Changelog requirements and release traceability
 - Documentation synchronization and drift prevention
@@ -152,7 +152,7 @@ Hosted workflow execution is convenience automation. Required compliance evidenc
 - `RELEASE_POLICY.md` — Versioning discipline, changelog requirements, release readiness
 - `DOCUMENTATION_POLICY.md` — Canonical sources, wiki role, synchronization rules
 
-`AI_ASSISTANCE_POLICY.md` is a compliance support policy under `COMPLIANCE_POLICY.md`. It defines FAE-C012 accountability and non-attribution requirements.
+`ACCOUNTABILITY_POLICY.md` is a compliance support policy under `COMPLIANCE_POLICY.md`. It defines FAE-C012 accountability and non-attribution requirements.
 
 ---
 
@@ -198,7 +198,7 @@ This framework operates with a **strict default posture**.
 
 ```
 ├── AGENTS.md
-├── AI_ASSISTANCE_POLICY.md
+├── ACCOUNTABILITY_POLICY.md
 ├── CHANGE_CONTROL_POLICY.md
 ├── CODE_OF_DELIVERY.md
 ├── COMPLIANCE_POLICY.md
@@ -235,7 +235,7 @@ This framework operates with a **strict default posture**.
   ├── contracts/
     ├── task-contract-template.json
   ├── policies/
-    ├── ai-assistance-disclosure.json
+    ├── accountability-rules.json
     ├── changelog-rules.json
     ├── compliance-rules.json
     ├── docs-sync-rules.json
@@ -257,7 +257,7 @@ This framework operates with a **strict default posture**.
     ├── README.md
 ├── policies/
   ├── agent-roles.json
-  ├── ai-assistance-disclosure.json
+  ├── accountability-rules.json
   ├── changelog-rules.json
   ├── compliance-rules.json
   ├── docs-sync-rules.json
@@ -306,7 +306,7 @@ Read the policy document relevant to your current task:
 
 - Making changes? Read `CHANGE_CONTROL_POLICY.md`
 - Validating work? Read `COMPLIANCE_POLICY.md`
-- Recording AI-assisted work? Read `AI_ASSISTANCE_POLICY.md`
+- Recording governed accountability evidence? Read `ACCOUNTABILITY_POLICY.md`
 - Preparing a release? Read `RELEASE_POLICY.md`
 - Updating documentation? Read `DOCUMENTATION_POLICY.md`
 
@@ -332,7 +332,7 @@ Each step has requirements defined in the relevant policy document. Skipping ste
 
 ### Reviewing Agent Work
 
-When reviewing PRs produced by AI agents, verify:
+When reviewing PRs produced by coding agents, verify:
 
 1. A task contract exists and the PR scope matches the contract
 2. The documentation impact section is completed and accurate

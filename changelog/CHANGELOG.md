@@ -8,6 +8,19 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ### Breaking Changes
 
+**Title**: Breaking: Canonicalize accountability policy surfaces
+**Change Class**: breaking-change
+**Version Impact**: major
+**Summary**: Removed obsolete duplicate accountability policy names and manifests so `ACCOUNTABILITY_POLICY.md` and `core/policies/accountability-rules.json` are the canonical no-attribution accountability surfaces, with the root policy mirror kept byte-identical.
+**Affected Area**: compliance, policies, documentation sync, contracts, changelog
+**PR Reference**: pending
+**Task Reference**: FAE-GOV-2026-05-11-012
+**Approval Class**: governance-class
+**breaking_change**: true
+**migration_note**: Consumers that referenced the removed duplicate accountability policy file or manifest paths must switch to `ACCOUNTABILITY_POLICY.md`, `core/policies/accountability-rules.json`, and `policies/accountability-rules.json`.
+**Migration Guidance**: Update documentation sync manifests, policy manifest consumers, task contracts, validators, and review checklists to read the canonical accountability policy and accountability-rules manifests. Remove references to the obsolete duplicate accountability policy filename and manifest filenames.
+**Affected Consumers**: Policy manifest consumers, documentation sync reviewers, task contract authors, validators, release reviewers, and downstream repositories that mirror Forsetti accountability policy paths.
+
 **Title**: Breaking: Add Forsetti edition-profile enforcement
 **Change Class**: breaking-change
 **Version Impact**: major
