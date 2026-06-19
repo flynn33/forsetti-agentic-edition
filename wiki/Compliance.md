@@ -71,6 +71,12 @@ Machine-readable policy manifests can define local gate metadata in addition to 
 
 Policy gates cover protected path approval, role-limited path authority, policy mirror integrity, documentation sync, changelog entry completeness, changelog history integrity, and version classification consistency. The repository boundary manifest also protects GitHub Actions adapter workflow scripts before hosted enforcement logic is moved into that adapter surface. These gates make the evidence behind a pass, request-changes, or block decision traceable to a specific manifest condition.
 
+## Forsetti Enforcement Rules
+
+`core/policies/forsetti-enforcement-rules.json` is the canonical Forsetti-specific registry. It defines `FAE-F001` through `FAE-F020` for project context, edition profile selection, target platform support, manifest validity, manifest/code identity, module isolation, direct dependency and direct data sharing prohibition, declared capability use, runtime requirements, public API-only use, sealed framework internals, one-way dependency direction, UI/app active surface invariants, service module UI prohibition, constructor injection, hidden globals/service-location, platform-native toolchain evidence, required verification commands, and profile-mapped completion evidence.
+
+The local validator must emit rule ID, severity, decision, message, evidence, and remediation for Forsetti findings.
+
 ---
 
 ## Role Responsibilities

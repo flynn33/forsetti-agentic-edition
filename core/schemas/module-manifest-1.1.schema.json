@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/schemas/agentic-edition/module-manifest-1.1.schema.json",
+  "title": "Forsetti Module Manifest 1.1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "manifestTemplateVersion",
+    "moduleID",
+    "displayName",
+    "moduleVersion",
+    "moduleType",
+    "supportedPlatforms",
+    "minForsettiVersion",
+    "capabilitiesRequested",
+    "entryPoint",
+    "runtimeRequirements"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "manifestTemplateVersion": {
+      "const": "1.1"
+    },
+    "moduleID": {
+      "type": "string",
+      "minLength": 1
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "moduleVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "$ref": "#/$defs/semanticVersionObject"
+        }
+      ]
+    },
+    "moduleType": {
+      "enum": [
+        "service",
+        "ui",
+        "app"
+      ]
+    },
+    "supportedPlatforms": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "iOS",
+          "macOS",
+          "Windows"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "minForsettiVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "$ref": "#/$defs/semanticVersionObject"
+        }
+      ]
+    },
+    "maxForsettiVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "$ref": "#/$defs/semanticVersionObject"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "capabilitiesRequested": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "iapProductID": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "entryPoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "defaultModuleRole": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "ui",
+        "shared_database",
+        "authentication",
+        "diagnostics",
+        "api",
+        "security",
+        null
+      ]
+    },
+    "runtimeRequirements": {
+      "type": "object",
+      "required": [
+        "io",
+        "ui",
+        "dataIsolation"
+      ],
+      "properties": {
+        "io": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ioRequirement"
+          }
+        },
+        "ui": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/uiRequirement"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dataIsolation": {
+          "$ref": "#/$defs/dataIsolationRequirement"
+        }
+      },
+      "additionalProperties": false
+    },
+    "defaultModuleRole": {
+      "enum": [
+        "app",
+        "ui",
+        "service",
+        "none"
+      ]
+    }
+  },
+  "$defs": {
+    "semanticVersionObject": {
+      "type": "object",
+      "required": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "properties": {
+        "major": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "patch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prerelease": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ioRequirement": {
+      "type": "object",
+      "required": [
+        "requirementID",
+        "kind",
+        "access",
+        "required"
+      ],
+      "properties": {
+        "requirementID": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "storage",
+            "secure_storage",
+            "networking",
+            "file_export",
+            "telemetry"
+          ]
+        },
+        "access": {
+          "enum": [
+            "read",
+            "write",
+            "read_write",
+            "emit"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "uiRequirement": {
+      "type": "object",
+      "properties": {
+        "controlSchemeID": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "layoutID": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "themeIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "viewIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "slotIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "toolbarItemIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "routeIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pointerIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "dataIsolationRequirement": {
+      "type": "object",
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "private_to_module",
+            "framework_mediated_shared"
+          ]
+        },
+        "ownedStoreIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requiredDefaultRoles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

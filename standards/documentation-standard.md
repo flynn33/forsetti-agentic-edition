@@ -88,3 +88,9 @@ Reduce interpretation debt by:
 ## Governing Principle
 
 Documentation is not a secondary artifact. It is the primary interface through which governance is communicated and enforced. Below-standard documentation produces below-standard compliance. Documentation quality is governance quality.
+
+## Forsetti Enforcement Documentation
+
+Documentation that describes Forsetti work must identify the selected edition profile, manifest schema/template version, supported platforms, module type, capability requirements, runtime requirements, dependency direction, module isolation, public API boundary, and validation evidence expectations.
+
+Derived wiki pages must not contradict `editions/`, `core/policies/`, `core/schemas/`, `contracts/task-contract-template.md`, or `core/validator/README.md`.

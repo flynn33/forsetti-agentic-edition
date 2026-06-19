@@ -1,18 +1,21 @@
 # Forsetti Agentic Edition
 
-**Governance Framework for AI Coding Agents and Agentic Engineering Teams**
+**Governance Framework for Coding Agents Building Forsetti-Compliant Apps and Modules**
 
 ---
 
 ## Purpose
 
-Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems.
+Forsetti Agentic Edition is a governance-only enforcement framework for coding agents that build Forsetti-compliant applications and modules.
 
-It is not a runtime SDK or application framework. It is a **governance layer** that enforces disciplined delivery through:
+It is not a runtime SDK, platform implementation, orchestration server, CLU dependency, MCP dependency, hosted enforcement service, or application framework. It is a **governance layer** that enforces disciplined delivery and Forsetti Framework architectural compliance through:
 
 - Constitutional governance
 - Role-based authority boundaries
 - Contract-driven execution
+- Required Forsetti project context
+- Edition/version profile selection
+- Manifest, capability, runtime requirement, dependency, module-isolation, and public API enforcement
 - Compliance validation with required evidence
 - Release traceability
 - Documentation integrity and synchronization
@@ -29,7 +32,7 @@ AI-led development, without governance, produces predictable failures:
 - **Stale documentation** — READMEs and wikis diverge from reality
 - **Poor release traceability** — changes merged without version classification or changelog
 
-Forsetti Agentic Edition exists to prevent these failures through explicit governance, not implicit trust.
+Forsetti Agentic Edition exists to prevent these failures through explicit governance and to stop coding agents from weakening Forsetti sealed-runtime, public API, manifest, and module-boundary invariants.
 
 ---
 
@@ -37,6 +40,11 @@ Forsetti Agentic Edition exists to prevent these failures through explicit gover
 
 - Agent roles and authority boundaries
 - Task contracts and scope binding
+- Forsetti edition, version, target platform, and profile selection
+- Shared Forsetti sealed-runtime invariants
+- Forsetti module manifests and runtime requirements
+- Capability declarations and capability-using behavior
+- Module isolation, dependency direction, and public API boundaries
 - Repository change control and approval workflows
 - Compliance evidence and validation requirements
 - AI assistance accountability without attribution
@@ -54,6 +62,8 @@ Forsetti Agentic Edition exists to prevent these failures through explicit gover
 - Language-specific implementation details
 - Business-domain logic
 - Deployment platform internals
+- Apple runtime behavior, SwiftUI composition, Keychain, StoreKit, or platform services
+- Windows runtime behavior, WinUI composition, DPAPI, WinHTTP, or platform services
 
 These concerns belong to downstream repositories and their own governance models.
 
@@ -65,9 +75,10 @@ Forsetti Agentic Edition is organized around a portable governance core, optiona
 
 | Layer | Path | Purpose |
 |---|---|---|
-| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, evidence requirements, canonical policy registries, and future validation interfaces. |
+| Portable core | `core/` | Host-neutral governance doctrine, role boundaries, contract concepts, Forsetti project context requirements, evidence requirements, canonical policy registries, schemas, and validation interfaces. |
 | Adapters | `adapters/` | Optional host integrations that translate local or hosted platform context into portable validation inputs. |
 | Overlays | `overlays/` | Host-neutral and platform-specific execution guidance that preserves core governance meaning while documenting local expectations. |
+| Edition profiles | `editions/` | Binding Apple, Windows, and shared Forsetti invariant profiles used by contracts, validator modes, overlays, and completion evidence. |
 
 The portable core must not depend on adapters, overlays, hosted workflow runners, IDEs, local MCP servers, container runtimes, or provider-specific tooling. Those tools may support evidence collection in a governed task, but they are not core product dependencies.
 
@@ -83,13 +94,14 @@ Authority flows downward. Higher-ranked documents override lower-ranked document
 
 | Rank | Document(s) | Authority |
 |------|-------------|-----------|
-| 1 | `FORSETTI_CONSTITUTION.md` | Highest. Foundational principles and governance doctrine. |
-| 2 | Policy documents | Binding governance policies. |
-| 3 | `standards/*.md` | Operational standards for naming, versioning, changelog, documentation, review. |
-| 4 | `contracts/*.md` | Task contract templates that bind agent scope. |
-| 5 | `core/policies/*.json`, `policies/*.json` | Machine-readable policy manifests. `core/policies/` contains canonical portable registries where present; matching root `policies/` files are compatibility mirrors unless a higher-authority policy says otherwise. |
-| 6 | `agents/*.md` | Role-specific agent instructions. |
-| 7 | `wiki/*.md` | Derived summary content. Not canonical. |
+| 1 | Human owner instruction | Highest task authority. |
+| 2 | Selected Forsetti edition/version profile | Binding profile for platform, version, manifest, dependency, capability, and verification rules. |
+| 3 | Shared Forsetti sealed-runtime invariants | Binding cross-edition invariants. |
+| 4 | `FORSETTI_CONSTITUTION.md` | Foundational governance doctrine. |
+| 5 | Policy documents | Binding governance policies. |
+| 6 | `core/policies/*.json`, `policies/*.json` | Machine-readable policy manifests. `core/policies/` contains canonical portable registries where present; matching root `policies/` files are compatibility mirrors unless a higher-authority policy says otherwise. |
+| 7 | `agents/*.md`, `standards/*.md`, `contracts/*.md` | Role-specific instructions, operational standards, and task contract templates. |
+| 8 | Issue, PR, local instructions, and `wiki/*.md` | Local instructions and derived summary content. Not canonical. |
 
 Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate documentation surfaces introduced for portability, except for canonical portable policy registries explicitly designated under `core/policies/`. They do not amend the constitutional authority hierarchy.
 
@@ -97,13 +109,30 @@ Portable documents under `core/`, `adapters/`, and `overlays/` are subordinate d
 
 The portable core includes a local validator at `core/validator/forsetti_validate.ps1`. Repository scripts under `scripts/` delegate to that validator so local checks and future optional adapters use the same repository-local validation entry point.
 
-The validator supports repository structure, JSON, policy mirror, documentation sync, schema, script wrapper, and task contract checks. Contract mode enforces changed files against the governing task contract scope, checks protected-path approval class requirements from `core/policies/repo-boundaries.json`, checks role-limited path rules, verifies required outputs and evidence artifacts, checks same-change documentation sync for changed canonical sources, and validates changelog entries for required fields, migration guidance, affected consumers, Unreleased placement, and version consistency:
+The validator supports repository checks and target Forsetti app/module checks with these modes:
+
+```text
+repo
+contract
+project-context
+edition-profile
+manifest
+dependencies
+capabilities
+module-isolation
+evidence
+all
+```
+
+Contract mode requires Forsetti project context. Target-repository modes inspect the selected edition profile, manifest schema/template version, platform support, runtime requirements, declared capabilities, changed-file evidence, dependency direction, module isolation, and public API boundary.
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 `
   -RepoRoot . `
   -Mode contract `
   -ContractPath .\contracts\TASK-CONTRACT.md `
+  -ProjectContextPath .\project-context.json `
+  -EditionProfilePath .\editions\apple\forsetti-apple-0.1.3.profile.json `
   -ChangedFilesPath .\changed-files.txt `
   -Strict
 ```

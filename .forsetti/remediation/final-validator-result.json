@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "mode": "static-final-audit",
+  "findings": [
+    {
+      "rule_id": "FAE-C011",
+      "severity": "info",
+      "decision": "pass",
+      "message": "Static final audit and acceptance checks passed in this host environment.",
+      "evidence": [
+        "python3 -m unittest tests/test_remediation_acceptance.py passed 7 tests",
+        "Repository JSON files parsed successfully with python3 -m json.tool",
+        "bash -n scripts/validate-repo.sh passed",
+        "git diff --check passed",
+        "Audit repaired module_id context enforcement",
+        "Audit repaired root task-contract schema reference for forsetti-project-context",
+        "Audit repaired defaultModuleRole manifest enforcement",
+        "./scripts/validate-repo.sh reported that no PowerShell host is available"
+      ],
+      "remediation": null
+    }
+  ],
+  "limitations": [
+    "No PowerShell host on PATH in this environment."
+  ]
+}

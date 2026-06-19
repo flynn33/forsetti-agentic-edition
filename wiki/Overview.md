@@ -3,11 +3,13 @@
 > **Canonical source**: `README.md`
 > **Last synced**: 2026-05-11, FAE-TASK-2026-05-11-013 platform overlay guidance
 
-Forsetti Agentic Edition is a governance and orchestration framework for repositories operated by AI coding agents, mixed human/AI teams, and automated software delivery systems.
+Forsetti Agentic Edition is a governance-only enforcement framework for coding agents that build Forsetti-compliant applications and modules.
+
+FFAE does not implement Apple or Windows runtime behavior. It validates contracts, selected edition profiles, shared Forsetti invariants, manifest 1.1 requirements, declared capabilities, dependency direction, module isolation, public API use, and completion evidence.
 
 It is not a runtime SDK or application framework. It is a governance layer that enforces disciplined delivery through constitutional governance, role boundaries, task contracts, compliance evidence, release traceability, and documentation integrity.
 
-It also requires AI assistance accountability without attribution: governed work must identify the accountable human owner and review trail without crediting a tool, model, vendor, automation, or agent.
+It also requires accountable human ownership and review evidence without attribution credit to tools, models, vendors, automation, or agents.
 
 ## Portable Architecture
 

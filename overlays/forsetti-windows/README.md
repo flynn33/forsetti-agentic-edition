@@ -1,65 +1,23 @@
-# Forsetti Windows Overlay
+# Forsetti Windows Governance Overlay
 
-The Forsetti Windows overlay aligns Windows work with the shared platform alignment profile while preserving native Windows implementation paths.
+This overlay applies only to Windows work governed by the Windows edition profile.
 
-## Purpose
+## Binding Profile
 
-Use this overlay for Windows repositories, Windows-first workstations, .NET or Visual Studio solutions, PowerShell tooling, and repositories whose strongest local evidence comes from Windows-native execution.
+Use `editions/windows/forsetti-windows-0.2.0.profile.json` unless the human owner provides an updated Windows profile. The profile binds framework version `0.2.0`, manifest schema/template `1.1`, supported platform, public products, capabilities, dependency rules, and verification commands.
 
-This overlay narrows local execution guidance for Windows. It does not amend portable core governance, root policy, validator behavior, or task contract requirements.
+## Native Toolchain
 
-## Alignment With Platform Principles
+The native path is C++20, MSVC, CMake, CTest, PowerShell, vcpkg, and Windows SDK. Other tooling may collect evidence only when explicitly approved and must not become an FFAE core dependency.
 
-Windows work must preserve the same platform alignment principles:
+## Public Contract Boundary
 
-- native-first execution
-- contract-first delivery
-- boundary-first design
-- policy-first enforcement
-- host-agnostic modules
-- capability enforcement
-- module identity validation
-- module-scoped context
-- **Single active surface**: prefer one active UI, app, or automation surface unless the task contract documents a multi-surface model.
+Public headers are the consumer contract. Consumer code must compose public targets only and must not patch `ForsettiCore`, `ForsettiPlatform`, or `ForsettiHostTemplate` internals. `ForsettiHostTemplate` is a sealed composition layer.
 
-Windows implementation may differ from Apple implementation, but the governance meaning must remain the same.
+## Manifest and Capabilities
 
-## Windows-Native Implementation Guidance
+Windows manifest casing and capability names are exact. Manifest schema/template `1.1` is expected. Windows capability names include `event_publishing` in addition to shared capabilities. Runtime requirements must include I/O, UI, and data isolation fields.
 
-Windows repositories may use:
+## Evidence
 
-- Windows PowerShell or PowerShell 7
-- Visual Studio, Visual Studio Code, MSBuild, .NET SDK, and solution-level test runners
-- Python through the Windows launcher or installed interpreter
-- Git for Windows and local repository diff evidence
-- Windows security, permissions, registry, service, certificate, or event-log checks when relevant
-- browser and desktop tooling when the task contract scopes UI evidence
-
-Use the local machine's strongest available tooling when it improves evidence quality. If a tool is unavailable, document the limitation and use the next best local validation path.
-
-## Evidence Expectations
-
-Windows overlay evidence should identify:
-
-- the task contract and changed-file scope
-- shell, IDE, build, or test tooling used
-- validator, test, or build output
-- local path and environment assumptions that affect reproducibility
-- Windows-specific permission or execution-policy considerations
-- known tool gaps and fallback choices
-- reviewer decisions
-
-## Dependency Boundary
-
-Visual Studio, Visual Studio Code, PowerShell, MSBuild, Python, browser tooling, and desktop automation are Windows overlay execution resources. They must not be treated as portable core dependencies unless a higher-authority policy or task contract explicitly changes that boundary.
-
-## Boundary
-
-This overlay must not:
-
-- require Windows for portable core consumers
-- redefine Forsetti compliance rules
-- change task contract structure
-- add role authority
-- make IDEs, local tools, hosted workflows, MCP servers, Docker, or WSL mandatory outside this overlay
-- weaken shared platform alignment principles
+Windows tasks must provide profile selection, manifest evidence, capability declarations, dependency boundary evidence, module-isolation evidence, public API evidence, and the Windows verification commands required by the selected profile when practical.

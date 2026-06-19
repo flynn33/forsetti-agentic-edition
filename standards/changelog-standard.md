@@ -106,3 +106,7 @@ Entries are added to `changelog/CHANGELOG.md` in reverse chronological order (ne
 ## Governing Principle
 
 The changelog must be trustworthy. An entry that obscures, minimizes, or misrepresents a change is a compliance violation. The changelog is auditable evidence of repository history. Treat it accordingly.
+
+## Forsetti Enforcement Entries
+
+Changes to edition profiles, Forsetti enforcement rules, manifest schemas, validator modes, task context requirements, capability rules, dependency boundaries, module-isolation rules, or public API boundary rules must be recorded as governance-impacting changes. Breaking changes must include affected consumers and migration guidance.

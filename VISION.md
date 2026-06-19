@@ -193,4 +193,10 @@ These principles inform all framework decisions:
 
 ---
 
+## 9. Forsetti Framework Compliance Vision
+
+FFAE also exists to make coding-agent work on Forsetti-based applications and modules comply with Forsetti Framework architecture. The product vision is governance-only enforcement: select the edition profile, validate the manifest, preserve module isolation, require declared capabilities, enforce public API boundaries, and require evidence before completion claims.
+
+FFAE must not become the runtime that it governs. Apple and Windows framework repositories remain source-truth references for profiles and invariants; FFAE remains the contract, policy, validation, and documentation layer.
+
 *This document is a canonical source. It establishes the mission, problem context, and strategic direction for Forsetti Agentic Edition.*

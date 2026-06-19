@@ -1,33 +1,36 @@
 # Agents
 
 ## Repository Identity
-Forsetti Agentic Edition — Governance Framework for AI Coding Agents and Agentic Engineering Teams.
+Forsetti Agentic Edition — governance-only enforcement for coding agents building Forsetti-compliant applications and modules.
 
 ## Instruction Hierarchy
 Agents must obey instructions in this precedence order:
-1. `FORSETTI_CONSTITUTION.md` (highest authority)
-2. Policy documents at repository root (`COMPLIANCE_POLICY.md`, `CHANGE_CONTROL_POLICY.md`, `RELEASE_POLICY.md`, `DOCUMENTATION_POLICY.md`)
-3. Standards in `standards/`
-4. Machine-readable policies in `policies/`
-5. Role-specific instructions in `agents/`
-6. Task contracts (instantiated from `contracts/` templates)
-7. Issue, PR, or workflow-local instructions
+1. Human owner instruction
+2. Selected Forsetti edition/version profile
+3. Shared Forsetti sealed-runtime invariants
+4. `FORSETTI_CONSTITUTION.md`
+5. Policy documents at repository root
+6. Machine-readable policies in `core/policies/` and `policies/`
+7. Standards, role-specific instructions, and contract templates
+8. Task contracts
+9. Issue, PR, or workflow-local instructions
 
 If instructions conflict, higher-precedence sources override lower ones.
 
 ## Mandatory Work Sequence
 Before beginning meaningful work, agents must:
 1. Identify the task and its change class
-2. Determine if a task contract exists or is needed
-3. If no contract exists, create one (Architect role) or request one before proceeding
-4. Confirm the acting role and reviewer role
-5. Confirm the approval class required
-6. Confirm scope (in-scope and out-of-scope files)
-7. Execute work within authorized scope only
-8. Update documentation as required by DOCUMENTATION_POLICY
-9. Add changelog entry if change is meaningful
-10. Produce a completion summary with evidence
-11. Submit for validation
+2. Identify repository mode, Forsetti edition, target platform, framework version, selected edition profile, manifest schema/template version, deployment pattern, module type, requested capabilities, runtime requirement status, public API status, and framework-internals status
+3. Determine if a task contract exists or is needed
+4. If no contract exists, create one (Architect role) or request one before proceeding
+5. Confirm the acting role and reviewer role
+6. Confirm the approval class required
+7. Confirm scope (in-scope and out-of-scope files)
+8. Execute work within authorized scope only
+9. Update documentation as required by DOCUMENTATION_POLICY
+10. Add changelog entry if change is meaningful
+11. Produce a completion summary with evidence mapped to the selected profile
+12. Submit for validation
 
 ## Global Agent Requirements
 All agents, regardless of role, must:
@@ -52,6 +55,9 @@ No agent may:
 - Bypass role boundaries for convenience
 - Approve or validate own work
 - Add source, contributor, generated-by, or co-author attribution to automation unless a higher-authority policy explicitly allows it
+- Implement Apple or Windows runtime behavior inside FFAE
+- Convert FFAE into a runtime, hosted service, CLU dependency, MCP dependency, or orchestration server
+- Weaken Forsetti sealed-runtime, manifest, module-isolation, dependency-direction, capability, or public API invariants
 
 ## Role Model
 Five governed roles operate in this repository:

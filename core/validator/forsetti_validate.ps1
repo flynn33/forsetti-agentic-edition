@@ -3,1130 +3,808 @@
 [CmdletBinding()]
 param(
     [string]$RepoRoot = (Get-Location).Path,
-    [ValidateSet("all", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts", "contract", "contracts")]
+    [ValidateSet("all", "repo", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts", "contract", "contracts", "project-context", "edition-profile", "manifest", "dependencies", "capabilities", "module-isolation", "evidence")]
     [string]$Mode = "all",
-    [switch]$Strict,
-    [string]$OutputJson,
     [string]$ContractPath,
+    [string]$ProjectContextPath,
+    [string]$EditionProfilePath,
     [Alias("ChangedFiles")]
     [string[]]$ChangedFile,
-    [string]$ChangedFilesPath
+    [string]$ChangedFilesPath,
+    [string]$ManifestPath,
+    [string]$OutputJson,
+    [switch]$Strict
 )
 
 $ErrorActionPreference = "Stop"
-$script:Findings = New-Object System.Collections.Generic.List[object]
 $script:StartTime = Get-Date
+$script:Findings = New-Object System.Collections.Generic.List[object]
 
-function Resolve-ForsettiRepoRoot {
+function Resolve-ValidationRoot {
     param([string]$Path)
 
     $resolved = [System.IO.Path]::GetFullPath($Path)
-    if (-not (Test-Path -LiteralPath (Join-Path $resolved "FORSETTI_CONSTITUTION.md"))) {
-        throw "Unable to resolve Forsetti repository root from path: $Path"
+    if (-not (Test-Path -LiteralPath $resolved)) {
+        throw "Validation root does not exist: $Path"
     }
     return $resolved
 }
 
-function Get-RepoPath {
-    param([string]$Path)
+function Resolve-InputPath {
+    param([AllowNull()][string]$Path)
 
     if ([string]::IsNullOrWhiteSpace($Path)) {
         return $null
     }
-
-    $fullPath = $Path
-    if (-not [System.IO.Path]::IsPathRooted($Path)) {
-        $fullPath = Join-Path $script:RepoRoot $Path
+    if ([System.IO.Path]::IsPathRooted($Path)) {
+        return [System.IO.Path]::GetFullPath($Path)
     }
+    return [System.IO.Path]::GetFullPath((Join-Path $script:RepoRoot $Path))
+}
 
+function Get-RepoPath {
+    param([AllowNull()][string]$Path)
+
+    if ([string]::IsNullOrWhiteSpace($Path)) {
+        return $null
+    }
     try {
-        $fullPath = [System.IO.Path]::GetFullPath($fullPath)
+        $full = [System.IO.Path]::GetFullPath($Path)
         $root = $script:RepoRoot.TrimEnd('\', '/')
-        if ($fullPath.StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)) {
-            return $fullPath.Substring($root.Length).TrimStart('\', '/').Replace('\', '/')
+        if ($full.StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $full.Substring($root.Length).TrimStart('\', '/').Replace('\', '/')
         }
     } catch {
         return $Path.Replace('\', '/')
     }
-
     return $Path.Replace('\', '/')
 }
 
 function Add-Finding {
     param(
-        [string]$FindingId,
-        [ValidateSet("info", "warning", "error")]
+        [string]$RuleId,
+        [ValidateSet("info", "low", "medium", "high", "critical")]
         [string]$Severity,
-        [ValidateSet("pass", "warn", "fail")]
-        [string]$Status,
-        [string]$Category,
-        [AllowNull()]$Path,
+        [ValidateSet("pass", "request_changes", "block")]
+        [string]$Decision,
         [string]$Message,
         [AllowNull()]$Evidence,
-        [AllowNull()]$RemediationHint,
-        [AllowNull()]$RuleId,
-        [AllowNull()]$PolicyRuleId,
-        [AllowNull()]$ConditionId,
-        [AllowNull()]$GateId
+        [AllowNull()][string]$Remediation,
+        [AllowNull()][string]$Category,
+        [AllowNull()][string]$Path
     )
 
-    $pathValue = if ([string]::IsNullOrWhiteSpace([string]$Path)) { $null } else { [string]$Path }
-    $evidenceValue = if ([string]::IsNullOrWhiteSpace([string]$Evidence)) { $null } else { [string]$Evidence }
-    $remediationHintValue = if ([string]::IsNullOrWhiteSpace([string]$RemediationHint)) { $null } else { [string]$RemediationHint }
-    $ruleIdValue = if ([string]::IsNullOrWhiteSpace([string]$RuleId)) { $null } else { [string]$RuleId }
-    $policyRuleIdValue = if ([string]::IsNullOrWhiteSpace([string]$PolicyRuleId)) { $null } else { [string]$PolicyRuleId }
-    $conditionIdValue = if ([string]::IsNullOrWhiteSpace([string]$ConditionId)) { $null } else { [string]$ConditionId }
-    $gateIdValue = if ([string]::IsNullOrWhiteSpace([string]$GateId)) { $null } else { [string]$GateId }
+    $evidenceArray = @()
+    if ($null -ne $Evidence) {
+        foreach ($item in @($Evidence)) {
+            if (-not [string]::IsNullOrWhiteSpace([string]$item)) {
+                $evidenceArray += [string]$item
+            }
+        }
+    }
+
+    $legacyStatus = "pass"
+    if ($Decision -eq "request_changes") {
+        $legacyStatus = "warn"
+    } elseif ($Decision -eq "block") {
+        $legacyStatus = "fail"
+    }
 
     $script:Findings.Add([pscustomobject][ordered]@{
-        finding_id       = $FindingId
-        rule_id          = $ruleIdValue
-        policy_rule_id   = $policyRuleIdValue
-        condition_id     = $conditionIdValue
-        gate_id          = $gateIdValue
+        rule_id          = $RuleId
         severity         = $Severity
-        status           = $Status
-        category         = $Category
-        path             = $pathValue
+        decision         = $Decision
+        status           = $legacyStatus
         message          = $Message
-        evidence         = $evidenceValue
-        remediation_hint = $remediationHintValue
+        evidence         = $evidenceArray
+        remediation      = if ([string]::IsNullOrWhiteSpace($Remediation)) { $null } else { $Remediation }
+        remediation_hint = if ([string]::IsNullOrWhiteSpace($Remediation)) { $null } else { $Remediation }
+        category         = if ([string]::IsNullOrWhiteSpace($Category)) { $null } else { $Category }
+        path             = if ([string]::IsNullOrWhiteSpace($Path)) { $null } else { $Path }
     })
 }
 
-function Add-ExceptionFinding {
-    param(
-        [string]$Category,
-        [string]$Message
-    )
-
-    Add-Finding `
-        -FindingId ("FFAE-" + $Category.ToUpperInvariant() + "-EXCEPTION") `
-        -Severity "error" `
-        -Status "fail" `
-        -Category $Category `
-        -Path $null `
-        -Message $Message `
-        -Evidence $null `
-        -RemediationHint "Fix the validator check or the repository data that caused the exception." `
-        -RuleId "FAE-C011"
-}
-
-function Get-FileSha256 {
+function Read-JsonObject {
     param([string]$Path)
-
-    $stream = [System.IO.File]::OpenRead($Path)
-    try {
-        $sha = [System.Security.Cryptography.SHA256]::Create()
-        try {
-            $hashBytes = $sha.ComputeHash($stream)
-            return ([System.BitConverter]::ToString($hashBytes) -replace "-", "")
-        } finally {
-            $sha.Dispose()
-        }
-    } finally {
-        $stream.Dispose()
-    }
+    return Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
 }
 
-function Test-RequiredPaths {
-    $required = @(
-        ".github/CODEOWNERS",
-        ".github/ISSUE_TEMPLATE/agent_task.md",
-        ".github/ISSUE_TEMPLATE/bug_report.md",
-        ".github/ISSUE_TEMPLATE/feature_request.md",
-        ".github/ISSUE_TEMPLATE/governance_change.md",
-        ".github/labels.json",
-        ".github/pull_request_template.md",
-        ".github/workflows/changelog-validation.yml",
-        ".github/workflows/docs-sync-agent.yml",
-        ".github/workflows/policy-check.yml",
-        ".github/workflows/protected-path-check.yml",
-        ".github/workflows/version-guard.yml",
-        "AGENTS.md",
-        "CHANGE_CONTROL_POLICY.md",
-        "CODE_OF_DELIVERY.md",
-        "COMPLIANCE_POLICY.md",
-        "CONTRIBUTING.md",
-        "DOCUMENTATION_POLICY.md",
-        "FORSETTI_CONSTITUTION.md",
-        "RELEASE_POLICY.md",
-        "README.md",
-        "VISION.md",
-        "agents/architect.md",
-        "agents/builder.md",
-        "agents/docs-manager.md",
-        "agents/release-manager.md",
-        "agents/validator.md",
-        "changelog/CHANGELOG.md",
-        "changelog/release-notes-template.md",
-        "contracts/bugfix-contract-template.md",
-        "contracts/governance-change-template.md",
-        "contracts/release-contract-template.md",
-        "contracts/task-contract-template.md",
-        "core/README.md",
-        "core/policies/compliance-rules.json",
-        "core/policies/repo-boundaries.json",
-        "core/policies/docs-sync-rules.json",
-        "core/policies/versioning-rules.json",
-        "core/policies/changelog-rules.json",
-        "core/contracts/task-contract-template.json",
-        "core/schemas/task-contract.schema.json",
-        "core/schemas/validator-result.schema.json",
-        "core/validator/contract_rules.ps1",
-        "core/validator/forsetti_validate.ps1",
-        "core/validator/README.md",
-        "policies/agent-roles.json",
-        "policies/compliance-rules.json",
-        "policies/repo-boundaries.json",
-        "policies/docs-sync-rules.json",
-        "policies/versioning-rules.json",
-        "policies/changelog-rules.json",
-        "policies/labels.json",
-        "schemas/compliance-report.schema.json",
-        "schemas/release-entry.schema.json",
-        "schemas/task-contract.schema.json",
-        "scripts/validate-repo.ps1",
-        "scripts/validate-repo.sh",
-        "standards/changelog-standard.md",
-        "standards/documentation-standard.md",
-        "standards/naming-standard.md",
-        "standards/review-standard.md",
-        "standards/versioning-standard.md",
-        "wiki/Agent-Roles.md",
-        "wiki/Compliance.md",
-        "wiki/Constitution.md",
-        "wiki/Documentation.md",
-        "wiki/Glossary.md",
-        "wiki/Home.md",
-        "wiki/Overview.md",
-        "wiki/Releases.md",
-        "wiki/Workflow.md"
-    )
-
-    $missing = @()
-    foreach ($path in $required) {
-        if (-not (Test-Path -LiteralPath (Join-Path $script:RepoRoot $path))) {
-            $missing += $path
-            Add-Finding `
-                -FindingId "FFAE-STRUCTURE-001" `
-                -Severity "error" `
-                -Status "fail" `
-                -Category "structure" `
-                -Path $path `
-                -Message "Required repository path is missing." `
-                -Evidence $path `
-                -RemediationHint "Restore or create the required path." `
-                -RuleId "FAE-C011"
+function Get-JsonFiles {
+    $excluded = @(".git", "node_modules")
+    $stack = New-Object System.Collections.Generic.Stack[string]
+    $stack.Push($script:RepoRoot)
+    while ($stack.Count -gt 0) {
+        $current = $stack.Pop()
+        foreach ($file in Get-ChildItem -LiteralPath $current -Filter "*.json" -File -ErrorAction SilentlyContinue) {
+            $file
         }
-    }
-
-    if ($missing.Count -eq 0) {
-        Add-Finding `
-            -FindingId "FFAE-STRUCTURE-001" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "structure" `
-            -Path $null `
-            -Message "Required Phase 03 repository paths are present." `
-            -Evidence ("Checked " + $required.Count + " paths.") `
-            -RemediationHint $null `
-            -RuleId $null
-    }
-}
-
-function Get-RequiredRepositoryFiles {
-    return @(
-        ".github/CODEOWNERS",
-        ".github/ISSUE_TEMPLATE/agent_task.md",
-        ".github/ISSUE_TEMPLATE/bug_report.md",
-        ".github/ISSUE_TEMPLATE/feature_request.md",
-        ".github/ISSUE_TEMPLATE/governance_change.md",
-        ".github/labels.json",
-        ".github/pull_request_template.md",
-        ".github/workflows/changelog-validation.yml",
-        ".github/workflows/docs-sync-agent.yml",
-        ".github/workflows/policy-check.yml",
-        ".github/workflows/protected-path-check.yml",
-        ".github/workflows/version-guard.yml",
-        "AGENTS.md",
-        "CHANGE_CONTROL_POLICY.md",
-        "CODE_OF_DELIVERY.md",
-        "COMPLIANCE_POLICY.md",
-        "CONTRIBUTING.md",
-        "DOCUMENTATION_POLICY.md",
-        "FORSETTI_CONSTITUTION.md",
-        "README.md",
-        "RELEASE_POLICY.md",
-        "VISION.md",
-        "agents/architect.md",
-        "agents/builder.md",
-        "agents/docs-manager.md",
-        "agents/release-manager.md",
-        "agents/validator.md",
-        "changelog/CHANGELOG.md",
-        "changelog/release-notes-template.md",
-        "contracts/bugfix-contract-template.md",
-        "contracts/governance-change-template.md",
-        "contracts/release-contract-template.md",
-        "contracts/task-contract-template.md",
-        "core/README.md",
-        "core/policies/changelog-rules.json",
-        "core/policies/compliance-rules.json",
-        "core/policies/docs-sync-rules.json",
-        "core/policies/repo-boundaries.json",
-        "core/policies/versioning-rules.json",
-        "core/contracts/task-contract-template.json",
-        "core/schemas/task-contract.schema.json",
-        "core/schemas/validator-result.schema.json",
-        "core/validator/contract_rules.ps1",
-        "core/validator/README.md",
-        "core/validator/forsetti_validate.ps1",
-        "policies/agent-roles.json",
-        "policies/changelog-rules.json",
-        "policies/compliance-rules.json",
-        "policies/docs-sync-rules.json",
-        "policies/labels.json",
-        "policies/repo-boundaries.json",
-        "policies/versioning-rules.json",
-        "schemas/compliance-report.schema.json",
-        "schemas/release-entry.schema.json",
-        "schemas/task-contract.schema.json",
-        "scripts/validate-repo.ps1",
-        "scripts/validate-repo.sh",
-        "standards/changelog-standard.md",
-        "standards/documentation-standard.md",
-        "standards/naming-standard.md",
-        "standards/review-standard.md",
-        "standards/versioning-standard.md",
-        "wiki/Agent-Roles.md",
-        "wiki/Compliance.md",
-        "wiki/Constitution.md",
-        "wiki/Documentation.md",
-        "wiki/Glossary.md",
-        "wiki/Home.md",
-        "wiki/Overview.md",
-        "wiki/Releases.md",
-        "wiki/Workflow.md"
-    )
-}
-
-function Test-NonTrivialRequiredFiles {
-    $warnings = 0
-    foreach ($path in (Get-RequiredRepositoryFiles)) {
-        $fullPath = Join-Path $script:RepoRoot $path
-        if (-not (Test-Path -LiteralPath $fullPath)) {
-            continue
+        foreach ($directory in Get-ChildItem -LiteralPath $current -Directory -ErrorAction SilentlyContinue) {
+            if ($excluded -notcontains $directory.Name) {
+                $stack.Push($directory.FullName)
+            }
         }
-        $lineCount = @(Get-Content -LiteralPath $fullPath).Count
-        if ($lineCount -lt 5) {
-            $warnings++
-            Add-Finding `
-                -FindingId "FFAE-CONTENT-001" `
-                -Severity "warning" `
-                -Status "warn" `
-                -Category "structure" `
-                -Path $path `
-                -Message "Required file appears to be a stub." `
-                -Evidence ($lineCount.ToString() + " lines.") `
-                -RemediationHint "Add substantive content or remove the file from required-path policy." `
-                -RuleId "FAE-C011"
-        }
-    }
-
-    if ($warnings -eq 0) {
-        Add-Finding `
-            -FindingId "FFAE-CONTENT-001" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "structure" `
-            -Path $null `
-            -Message "Required files have substantive content." `
-            -Evidence ("Checked " + (Get-RequiredRepositoryFiles).Count + " required files.") `
-            -RemediationHint $null `
-            -RuleId $null
-    }
-}
-
-function Test-YamlWorkflowFiles {
-    $workflowRoot = Join-Path $script:RepoRoot ".github/workflows"
-    if (-not (Test-Path -LiteralPath $workflowRoot)) {
-        Add-Finding `
-            -FindingId "FFAE-YAML-001" `
-            -Severity "error" `
-            -Status "fail" `
-            -Category "structure" `
-            -Path ".github/workflows" `
-            -Message "Workflow directory is missing." `
-            -Evidence ".github/workflows" `
-            -RemediationHint "Restore the workflow directory or update required-path policy." `
-            -RuleId "FAE-C011"
-        return
-    }
-
-    $errors = 0
-    $yamlFiles = Get-ChildItem -LiteralPath $workflowRoot -Filter "*.yml" -File
-    foreach ($file in $yamlFiles) {
-        $content = Get-Content -LiteralPath $file.FullName -Raw
-        if ([string]::IsNullOrWhiteSpace($content) -or $content.Length -lt 10) {
-            $errors++
-            Add-Finding `
-                -FindingId "FFAE-YAML-001" `
-                -Severity "error" `
-                -Status "fail" `
-                -Category "structure" `
-                -Path (Get-RepoPath $file.FullName) `
-                -Message "YAML workflow file appears empty or too small." `
-                -Evidence ($content.Length.ToString() + " characters.") `
-                -RemediationHint "Restore substantive workflow content." `
-                -RuleId "FAE-C011"
-        }
-    }
-
-    if ($errors -eq 0) {
-        Add-Finding `
-            -FindingId "FFAE-YAML-001" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "structure" `
-            -Path ".github/workflows" `
-            -Message "YAML workflow files are present and non-empty." `
-            -Evidence ("Checked " + $yamlFiles.Count + " workflow files.") `
-            -RemediationHint $null `
-            -RuleId $null
-    }
-}
-
-function Test-LabelMirrors {
-    $policyLabels = Join-Path $script:RepoRoot "policies/labels.json"
-    $githubLabels = Join-Path $script:RepoRoot ".github/labels.json"
-    if (-not (Test-Path -LiteralPath $policyLabels) -or -not (Test-Path -LiteralPath $githubLabels)) {
-        Add-Finding `
-            -FindingId "FFAE-LABELS-001" `
-            -Severity "error" `
-            -Status "fail" `
-            -Category "policy" `
-            -Path "policies/labels.json" `
-            -Message "One or both label registry files are missing." `
-            -Evidence "policies/labels.json <-> .github/labels.json" `
-            -RemediationHint "Restore both label registry files." `
-            -RuleId "FAE-C011"
-        return
-    }
-
-    $policyHash = Get-FileSha256 -Path $policyLabels
-    $githubHash = Get-FileSha256 -Path $githubLabels
-    if ($policyHash -ne $githubHash) {
-        Add-Finding `
-            -FindingId "FFAE-LABELS-001" `
-            -Severity "warning" `
-            -Status "warn" `
-            -Category "policy" `
-            -Path "policies/labels.json" `
-            -Message "Label registry files differ." `
-            -Evidence ("policies/labels.json=" + $policyHash + "; .github/labels.json=" + $githubHash) `
-            -RemediationHint "Synchronize label registry mirrors." `
-            -RuleId "FAE-C011"
-    } else {
-        Add-Finding `
-            -FindingId "FFAE-LABELS-001" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "policy" `
-            -Path "policies/labels.json" `
-            -Message "Label registry mirrors are byte-identical." `
-            -Evidence ("SHA-256 " + $policyHash) `
-            -RemediationHint $null `
-            -RuleId $null
     }
 }
 
 function Test-JsonFiles {
-    $jsonFiles = @(Get-RepositoryJsonFiles)
-
-    $jsonErrors = 0
-    foreach ($file in $jsonFiles) {
+    $errors = 0
+    $count = 0
+    foreach ($file in Get-JsonFiles) {
+        $count++
         try {
-            $null = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json
+            $null = Read-JsonObject -Path $file.FullName
         } catch {
-            $jsonErrors++
-            Add-Finding `
-                -FindingId "FFAE-JSON-001" `
-                -Severity "error" `
-                -Status "fail" `
-                -Category "json" `
-                -Path (Get-RepoPath $file.FullName) `
-                -Message "Invalid JSON file." `
-                -Evidence $_.Exception.Message `
-                -RemediationHint "Fix the JSON syntax so the file parses with ConvertFrom-Json." `
-                -RuleId "FAE-C011"
+            $errors++
+            Add-Finding -RuleId "FAE-C011" -Severity "critical" -Decision "block" -Category "json" -Path (Get-RepoPath $file.FullName) -Message "Invalid JSON file." -Evidence $_.Exception.Message -Remediation "Fix JSON syntax before proceeding."
         }
     }
-
-    if ($jsonErrors -eq 0) {
-        Add-Finding `
-            -FindingId "FFAE-JSON-001" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "json" `
-            -Path $null `
-            -Message "All repository JSON files parse cleanly." `
-            -Evidence ("Parsed " + $jsonFiles.Count + " JSON files.") `
-            -RemediationHint $null `
-            -RuleId $null
+    if ($errors -eq 0) {
+        Add-Finding -RuleId "FAE-C011" -Severity "info" -Decision "pass" -Category "json" -Message "Repository JSON files parse cleanly." -Evidence ("Parsed " + $count + " JSON files.") -Remediation $null
     }
 }
 
-function Get-RepositoryJsonFiles {
-    $excludedDirectoryNames = @(".git", "node_modules")
-    $pendingDirectories = New-Object System.Collections.Generic.Stack[string]
-    $pendingDirectories.Push($script:RepoRoot)
-
-    while ($pendingDirectories.Count -gt 0) {
-        $currentDirectory = $pendingDirectories.Pop()
-
-        foreach ($file in Get-ChildItem -LiteralPath $currentDirectory -Filter "*.json" -File -ErrorAction SilentlyContinue) {
-            $file
-        }
-
-        foreach ($directory in Get-ChildItem -LiteralPath $currentDirectory -Directory -ErrorAction SilentlyContinue) {
-            if ($excludedDirectoryNames -notcontains $directory.Name) {
-                $pendingDirectories.Push($directory.FullName)
-            }
-        }
+function Assert-PathExists {
+    param([string]$RelativePath, [string]$RuleId)
+    if (-not (Test-Path -LiteralPath (Join-Path $script:RepoRoot $RelativePath))) {
+        Add-Finding -RuleId $RuleId -Severity "critical" -Decision "block" -Category "repo" -Path $RelativePath -Message "Required repository path is missing." -Evidence $RelativePath -Remediation "Restore or create the required path."
+        return $false
     }
+    return $true
 }
 
-function Get-JsonObject {
-    param([string]$Path)
-
-    return Get-Content -LiteralPath (Join-Path $script:RepoRoot $Path) -Raw | ConvertFrom-Json
-}
-
-function Assert-ByteIdentical {
-    param(
-        [string]$Left,
-        [string]$Right,
-        [string]$FindingId,
-        [string]$Message
-    )
-
-    $leftPath = Join-Path $script:RepoRoot $Left
-    $rightPath = Join-Path $script:RepoRoot $Right
-    if (-not (Test-Path -LiteralPath $leftPath) -or -not (Test-Path -LiteralPath $rightPath)) {
-        Add-Finding `
-            -FindingId $FindingId `
-            -Severity "error" `
-            -Status "fail" `
-            -Category "policy" `
-            -Path $Left `
-            -Message "Cannot compare mirror files because one or both paths are missing." `
-            -Evidence ($Left + " <-> " + $Right) `
-            -RemediationHint "Restore both mirror paths." `
-            -RuleId "FAE-C011"
-        return
-    }
-
-    $leftHash = Get-FileSha256 -Path $leftPath
-    $rightHash = Get-FileSha256 -Path $rightPath
-    if ($leftHash -ne $rightHash) {
-        Add-Finding `
-            -FindingId $FindingId `
-            -Severity "error" `
-            -Status "fail" `
-            -Category "policy" `
-            -Path $Left `
-            -Message $Message `
-            -Evidence ($Left + "=" + $leftHash + "; " + $Right + "=" + $rightHash) `
-            -RemediationHint "Update the root mirror or canonical file so the files are byte-identical." `
-            -RuleId "FAE-C011"
-    } else {
-        Add-Finding `
-            -FindingId $FindingId `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "policy" `
-            -Path $Left `
-            -Message $Message `
-            -Evidence ("SHA-256 " + $leftHash) `
-            -RemediationHint $null `
-            -RuleId $null
-    }
-}
-
-function Add-PolicyStructureFailure {
-    param(
-        [string]$Path,
-        [string]$Message,
-        [string]$Evidence,
-        [string]$PolicyRuleId,
-        [string]$ConditionId,
-        [string]$GateId
-    )
-
-    $script:PolicyStructureErrors++
-    Add-Finding `
-        -FindingId "FFAE-POLICY-008" `
-        -Severity "error" `
-        -Status "fail" `
-        -Category "policy" `
-        -Path $Path `
-        -Message $Message `
-        -Evidence $Evidence `
-        -RemediationHint "Update the policy manifest with enforceable rule identifiers, gate metadata, evidence requirements, and rejection conditions." `
-        -RuleId "FAE-C011" `
-        -PolicyRuleId $PolicyRuleId `
-        -ConditionId $ConditionId `
-        -GateId $GateId
-}
-
-function Test-PolicyManifestStructure {
-    $script:PolicyStructureErrors = 0
-
-    $repoBoundaries = Get-JsonObject "core/policies/repo-boundaries.json"
-    if (@($repoBoundaries.pre_merge_gates).Count -eq 0) {
-        Add-PolicyStructureFailure `
-            -Path "core/policies/repo-boundaries.json" `
-            -Message "Repository boundary manifest is missing pre-merge gate definitions." `
-            -Evidence "pre_merge_gates" `
-            -PolicyRuleId "PHASE05-BOUNDARY-GATES" `
-            -ConditionId "missing_pre_merge_gates" `
-            -GateId "boundary-manifest-structure"
-    }
-
-    foreach ($mapping in @($repoBoundaries.approval_required_paths.mappings)) {
-        if ([string]::IsNullOrWhiteSpace([string]$mapping.path_pattern) -or
-            [string]::IsNullOrWhiteSpace([string]$mapping.minimum_approval_class) -or
-            [string]::IsNullOrWhiteSpace([string]$mapping.policy_rule_id) -or
-            [string]::IsNullOrWhiteSpace([string]$mapping.gate_id)) {
-            Add-PolicyStructureFailure `
-                -Path "core/policies/repo-boundaries.json" `
-                -Message "Approval-required path mapping is missing enforceable metadata." `
-                -Evidence ($mapping | ConvertTo-Json -Compress -Depth 6) `
-                -PolicyRuleId "PHASE05-BOUNDARY-APPROVAL-MAPPING" `
-                -ConditionId "approval_mapping_missing_metadata" `
-                -GateId "boundary-manifest-structure"
-        }
-    }
-
-    foreach ($mapping in @($repoBoundaries.role_limited_paths.mappings)) {
-        if ([string]::IsNullOrWhiteSpace([string]$mapping.path_pattern) -or
-            @($mapping.allowed_roles).Count -eq 0 -or
-            [string]::IsNullOrWhiteSpace([string]$mapping.policy_rule_id) -or
-            [string]::IsNullOrWhiteSpace([string]$mapping.gate_id)) {
-            Add-PolicyStructureFailure `
-                -Path "core/policies/repo-boundaries.json" `
-                -Message "Role-limited path mapping is missing enforceable metadata." `
-                -Evidence ($mapping | ConvertTo-Json -Compress -Depth 6) `
-                -PolicyRuleId "PHASE05-BOUNDARY-ROLE-MAPPING" `
-                -ConditionId "role_mapping_missing_metadata" `
-                -GateId "boundary-manifest-structure"
-        }
-    }
-
-    $docsSync = Get-JsonObject "core/policies/docs-sync-rules.json"
-    if (@($docsSync.pre_merge_gates).Count -eq 0) {
-        Add-PolicyStructureFailure `
-            -Path "core/policies/docs-sync-rules.json" `
-            -Message "Documentation sync manifest is missing pre-merge gate definitions." `
-            -Evidence "pre_merge_gates" `
-            -PolicyRuleId "PHASE05-DOCS-GATES" `
-            -ConditionId "missing_pre_merge_gates" `
-            -GateId "docs-sync-structure"
-    }
-
-    foreach ($pair in @($docsSync.sync_pairs)) {
-        if ([string]::IsNullOrWhiteSpace([string]$pair.rule_id) -or
-            @($pair.trigger_paths).Count -eq 0 -or
-            @($pair.required_derived_paths).Count -eq 0 -or
-            @($pair.evidence_required).Count -eq 0 -or
-            [string]::IsNullOrWhiteSpace([string]$pair.rejection_condition) -or
-            [string]::IsNullOrWhiteSpace([string]$pair.failure_action)) {
-            Add-PolicyStructureFailure `
-                -Path "core/policies/docs-sync-rules.json" `
-                -Message "Documentation sync pair is missing enforceable metadata." `
-                -Evidence ($pair | ConvertTo-Json -Compress -Depth 6) `
-                -PolicyRuleId "PHASE05-DOCS-PAIR-METADATA" `
-                -ConditionId "docs_sync_pair_missing_metadata" `
-                -GateId "docs-sync-structure"
-        }
-    }
-
-    $requiredCanonicalPolicyPairs = @(
-        "core/policies/compliance-rules.json",
-        "core/policies/repo-boundaries.json",
-        "core/policies/docs-sync-rules.json",
-        "core/policies/versioning-rules.json",
-        "core/policies/changelog-rules.json"
-    )
-    foreach ($canonical in $requiredCanonicalPolicyPairs) {
-        if (@($docsSync.sync_pairs | Where-Object { [string]$_.canonical -eq $canonical }).Count -eq 0) {
-            Add-PolicyStructureFailure `
-                -Path "core/policies/docs-sync-rules.json" `
-                -Message "Documentation sync manifest does not cover a canonical core policy manifest." `
-                -Evidence $canonical `
-                -PolicyRuleId "PHASE05-DOCS-CORE-POLICY-COVERAGE" `
-                -ConditionId "missing_core_policy_sync_pair" `
-                -GateId "docs-sync-structure"
-        }
-    }
-
-    $changelogRules = Get-JsonObject "core/policies/changelog-rules.json"
-    if (@($changelogRules.pre_merge_gates).Count -eq 0 -or
-        -not $changelogRules.immutability_policy -or
-        @($changelogRules.structured_validation_rules).Count -eq 0) {
-        Add-PolicyStructureFailure `
-            -Path "core/policies/changelog-rules.json" `
-            -Message "Changelog rules manifest is missing pre-merge, immutability, or structured validation data." `
-            -Evidence "pre_merge_gates, immutability_policy, structured_validation_rules" `
-            -PolicyRuleId "PHASE05-CHANGELOG-STRUCTURE" `
-            -ConditionId "changelog_manifest_missing_enforceable_data" `
-            -GateId "changelog-entry-required"
-    }
-
-    $versioningRules = Get-JsonObject "core/policies/versioning-rules.json"
-    if (@($versioningRules.pre_merge_gates).Count -eq 0 -or
-        @($versioningRules.classification_decision_table).Count -eq 0 -or
-        -not $versioningRules.downgrade_controls) {
-        Add-PolicyStructureFailure `
-            -Path "core/policies/versioning-rules.json" `
-            -Message "Versioning rules manifest is missing pre-merge, classification, or downgrade-control data." `
-            -Evidence "pre_merge_gates, classification_decision_table, downgrade_controls" `
-            -PolicyRuleId "PHASE05-VERSIONING-STRUCTURE" `
-            -ConditionId "versioning_manifest_missing_enforceable_data" `
-            -GateId "version-contract-changelog-consistency"
-    }
-
-    if ($script:PolicyStructureErrors -eq 0) {
-        Add-Finding `
-            -FindingId "FFAE-POLICY-008" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "policy" `
-            -Path $null `
-            -Message "Phase 05 policy manifests include enforceable gate, evidence, and rejection metadata." `
-            -Evidence "Checked repository boundaries, documentation sync, changelog, and versioning manifests." `
-            -RemediationHint $null `
-            -RuleId $null `
-            -PolicyRuleId "PHASE05-POLICY-STRUCTURE" `
-            -ConditionId $null `
-            -GateId $null
-    }
-}
-
-function Test-PolicyRegistries {
-    Assert-ByteIdentical `
-        -Left "core/policies/compliance-rules.json" `
-        -Right "policies/compliance-rules.json" `
-        -FindingId "FFAE-POLICY-001" `
-        -Message "Core and root compliance registries are byte-identical."
-
-    Assert-ByteIdentical `
-        -Left "core/policies/repo-boundaries.json" `
-        -Right "policies/repo-boundaries.json" `
-        -FindingId "FFAE-POLICY-002" `
-        -Message "Core and root repository boundary registries are byte-identical."
-
-    Assert-ByteIdentical `
-        -Left "core/policies/docs-sync-rules.json" `
-        -Right "policies/docs-sync-rules.json" `
-        -FindingId "FFAE-POLICY-003" `
-        -Message "Core and root documentation sync registries are byte-identical."
-
-    Assert-ByteIdentical `
-        -Left "core/policies/versioning-rules.json" `
-        -Right "policies/versioning-rules.json" `
-        -FindingId "FFAE-POLICY-006" `
-        -Message "Core and root versioning registries are byte-identical."
-
-    Assert-ByteIdentical `
-        -Left "core/policies/changelog-rules.json" `
-        -Right "policies/changelog-rules.json" `
-        -FindingId "FFAE-POLICY-007" `
-        -Message "Core and root changelog registries are byte-identical."
-
-    Test-LabelMirrors
-
-    $registry = Get-JsonObject "core/policies/compliance-rules.json"
-    $ids = @($registry.rules | ForEach-Object { $_.rule_id })
-    $expected = 1..12 | ForEach-Object { "FAE-C{0:D3}" -f $_ }
-    $duplicates = @($ids | Group-Object | Where-Object { $_.Count -gt 1 })
-    $missing = @($expected | Where-Object { $ids -notcontains $_ })
-    $extra = @($ids | Where-Object { $expected -notcontains $_ })
-
-    if ($duplicates.Count -gt 0 -or $missing.Count -gt 0 -or $extra.Count -gt 0) {
-        Add-Finding `
-            -FindingId "FFAE-POLICY-004" `
-            -Severity "error" `
-            -Status "fail" `
-            -Category "policy" `
-            -Path "core/policies/compliance-rules.json" `
-            -Message "Canonical compliance IDs must be exactly FAE-C001 through FAE-C012 with no duplicates." `
-            -Evidence ("ids=" + ($ids -join ",") + "; missing=" + ($missing -join ",") + "; extra=" + ($extra -join ",")) `
-            -RemediationHint "Correct the canonical compliance registry rule IDs." `
-            -RuleId "FAE-C011"
-    } else {
-        Add-Finding `
-            -FindingId "FFAE-POLICY-004" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "policy" `
-            -Path "core/policies/compliance-rules.json" `
-            -Message "Canonical compliance IDs are complete and ordered." `
-            -Evidence ($ids -join ", ") `
-            -RemediationHint $null `
-            -RuleId $null
-    }
-
-    $stalePattern = '(?<!FORSETTI_)CONSTITUTION\.md|docs/wiki|RELEASE_NOTES\.md|(?<!changelog/)CHANGELOG\.md'
-    $policyFiles = Get-ChildItem -LiteralPath (Join-Path $script:RepoRoot "policies") -Filter "*.json" -File
-    $corePolicyFiles = Get-ChildItem -LiteralPath (Join-Path $script:RepoRoot "core/policies") -Filter "*.json" -File
-    $staleHits = @()
-    foreach ($file in @($policyFiles + $corePolicyFiles)) {
-        $content = Get-Content -LiteralPath $file.FullName -Raw
-        if ($content -cmatch $stalePattern) {
-            $staleHits += (Get-RepoPath $file.FullName)
-        }
-    }
-
-    if ($staleHits.Count -gt 0) {
-        Add-Finding `
-            -FindingId "FFAE-POLICY-005" `
-            -Severity "error" `
-            -Status "fail" `
-            -Category "policy" `
-            -Path $null `
-            -Message "Policy registries contain stale repository paths." `
-            -Evidence ($staleHits -join ", ") `
-            -RemediationHint "Replace stale paths with current repository paths." `
-            -RuleId "FAE-C011"
-    } else {
-        Add-Finding `
-            -FindingId "FFAE-POLICY-005" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "policy" `
-            -Path $null `
-            -Message "Policy registries do not contain known stale repository paths." `
-            -Evidence "Scanned policies/*.json and core/policies/*.json." `
-            -RemediationHint $null `
-            -RuleId $null
-    }
-
-    Test-PolicyManifestStructure
-}
-
-function Test-DocsSync {
-    $sync = Get-JsonObject "core/policies/docs-sync-rules.json"
-    $missing = 0
-    foreach ($pair in $sync.sync_pairs) {
-        $canonicalPath = [string]$pair.canonical
-        $derivedPath = [string]$pair.derived
-        if (-not (Test-Path -LiteralPath (Join-Path $script:RepoRoot $canonicalPath))) {
-            $missing++
-            Add-Finding `
-                -FindingId "FFAE-DOCS-001" `
-                -Severity "error" `
-                -Status "fail" `
-                -Category "docs" `
-                -Path $canonicalPath `
-                -Message "Documentation sync canonical source is missing." `
-                -Evidence ($canonicalPath + " -> " + $derivedPath) `
-                -RemediationHint "Update docs-sync rules or restore the canonical source." `
-                -RuleId "FAE-C008"
-        }
-        if (-not (Test-Path -LiteralPath (Join-Path $script:RepoRoot $derivedPath))) {
-            $missing++
-            Add-Finding `
-                -FindingId "FFAE-DOCS-002" `
-                -Severity "error" `
-                -Status "fail" `
-                -Category "docs" `
-                -Path $derivedPath `
-                -Message "Documentation sync derived surface is missing." `
-                -Evidence ($canonicalPath + " -> " + $derivedPath) `
-                -RemediationHint "Update or restore the derived documentation surface." `
-                -RuleId "FAE-C008"
-        }
-    }
-
-    if ($missing -eq 0) {
-        Add-Finding `
-            -FindingId "FFAE-DOCS-001" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "docs" `
-            -Path "core/policies/docs-sync-rules.json" `
-            -Message "Documentation sync pairs reference existing repository paths." `
-            -Evidence ("Checked " + @($sync.sync_pairs).Count + " sync pairs.") `
-            -RemediationHint $null `
-            -RuleId $null
-    }
-}
-
-function Test-Schemas {
-    $schemaPaths = @(
-        "schemas/task-contract.schema.json",
+function Test-RequiredRepositorySurface {
+    $required = @(
+        "README.md",
+        "FORSETTI_CONSTITUTION.md",
+        "AGENTS.md",
+        "COMPLIANCE_POLICY.md",
+        "ACCOUNTABILITY_POLICY.md",
+        "core/README.md",
+        "core/AGENTS.md",
+        "core/enforcement/authority-model.md",
+        "core/contracts/forsetti-project-context-template.json",
+        "core/contracts/task-contract-template.json",
+        "core/schemas/forsetti-project-context.schema.json",
+        "core/schemas/edition-profile.schema.json",
+        "core/schemas/module-manifest-1.1.schema.json",
         "core/schemas/task-contract.schema.json",
-        "schemas/release-entry.schema.json",
-        "schemas/compliance-report.schema.json",
-        "core/schemas/validator-result.schema.json"
-    )
-
-    $schemaErrors = 0
-    foreach ($schema in $schemaPaths) {
-        $path = Join-Path $script:RepoRoot $schema
-        if (-not (Test-Path -LiteralPath $path)) {
-            $schemaErrors++
-            Add-Finding `
-                -FindingId "FFAE-SCHEMA-001" `
-                -Severity "error" `
-                -Status "fail" `
-                -Category "schema" `
-                -Path $schema `
-                -Message "Schema file is missing." `
-                -Evidence $schema `
-                -RemediationHint "Restore or create the schema file." `
-                -RuleId "FAE-C011"
-            continue
-        }
-
-        $schemaObj = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json
-        if (-not $schemaObj.properties) {
-            $schemaErrors++
-            Add-Finding `
-                -FindingId "FFAE-SCHEMA-002" `
-                -Severity "error" `
-                -Status "fail" `
-                -Category "schema" `
-                -Path $schema `
-                -Message "Schema has no properties object." `
-                -Evidence $schema `
-                -RemediationHint "Define the schema properties object." `
-                -RuleId "FAE-C011"
-        }
-    }
-
-    if ($schemaErrors -eq 0) {
-        Add-Finding `
-            -FindingId "FFAE-SCHEMA-001" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "schema" `
-            -Path $null `
-            -Message "Required schemas exist and define properties." `
-            -Evidence ("Checked " + $schemaPaths.Count + " schemas.") `
-            -RemediationHint $null `
-            -RuleId $null
-    }
-}
-
-function Test-ScriptWrappers {
-    $wrappers = @(
+        "core/schemas/validator-result.schema.json",
+        "core/policies/forsetti-enforcement-rules.json",
+        "core/policies/manifest-rules.json",
+        "core/policies/runtime-requirement-rules.json",
+        "core/policies/module-isolation-rules.json",
+        "core/policies/dependency-boundary-rules.json",
+        "core/policies/public-api-rules.json",
+        "core/policies/capability-rules.json",
+        "core/policies/ui-contribution-rules.json",
+        "core/policies/service-access-rules.json",
+        "core/policies/mcp-provider-policy.json",
+        "core/policies/mcp-resolution-order.json",
+        "core/policies/accountability-rules.json",
+        "core/policies/agent-enforcement-actions.json",
+        "core/validator/forsetti_validate.ps1",
+        "core/validator/rules/forsetti_project_rules.ps1",
+        "editions/shared/shared-forsetti-invariants.json",
+        "editions/apple/forsetti-apple-0.1.3.profile.json",
+        "editions/windows/forsetti-windows-0.2.0.profile.json",
+        "editions/README.md",
+        "overlays/generic/README.md",
+        "overlays/forsetti-apple/README.md",
+        "overlays/forsetti-windows/README.md",
+        "standards/mcp-local-helper-standard.md",
         "scripts/validate-repo.ps1",
         "scripts/validate-repo.sh"
     )
 
-    $errors = 0
-    foreach ($wrapper in $wrappers) {
-        $path = Join-Path $script:RepoRoot $wrapper
-        if (-not (Test-Path -LiteralPath $path)) {
-            $errors++
-            Add-Finding `
-                -FindingId "FFAE-SCRIPT-001" `
-                -Severity "error" `
-                -Status "fail" `
-                -Category "scripts" `
-                -Path $wrapper `
-                -Message "Validation wrapper is missing." `
-                -Evidence $wrapper `
-                -RemediationHint "Restore the wrapper script." `
-                -RuleId "FAE-C011"
-            continue
-        }
-
-        $content = Get-Content -LiteralPath $path -Raw
-        if ($content -notmatch 'core[\\/]+validator[\\/]+forsetti_validate\.ps1') {
-            $errors++
-            Add-Finding `
-                -FindingId "FFAE-SCRIPT-002" `
-                -Severity "error" `
-                -Status "fail" `
-                -Category "scripts" `
-                -Path $wrapper `
-                -Message "Validation wrapper does not delegate to the core validator." `
-                -Evidence "Missing core/validator/forsetti_validate.ps1 reference." `
-                -RemediationHint "Delegate wrapper execution to the core validator." `
-                -RuleId "FAE-C011"
+    $missing = 0
+    foreach ($path in $required) {
+        if (-not (Assert-PathExists -RelativePath $path -RuleId "FAE-C011")) {
+            $missing++
         }
     }
-
-    if ($errors -eq 0) {
-        Add-Finding `
-            -FindingId "FFAE-SCRIPT-001" `
-            -Severity "info" `
-            -Status "pass" `
-            -Category "scripts" `
-            -Path $null `
-            -Message "Validation wrappers delegate to the core validator." `
-            -Evidence ($wrappers -join ", ") `
-            -RemediationHint $null `
-            -RuleId $null
+    if ($missing -eq 0) {
+        Add-Finding -RuleId "FAE-C011" -Severity "info" -Decision "pass" -Category "repo" -Message "Required repository surface exists." -Evidence ("Checked " + $required.Count + " paths.") -Remediation $null
     }
 }
 
-function Invoke-SelectedChecks {
-    $checks = @()
-    if ($Mode -eq "all" -or $Mode -eq "structure" -or $Mode -eq "files") {
-        $checks += @{ Name = "structure"; Script = { Test-RequiredPaths; Test-NonTrivialRequiredFiles; Test-YamlWorkflowFiles } }
+function Test-PolicyMirrors {
+    $pairs = @(
+        "forsetti-enforcement-rules.json",
+        "manifest-rules.json",
+        "runtime-requirement-rules.json",
+        "module-isolation-rules.json",
+        "dependency-boundary-rules.json",
+        "public-api-rules.json",
+        "capability-rules.json",
+        "ui-contribution-rules.json",
+        "service-access-rules.json",
+        "mcp-provider-policy.json",
+        "mcp-resolution-order.json",
+        "accountability-rules.json",
+        "agent-enforcement-actions.json"
+    )
+
+    $errors = 0
+    foreach ($file in $pairs) {
+        $corePath = Join-Path $script:RepoRoot ("core/policies/" + $file)
+        $rootPath = Join-Path $script:RepoRoot ("policies/" + $file)
+        if (-not (Test-Path -LiteralPath $corePath) -or -not (Test-Path -LiteralPath $rootPath)) {
+            $errors++
+            Add-Finding -RuleId "FAE-C011" -Severity "critical" -Decision "block" -Category "policies" -Path $file -Message "Policy mirror pair is missing." -Evidence $file -Remediation "Create both core and root policy mirror files."
+            continue
+        }
+        $coreText = Get-Content -LiteralPath $corePath -Raw
+        $rootText = Get-Content -LiteralPath $rootPath -Raw
+        if ($coreText -ne $rootText) {
+            $errors++
+            Add-Finding -RuleId "FAE-C011" -Severity "high" -Decision "request_changes" -Category "policies" -Path $file -Message "Core policy and root mirror differ." -Evidence $file -Remediation "Synchronize the root mirror with the canonical core policy."
+        }
     }
-    if ($Mode -eq "all" -or $Mode -eq "json") { $checks += @{ Name = "json"; Script = { Test-JsonFiles } } }
-    if ($Mode -eq "all" -or $Mode -eq "policy" -or $Mode -eq "policies") { $checks += @{ Name = "policy"; Script = { Test-PolicyRegistries } } }
-    if ($Mode -eq "all" -or $Mode -eq "docs") { $checks += @{ Name = "docs"; Script = { Test-DocsSync } } }
-    if ($Mode -eq "all" -or $Mode -eq "schema" -or $Mode -eq "schemas") { $checks += @{ Name = "schema"; Script = { Test-Schemas } } }
-    if ($Mode -eq "all" -or $Mode -eq "scripts") { $checks += @{ Name = "scripts"; Script = { Test-ScriptWrappers } } }
-    if ($Mode -eq "all" -or $Mode -eq "contract" -or $Mode -eq "contracts") {
-        $checks += @{
-            Name = "contract"
-            Script = {
-                Test-ContractInfrastructure -RepoRoot $script:RepoRoot
-                Test-TaskContractRules `
-                    -RepoRoot $script:RepoRoot `
-                    -ContractPath $ContractPath `
-                    -ChangedFile $ChangedFile `
-                    -ChangedFilesPath $ChangedFilesPath `
-                    -PendingOutputPath $OutputJson `
-                    -RequireContract:($Mode -eq "contract" -or $Mode -eq "contracts")
+    if ($errors -eq 0) {
+        Add-Finding -RuleId "FAE-C011" -Severity "info" -Decision "pass" -Category "policies" -Message "Forsetti policy mirrors are synchronized." -Evidence ("Checked " + $pairs.Count + " policy mirrors.") -Remediation $null
+    }
+}
+
+function Test-ForsettiRuleRegistry {
+    $path = Join-Path $script:RepoRoot "core/policies/forsetti-enforcement-rules.json"
+    if (-not (Test-Path -LiteralPath $path)) {
+        Add-Finding -RuleId "FAE-F002" -Severity "critical" -Decision "block" -Category "policies" -Path "core/policies/forsetti-enforcement-rules.json" -Message "Forsetti enforcement rule registry is missing." -Evidence "core/policies/forsetti-enforcement-rules.json" -Remediation "Create FAE-F001 through FAE-F020 registry."
+        return
+    }
+
+    $registry = Read-JsonObject -Path $path
+    $ids = @($registry.rules | ForEach-Object { [string]$_.rule_id })
+    $expected = 1..20 | ForEach-Object { "FAE-F{0:D3}" -f $_ }
+    $missing = @($expected | Where-Object { $ids -notcontains $_ })
+    $shapeErrors = 0
+    foreach ($rule in @($registry.rules)) {
+        foreach ($field in @("rule_id", "title", "severity", "decision", "applies_to_modes", "required_evidence", "validation", "remediation")) {
+            if (-not $rule.PSObject.Properties[$field]) {
+                $shapeErrors++
+                Add-Finding -RuleId "FAE-F002" -Severity "critical" -Decision "block" -Category "policies" -Path "core/policies/forsetti-enforcement-rules.json" -Message "Forsetti rule is missing a required field." -Evidence (($rule.rule_id) + " missing " + $field) -Remediation "Add rule ID, title, severity, decision, applies-to modes, required evidence, validation, and remediation fields."
             }
         }
     }
+    if ($missing.Count -gt 0) {
+        Add-Finding -RuleId "FAE-F002" -Severity "critical" -Decision "block" -Category "policies" -Path "core/policies/forsetti-enforcement-rules.json" -Message "Forsetti enforcement registry is missing rule IDs." -Evidence ($missing -join ", ") -Remediation "Add the missing FAE-F rule IDs."
+    } elseif ($shapeErrors -eq 0) {
+        Add-Finding -RuleId "FAE-F002" -Severity "info" -Decision "pass" -Category "policies" -Message "FAE-F001 through FAE-F020 are present with required fields." -Evidence ($expected -join ", ") -Remediation $null
+    }
+}
 
-    foreach ($check in $checks) {
-        try {
-            & $check.Script
-        } catch {
-            Add-ExceptionFinding -Category $check.Name -Message $_.Exception.Message
+function Test-CoreBoundary {
+    $coreRoot = Join-Path $script:RepoRoot "core"
+    if (-not (Test-Path -LiteralPath $coreRoot)) {
+        return
+    }
+    $forbidden = "(Invoke-WebRequest|Invoke-RestMethod|\bgh\b|\bdocker\b|\bwsl\b|https?://github.com|adapters/github-actions/workflows)"
+    $hits = @()
+    foreach ($file in Get-ChildItem -LiteralPath $coreRoot -File -Recurse) {
+        $text = Get-Content -LiteralPath $file.FullName -Raw
+        if ($text -match $forbidden) {
+            $hits += (Get-RepoPath $file.FullName)
         }
+    }
+    if ($hits.Count -gt 0) {
+        Add-Finding -RuleId "FAE-C011" -Severity "high" -Decision "request_changes" -Category "repo" -Message "Core contains hosted or local-tool dependency language." -Evidence ($hits -join ", ") -Remediation "Keep core governance host-neutral and move hosted/tool logic to adapters or standards."
+    } else {
+        Add-Finding -RuleId "FAE-C011" -Severity "info" -Decision "pass" -Category "repo" -Message "Core remains free of hosted workflow and local-tool dependencies." -Evidence "Scanned core files." -Remediation $null
+    }
+}
+
+function Test-Repo {
+    if (-not (Test-Path -LiteralPath (Join-Path $script:RepoRoot "FORSETTI_CONSTITUTION.md"))) {
+        Add-Finding -RuleId "FAE-C011" -Severity "medium" -Decision "request_changes" -Category "repo" -Message "Repo mode was requested for a target repository without FFAE constitution." -Evidence $script:RepoRoot -Remediation "Use project-context, manifest, dependencies, capabilities, module-isolation, or evidence modes for target repositories."
+        return
+    }
+    Test-RequiredRepositorySurface
+    Test-JsonFiles
+    Test-PolicyMirrors
+    Test-ForsettiRuleRegistry
+    Test-CoreBoundary
+}
+
+function Get-DefaultProfilePath {
+    param([object]$Context)
+    if ($Context -and $Context.edition_profile) {
+        return Resolve-InputPath -Path ([string]$Context.edition_profile)
+    }
+    if (-not [string]::IsNullOrWhiteSpace($EditionProfilePath)) {
+        return Resolve-InputPath -Path $EditionProfilePath
+    }
+    return $null
+}
+
+function Test-ProjectContextObject {
+    param([object]$Context, [string]$SourcePath)
+
+    $required = @(
+        "repository_mode",
+        "forsetti_edition",
+        "target_platform",
+        "framework_version",
+        "edition_profile",
+        "manifest_schema_version",
+        "manifest_template_version",
+        "deployment_pattern",
+        "module_type",
+        "module_id",
+        "capabilities_requested",
+        "runtime_requirements_declared",
+        "uses_public_api_only",
+        "touches_framework_internals"
+    )
+    $missing = @()
+    foreach ($field in $required) {
+        if (-not $Context.PSObject.Properties[$field]) {
+            $missing += $field
+        } elseif ([string]::IsNullOrWhiteSpace([string]$Context.$field)) {
+            if ($field -ne "capabilities_requested" -and $field -ne "module_id") {
+                $missing += $field
+            }
+        }
+    }
+    if ($missing.Count -gt 0) {
+        Add-Finding -RuleId "FAE-F001" -Severity "critical" -Decision "block" -Category "project-context" -Path (Get-RepoPath $SourcePath) -Message "Forsetti project context is missing required fields." -Evidence ($missing -join ", ") -Remediation "Complete every required Forsetti project context field before execution."
+        return $false
+    }
+
+    if ($Context.forsetti_edition -notin @("apple", "windows")) {
+        Add-Finding -RuleId "FAE-F002" -Severity "critical" -Decision "block" -Category "project-context" -Path (Get-RepoPath $SourcePath) -Message "Unsupported Forsetti edition." -Evidence ([string]$Context.forsetti_edition) -Remediation "Select the Apple or Windows edition profile."
+        return $false
+    }
+    if ($Context.target_platform -notin @("iOS", "macOS", "Windows")) {
+        Add-Finding -RuleId "FAE-F003" -Severity "critical" -Decision "block" -Category "project-context" -Path (Get-RepoPath $SourcePath) -Message "Unsupported target platform." -Evidence ([string]$Context.target_platform) -Remediation "Select a target platform supported by the edition profile."
+        return $false
+    }
+    if ($Context.manifest_schema_version -ne "1.1" -or $Context.manifest_template_version -ne "1.1") {
+        Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "project-context" -Path (Get-RepoPath $SourcePath) -Message "Manifest schema/template version must be 1.1 for this remediation package." -Evidence (($Context.manifest_schema_version) + "/" + ($Context.manifest_template_version)) -Remediation "Set manifest schema and template versions to 1.1."
+        return $false
+    }
+    if ($Context.module_type -notin @("app", "ui", "service", "not_applicable")) {
+        Add-Finding -RuleId "FAE-F001" -Severity "critical" -Decision "block" -Category "project-context" -Path (Get-RepoPath $SourcePath) -Message "Unknown Forsetti module type." -Evidence ([string]$Context.module_type) -Remediation "Use app, ui, service, or not_applicable."
+        return $false
+    }
+    if ($Context.module_type -ne "not_applicable" -and [string]::IsNullOrWhiteSpace([string]$Context.module_id)) {
+        Add-Finding -RuleId "FAE-F001" -Severity "critical" -Decision "block" -Category "project-context" -Path (Get-RepoPath $SourcePath) -Message "Forsetti project context is missing module_id for a module-bearing task." -Evidence "module_id" -Remediation "Provide the Forsetti module identifier or set module_type to not_applicable for non-module governance work."
+        return $false
+    }
+    if ($Context.touches_framework_internals -eq $true) {
+        Add-Finding -RuleId "FAE-F012" -Severity "critical" -Decision "block" -Category "project-context" -Path (Get-RepoPath $SourcePath) -Message "Task context indicates framework internals are touched." -Evidence "touches_framework_internals=true" -Remediation "Re-scope the task to public APIs or obtain explicit governance-class authority."
+        return $false
+    }
+    if ($Context.uses_public_api_only -ne $true) {
+        Add-Finding -RuleId "FAE-F011" -Severity "critical" -Decision "block" -Category "project-context" -Path (Get-RepoPath $SourcePath) -Message "Task context does not confirm public API-only use." -Evidence "uses_public_api_only=false" -Remediation "Confirm and enforce public Forsetti API-only use."
+        return $false
+    }
+
+    Add-Finding -RuleId "FAE-F001" -Severity "info" -Decision "pass" -Category "project-context" -Path (Get-RepoPath $SourcePath) -Message "Forsetti project context is complete." -Evidence (($Context.forsetti_edition) + " " + ($Context.framework_version) + " " + ($Context.target_platform)) -Remediation $null
+    return $true
+}
+
+function Test-ProjectContext {
+    if ([string]::IsNullOrWhiteSpace($ProjectContextPath)) {
+        if ($Mode -eq "project-context") {
+            Add-Finding -RuleId "FAE-F001" -Severity "critical" -Decision "block" -Category "project-context" -Message "Project context mode requires -ProjectContextPath." -Evidence "-ProjectContextPath" -Remediation "Provide a Forsetti project context JSON file."
+        }
+        return $null
+    }
+    $path = Resolve-InputPath -Path $ProjectContextPath
+    if (-not (Test-Path -LiteralPath $path)) {
+        Add-Finding -RuleId "FAE-F001" -Severity "critical" -Decision "block" -Category "project-context" -Path (Get-RepoPath $path) -Message "Project context file is missing." -Evidence $ProjectContextPath -Remediation "Create the project context file before execution."
+        return $null
+    }
+    $context = Read-JsonObject -Path $path
+    $null = Test-ProjectContextObject -Context $context -SourcePath $path
+    return $context
+}
+
+function Test-EditionProfileObject {
+    param([object]$Profile, [string]$SourcePath)
+
+    $required = @("edition", "frameworkVersion", "supportedPlatforms", "nativeTools", "publicProducts", "manifest", "capabilities", "dependencyRules", "verificationCommands")
+    $missing = @()
+    foreach ($field in $required) {
+        if (-not $Profile.PSObject.Properties[$field]) {
+            $missing += $field
+        }
+    }
+    if ($missing.Count -gt 0) {
+        Add-Finding -RuleId "FAE-F002" -Severity "critical" -Decision "block" -Category "edition-profile" -Path (Get-RepoPath $SourcePath) -Message "Edition profile is missing required fields." -Evidence ($missing -join ", ") -Remediation "Complete the edition profile before using it."
+        return $false
+    }
+    if ($Profile.manifest.currentSchemaVersion -ne "1.1" -or $Profile.manifest.currentTemplateVersion -ne "1.1") {
+        Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "edition-profile" -Path (Get-RepoPath $SourcePath) -Message "Edition profile does not select manifest 1.1." -Evidence (($Profile.manifest.currentSchemaVersion) + "/" + ($Profile.manifest.currentTemplateVersion)) -Remediation "Set current schema and template versions to 1.1."
+        return $false
+    }
+    Add-Finding -RuleId "FAE-F002" -Severity "info" -Decision "pass" -Category "edition-profile" -Path (Get-RepoPath $SourcePath) -Message "Edition profile is complete." -Evidence (($Profile.edition) + " " + ($Profile.frameworkVersion)) -Remediation $null
+    return $true
+}
+
+function Test-EditionProfile {
+    if (-not [string]::IsNullOrWhiteSpace($EditionProfilePath)) {
+        $path = Resolve-InputPath -Path $EditionProfilePath
+        if (-not (Test-Path -LiteralPath $path)) {
+            Add-Finding -RuleId "FAE-F002" -Severity "critical" -Decision "block" -Category "edition-profile" -Path (Get-RepoPath $path) -Message "Edition profile file is missing." -Evidence $EditionProfilePath -Remediation "Provide the selected edition profile."
+            return $null
+        }
+        $profile = Read-JsonObject -Path $path
+        $null = Test-EditionProfileObject -Profile $profile -SourcePath $path
+        return $profile
+    }
+
+    if ($Mode -eq "edition-profile" -or $Mode -eq "all") {
+        $profilePaths = @(
+            "editions/apple/forsetti-apple-0.1.3.profile.json",
+            "editions/windows/forsetti-windows-0.2.0.profile.json"
+        )
+        foreach ($relative in $profilePaths) {
+            $path = Join-Path $script:RepoRoot $relative
+            if (Test-Path -LiteralPath $path) {
+                $null = Test-EditionProfileObject -Profile (Read-JsonObject -Path $path) -SourcePath $path
+            } elseif ($Mode -eq "edition-profile") {
+                Add-Finding -RuleId "FAE-F002" -Severity "critical" -Decision "block" -Category "edition-profile" -Path $relative -Message "Required edition profile is missing." -Evidence $relative -Remediation "Create the required edition profile."
+            }
+        }
+    }
+    return $null
+}
+
+function Test-Manifest {
+    param([AllowNull()]$Profile)
+
+    if ([string]::IsNullOrWhiteSpace($ManifestPath)) {
+        if ($Mode -eq "manifest") {
+            Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "manifest" -Message "Manifest mode requires -ManifestPath." -Evidence "-ManifestPath" -Remediation "Provide a Forsetti module manifest JSON file."
+        }
+        return $null
+    }
+
+    $path = Resolve-InputPath -Path $ManifestPath
+    if (-not (Test-Path -LiteralPath $path)) {
+        Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest file is missing." -Evidence $ManifestPath -Remediation "Create or provide the module manifest."
+        return $null
+    }
+
+    $manifest = Read-JsonObject -Path $path
+    $required = @("schemaVersion", "manifestTemplateVersion", "moduleID", "displayName", "moduleVersion", "moduleType", "supportedPlatforms", "minForsettiVersion", "capabilitiesRequested", "entryPoint", "runtimeRequirements")
+    if ($Profile -and $Profile.manifest.requiredFields) {
+        $required = @($Profile.manifest.requiredFields)
+    }
+
+    $missing = @()
+    foreach ($field in $required) {
+        if (-not $manifest.PSObject.Properties[$field]) {
+            $missing += $field
+        }
+    }
+    if ($missing.Count -gt 0) {
+        Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest is missing required fields." -Evidence ($missing -join ", ") -Remediation "Add all manifest 1.1 fields required by the selected profile."
+        return $manifest
+    }
+
+    if ($manifest.schemaVersion -ne "1.1" -or $manifest.manifestTemplateVersion -ne "1.1") {
+        Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest schema/template version is unsupported." -Evidence (($manifest.schemaVersion) + "/" + ($manifest.manifestTemplateVersion)) -Remediation "Use schemaVersion and manifestTemplateVersion 1.1."
+    }
+    if ($manifest.moduleType -notin @("service", "ui", "app")) {
+        Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest has invalid module type." -Evidence ([string]$manifest.moduleType) -Remediation "Use service, ui, or app."
+    }
+
+    if ($Profile) {
+        $unsupportedPlatforms = @($manifest.supportedPlatforms | Where-Object { @($Profile.supportedPlatforms) -notcontains $_ })
+        if ($unsupportedPlatforms.Count -gt 0) {
+            Add-Finding -RuleId "FAE-F003" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest platform is not supported by selected profile." -Evidence ($unsupportedPlatforms -join ", ") -Remediation "Select a matching profile or correct supportedPlatforms."
+        }
+        $unknownCapabilities = @($manifest.capabilitiesRequested | Where-Object { @($Profile.capabilities) -notcontains $_ })
+        if ($unknownCapabilities.Count -gt 0) {
+            Add-Finding -RuleId "FAE-F009" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest requests unknown capabilities." -Evidence ($unknownCapabilities -join ", ") -Remediation "Use only capabilities defined by the selected profile."
+        }
+    }
+
+    $runtime = $manifest.runtimeRequirements
+    foreach ($field in @("io", "ui", "dataIsolation")) {
+        if (-not $runtime.PSObject.Properties[$field]) {
+            Add-Finding -RuleId "FAE-F010" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Runtime requirements are incomplete." -Evidence ("runtimeRequirements." + $field) -Remediation "Declare io, ui, and dataIsolation runtime requirements."
+        }
+    }
+    if ($manifest.moduleType -eq "service" -and $runtime.PSObject.Properties["ui"] -and $null -ne $runtime.ui) {
+        Add-Finding -RuleId "FAE-F015" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Service module declares UI runtime contribution." -Evidence "runtimeRequirements.ui" -Remediation "Remove UI contribution from service modules or change module type."
+    }
+    if ($manifest.moduleType -in @("ui", "app") -and $runtime.PSObject.Properties["ui"] -and $null -eq $runtime.ui) {
+        Add-Finding -RuleId "FAE-F014" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "UI/app module lacks active UI runtime surface." -Evidence "runtimeRequirements.ui=null" -Remediation "Declare the UI runtime surface required by the selected profile."
+    }
+    if ($manifest.PSObject.Properties["defaultModuleRole"] -and $manifest.defaultModuleRole -notin @("app", "ui", "service", "none")) {
+        Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest has invalid default module role." -Evidence ([string]$manifest.defaultModuleRole) -Remediation "Use app, ui, service, or none for defaultModuleRole."
+    }
+
+    Add-Finding -RuleId "FAE-F004" -Severity "info" -Decision "pass" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest file was inspected." -Evidence ([string]$manifest.moduleID) -Remediation $null
+    return $manifest
+}
+
+function Get-ChangedFileList {
+    $files = @()
+    if (@($ChangedFile).Count -gt 0) {
+        $files += @($ChangedFile)
+    }
+    if (-not [string]::IsNullOrWhiteSpace($ChangedFilesPath)) {
+        $path = Resolve-InputPath -Path $ChangedFilesPath
+        if (Test-Path -LiteralPath $path) {
+            $files += @(Get-Content -LiteralPath $path | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+        }
+    }
+    if ($files.Count -eq 0) {
+        try {
+            $gitFiles = & git -C $script:RepoRoot status --short 2>$null | ForEach-Object {
+                if ($_ -match '^\s*\S+\s+(.+)$') { $Matches[1].Trim() }
+            }
+            $files += @($gitFiles)
+        } catch {
+            $files = @()
+        }
+    }
+    return @($files | ForEach-Object { $_.Replace('\', '/') } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique)
+}
+
+function Get-ReadableChangedFiles {
+    $paths = @()
+    foreach ($relative in Get-ChangedFileList) {
+        $path = Resolve-InputPath -Path $relative
+        if (Test-Path -LiteralPath $path -PathType Leaf) {
+            $paths += $path
+        }
+    }
+    return $paths
+}
+
+function Test-Dependencies {
+    param([AllowNull()]$Profile)
+
+    $files = Get-ReadableChangedFiles
+    if ($files.Count -eq 0) {
+        Add-Finding -RuleId "FAE-F013" -Severity "info" -Decision "pass" -Category "dependencies" -Message "No changed files supplied for dependency inspection." -Evidence "No changed files." -Remediation $null
+        return
+    }
+
+    $violations = @()
+    foreach ($file in $files) {
+        $relative = Get-RepoPath $file
+        $text = Get-Content -LiteralPath $file -Raw
+        if ($relative -match 'Sources/ForsettiCore/' -and $text -match 'import\s+(SwiftUI|UIKit|AppKit|StoreKit|ForsettiPlatform)') {
+            $violations += ($relative + " imports platform or upper-layer product from ForsettiCore")
+        }
+        if ($relative -match 'include/ForsettiCore/|src/ForsettiCore/' -and $text -match '#include\s+[<"].*Forsetti(Platform|HostTemplate)') {
+            $violations += ($relative + " includes upper-layer Windows product from ForsettiCore")
+        }
+        if ($text -match '(internal|private)\s+.*Forsetti' -and $relative -notmatch '(^Sources/Forsetti|^src/Forsetti|^include/Forsetti)') {
+            $violations += ($relative + " appears to reference non-public Forsetti internals")
+        }
+    }
+
+    if ($violations.Count -gt 0) {
+        Add-Finding -RuleId "FAE-F013" -Severity "critical" -Decision "block" -Category "dependencies" -Message "Dependency direction or public API boundary violation detected." -Evidence $violations -Remediation "Use public Forsetti products only and preserve one-way dependency direction."
+    } else {
+        Add-Finding -RuleId "FAE-F013" -Severity "info" -Decision "pass" -Category "dependencies" -Message "Changed files do not show direct dependency boundary violations." -Evidence ("Checked " + $files.Count + " files.") -Remediation $null
+    }
+}
+
+function Test-Capabilities {
+    param([AllowNull()]$Manifest)
+
+    $declared = @()
+    if ($Manifest -and $Manifest.capabilitiesRequested) {
+        $declared = @($Manifest.capabilitiesRequested)
+    }
+    $files = Get-ReadableChangedFiles
+    if ($files.Count -eq 0) {
+        Add-Finding -RuleId "FAE-F009" -Severity "info" -Decision "pass" -Category "capabilities" -Message "No changed files supplied for capability inspection." -Evidence "No changed files." -Remediation $null
+        return
+    }
+
+    $mapPath = Join-Path $script:RepoRoot "core/validator/rules/forsetti_project_rules.ps1"
+    if (Test-Path -LiteralPath $mapPath) {
+        . $mapPath
+    }
+    $capabilityMap = Get-ForsettiCapabilityUseMap
+    $used = New-Object System.Collections.Generic.HashSet[string]
+    foreach ($file in $files) {
+        $text = Get-Content -LiteralPath $file -Raw
+        foreach ($capability in $capabilityMap.Keys) {
+            foreach ($pattern in @($capabilityMap[$capability])) {
+                if ($text -match [regex]::Escape($pattern)) {
+                    [void]$used.Add($capability)
+                }
+            }
+        }
+    }
+    $undeclared = @($used | Where-Object { $declared -notcontains $_ })
+    if ($Manifest -and $undeclared.Count -gt 0) {
+        Add-Finding -RuleId "FAE-F009" -Severity "critical" -Decision "block" -Category "capabilities" -Message "Changed files use undeclared capabilities." -Evidence ($undeclared -join ", ") -Remediation "Declare each used capability in the module manifest or remove the capability-using behavior."
+    } else {
+        Add-Finding -RuleId "FAE-F009" -Severity "info" -Decision "pass" -Category "capabilities" -Message "Capability inspection completed." -Evidence ("used=" + (($used | Sort-Object) -join ",") + "; declared=" + ($declared -join ",")) -Remediation $null
+    }
+}
+
+function Test-ModuleIsolation {
+    $files = Get-ReadableChangedFiles
+    if ($files.Count -eq 0) {
+        Add-Finding -RuleId "FAE-F006" -Severity "info" -Decision "pass" -Category "module-isolation" -Message "No changed files supplied for module-isolation inspection." -Evidence "No changed files." -Remediation $null
+        return
+    }
+
+    $violations = @()
+    foreach ($file in $files) {
+        $relative = Get-RepoPath $file
+        $text = Get-Content -LiteralPath $file -Raw
+        if ($text -match '(import|#include)\s+["<].*(Modules|ExampleModules).*(Module|Service|UI|App)') {
+            $violations += ($relative + " imports or includes another module implementation")
+        }
+        if ($text -match '(sharedDatabase|SharedDatabase|moduleDatabase|directModule|OtherModule)') {
+            $violations += ($relative + " appears to use direct module data or implementation coupling")
+        }
+    }
+
+    if ($violations.Count -gt 0) {
+        Add-Finding -RuleId "FAE-F006" -Severity "critical" -Decision "block" -Category "module-isolation" -Message "Direct module coupling was detected." -Evidence $violations -Remediation "Route intermodule interaction through Forsetti orchestration contracts and remove direct coupling."
+    } else {
+        Add-Finding -RuleId "FAE-F006" -Severity "info" -Decision "pass" -Category "module-isolation" -Message "Changed files do not show direct module coupling patterns." -Evidence ("Checked " + $files.Count + " files.") -Remediation $null
+    }
+}
+
+function Test-Contract {
+    if ([string]::IsNullOrWhiteSpace($ContractPath)) {
+        if ($Mode -in @("contract", "contracts")) {
+            Add-Finding -RuleId "FAE-C001" -Severity "critical" -Decision "block" -Category "contract" -Message "Contract mode requires -ContractPath." -Evidence "-ContractPath" -Remediation "Provide a governing task contract before execution."
+        }
+        return
+    }
+    $path = Resolve-InputPath -Path $ContractPath
+    if (-not (Test-Path -LiteralPath $path)) {
+        Add-Finding -RuleId "FAE-C001" -Severity "critical" -Decision "block" -Category "contract" -Path (Get-RepoPath $path) -Message "Contract file is missing." -Evidence $ContractPath -Remediation "Provide the governing task contract."
+        return
+    }
+    if ($path.EndsWith(".json", [System.StringComparison]::OrdinalIgnoreCase)) {
+        $contract = Read-JsonObject -Path $path
+        if (-not $contract.PSObject.Properties["forsetti_project_context"]) {
+            Add-Finding -RuleId "FAE-F001" -Severity "critical" -Decision "block" -Category "contract" -Path (Get-RepoPath $path) -Message "Task contract is missing Forsetti project context." -Evidence "forsetti_project_context" -Remediation "Add the required Forsetti project context before Builder execution."
+        } else {
+            $null = Test-ProjectContextObject -Context $contract.forsetti_project_context -SourcePath $path
+        }
+    } else {
+        $text = Get-Content -LiteralPath $path -Raw
+        if ($text -notmatch '##\s+Forsetti Project Context') {
+            Add-Finding -RuleId "FAE-F001" -Severity "critical" -Decision "block" -Category "contract" -Path (Get-RepoPath $path) -Message "Markdown task contract is missing Forsetti project context section." -Evidence "## Forsetti Project Context" -Remediation "Add the required context section before Builder execution."
+        }
+    }
+    Add-Finding -RuleId "FAE-C001" -Severity "info" -Decision "pass" -Category "contract" -Path (Get-RepoPath $path) -Message "Task contract was inspected." -Evidence (Get-RepoPath $path) -Remediation $null
+}
+
+function Test-Evidence {
+    $files = Get-ChangedFileList
+    if ($Mode -eq "evidence" -and $files.Count -eq 0 -and [string]::IsNullOrWhiteSpace($ChangedFilesPath)) {
+        Add-Finding -RuleId "FAE-F020" -Severity "critical" -Decision "block" -Category "evidence" -Message "Evidence mode requires changed-file evidence." -Evidence "-ChangedFilesPath or -ChangedFiles" -Remediation "Provide changed-file evidence and selected profile validation evidence."
+        return
+    }
+    Add-Finding -RuleId "FAE-F020" -Severity "info" -Decision "pass" -Category "evidence" -Message "Evidence inputs were inspected." -Evidence ("changed_files=" + $files.Count) -Remediation $null
+}
+
+function Invoke-SelectedChecks {
+    $context = $null
+    $profile = $null
+    $manifest = $null
+
+    if ($Mode -in @("all", "repo", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts")) {
+        Test-Repo
+    }
+    if ($Mode -in @("all", "contract", "contracts")) {
+        Test-Contract
+    }
+    if ($Mode -in @("all", "project-context")) {
+        $context = Test-ProjectContext
+    }
+    if (-not $profile -and $context) {
+        $profilePath = Get-DefaultProfilePath -Context $context
+        if ($profilePath -and (Test-Path -LiteralPath $profilePath)) {
+            $profile = Read-JsonObject -Path $profilePath
+            $null = Test-EditionProfileObject -Profile $profile -SourcePath $profilePath
+        }
+    }
+    if ($Mode -in @("all", "edition-profile") -and -not $profile) {
+        $profile = Test-EditionProfile
+    } elseif (-not [string]::IsNullOrWhiteSpace($EditionProfilePath) -and -not $profile) {
+        $profile = Test-EditionProfile
+    }
+    if ($Mode -in @("manifest", "all") -or -not [string]::IsNullOrWhiteSpace($ManifestPath)) {
+        $manifest = Test-Manifest -Profile $profile
+    }
+    if ($Mode -in @("dependencies", "all")) {
+        Test-Dependencies -Profile $profile
+    }
+    if ($Mode -in @("capabilities", "all")) {
+        Test-Capabilities -Manifest $manifest
+    }
+    if ($Mode -in @("module-isolation", "all")) {
+        Test-ModuleIsolation
+    }
+    if ($Mode -in @("evidence", "all")) {
+        Test-Evidence
     }
 }
 
 function New-ValidatorResult {
-    $duration = [int]((Get-Date) - $script:StartTime).TotalMilliseconds
-    $findingsArray = @($script:Findings.ToArray())
-
-    $errorCount = @($findingsArray | Where-Object { $_.status -eq "fail" -or $_.severity -eq "error" }).Count
-    $warningCount = @($findingsArray | Where-Object { $_.status -eq "warn" -or $_.severity -eq "warning" }).Count
-    $passCount = @($findingsArray | Where-Object { $_.status -eq "pass" }).Count
-
+    $findings = @($script:Findings.ToArray())
+    $blockCount = @($findings | Where-Object { $_.decision -eq "block" }).Count
+    $requestCount = @($findings | Where-Object { $_.decision -eq "request_changes" }).Count
+    $passCount = @($findings | Where-Object { $_.decision -eq "pass" }).Count
     $status = "pass"
-    if ($errorCount -gt 0) {
+    if ($blockCount -gt 0) {
         $status = "block"
-    } elseif ($Strict -and $warningCount -gt 0) {
+    } elseif ($requestCount -gt 0 -or ($Strict -and $requestCount -gt 0)) {
         $status = "request_changes"
     }
-
     return [pscustomobject][ordered]@{
         schema_version = "1.0"
+        status         = $status
+        mode           = $Mode
         validator      = [pscustomobject][ordered]@{
             name    = "forsetti_validate"
-            version = "0.2.0"
+            version = "0.3.0"
         }
         invocation     = [pscustomobject][ordered]@{
-            repo_root           = $script:RepoRoot
-            mode                = $Mode
-            strict              = [bool]$Strict
-            contract_path       = if ([string]::IsNullOrWhiteSpace($ContractPath)) { $null } else { Get-RepoPath $ContractPath }
-            changed_files_path  = if ([string]::IsNullOrWhiteSpace($ChangedFilesPath)) { $null } else { Get-RepoPath $ChangedFilesPath }
-            changed_files_count = [int]$script:ContractChangedFilesCount
-            timestamp_utc       = (Get-Date).ToUniversalTime().ToString("o")
-            engine              = $PSVersionTable.PSEdition
-            ps_version          = $PSVersionTable.PSVersion.ToString()
+            repo_root            = $script:RepoRoot
+            mode                 = $Mode
+            strict               = [bool]$Strict
+            contract_path        = if ($ContractPath) { Get-RepoPath (Resolve-InputPath -Path $ContractPath) } else { $null }
+            project_context_path = if ($ProjectContextPath) { Get-RepoPath (Resolve-InputPath -Path $ProjectContextPath) } else { $null }
+            edition_profile_path = if ($EditionProfilePath) { Get-RepoPath (Resolve-InputPath -Path $EditionProfilePath) } else { $null }
+            manifest_path        = if ($ManifestPath) { Get-RepoPath (Resolve-InputPath -Path $ManifestPath) } else { $null }
+            changed_files_path   = if ($ChangedFilesPath) { Get-RepoPath (Resolve-InputPath -Path $ChangedFilesPath) } else { $null }
+            timestamp_utc        = (Get-Date).ToUniversalTime().ToString("o")
         }
         summary        = [pscustomobject][ordered]@{
-            status      = $status
-            total       = $script:Findings.Count
-            passed      = $passCount
-            warnings    = $warningCount
-            errors      = $errorCount
-            duration_ms = $duration
+            status          = $status
+            total           = $findings.Count
+            passed          = $passCount
+            request_changes = $requestCount
+            blocks          = $blockCount
+            duration_ms     = [int]((Get-Date) - $script:StartTime).TotalMilliseconds
         }
-        findings       = $findingsArray
+        findings       = $findings
     }
 }
 
 function Write-HumanResult {
     param([object]$Result)
 
-    Write-Host "==========================================" -ForegroundColor Cyan
-    Write-Host "Forsetti Local Validator" -ForegroundColor Cyan
-    Write-Host "==========================================" -ForegroundColor Cyan
+    Write-Host "Forsetti Local Validator"
     Write-Host ("Repository: " + $Result.invocation.repo_root)
-    Write-Host ("Mode:       " + $Result.invocation.mode)
-    Write-Host ("Strict:     " + $Result.invocation.strict)
-    Write-Host ""
-
+    Write-Host ("Mode: " + $Result.invocation.mode)
+    Write-Host ("Status: " + $Result.status)
     foreach ($finding in $Result.findings) {
-        $color = "Green"
-        if ($finding.status -eq "warn") { $color = "DarkYellow" }
-        if ($finding.status -eq "fail") { $color = "Red" }
-        $pathText = ""
-        if ($finding.path) {
-            $pathText = " [" + $finding.path + "]"
-        }
-        Write-Host ("  " + $finding.status.ToUpperInvariant() + " " + $finding.finding_id + $pathText + " - " + $finding.message) -ForegroundColor $color
+        $pathText = if ($finding.path) { " [" + $finding.path + "]" } else { "" }
+        Write-Host (($finding.decision).ToUpperInvariant() + " " + $finding.rule_id + $pathText + " - " + $finding.message)
     }
-
-    Write-Host ""
-    Write-Host "==========================================" -ForegroundColor Cyan
-    Write-Host ("Status:   " + $Result.summary.status) -ForegroundColor $(if ($Result.summary.status -eq "pass") { "Green" } elseif ($Result.summary.status -eq "request_changes") { "DarkYellow" } else { "Red" })
-    Write-Host ("Passed:   " + $Result.summary.passed)
-    Write-Host ("Warnings: " + $Result.summary.warnings)
-    Write-Host ("Errors:   " + $Result.summary.errors)
-    Write-Host "==========================================" -ForegroundColor Cyan
 }
 
-$script:RepoRoot = Resolve-ForsettiRepoRoot -Path $RepoRoot
-$script:ContractChangedFilesCount = 0
-$contractRulesPath = Join-Path $script:RepoRoot "core/validator/contract_rules.ps1"
-if (Test-Path -LiteralPath $contractRulesPath) {
-    . $contractRulesPath
-} else {
-    Add-Finding `
-        -FindingId "FFAE-CONTRACT-INFRA-001" `
-        -Severity "error" `
-        -Status "fail" `
-        -Category "contract" `
-        -Path "core/validator/contract_rules.ps1" `
-        -Message "Contract rules file is missing." `
-        -Evidence "core/validator/contract_rules.ps1" `
-        -RemediationHint "Restore the contract rules file." `
-        -RuleId "FAE-C011"
-}
+$script:RepoRoot = Resolve-ValidationRoot -Path $RepoRoot
 Invoke-SelectedChecks
 $result = New-ValidatorResult
 
 if (-not [string]::IsNullOrWhiteSpace($OutputJson)) {
-    $jsonPath = $OutputJson
-    if (-not [System.IO.Path]::IsPathRooted($jsonPath)) {
-        $jsonPath = Join-Path $script:RepoRoot $jsonPath
-    }
+    $jsonPath = Resolve-InputPath -Path $OutputJson
     $jsonDir = Split-Path -Parent $jsonPath
     if (-not [string]::IsNullOrWhiteSpace($jsonDir) -and -not (Test-Path -LiteralPath $jsonDir)) {
         New-Item -ItemType Directory -Path $jsonDir -Force | Out-Null
     }
-    $jsonText = $result | ConvertTo-Json -Depth 20
     $utf8NoBom = New-Object System.Text.UTF8Encoding -ArgumentList $false
-    [System.IO.File]::WriteAllText($jsonPath, $jsonText, $utf8NoBom)
+    [System.IO.File]::WriteAllText($jsonPath, ($result | ConvertTo-Json -Depth 20), $utf8NoBom)
 }
 
 Write-HumanResult -Result $result
 
-if ($result.summary.status -eq "pass") {
+if ($result.status -eq "pass") {
     exit 0
 }
-
-if ($result.summary.status -eq "request_changes") {
+if ($result.status -eq "request_changes") {
     exit 1
 }
-
 exit 2

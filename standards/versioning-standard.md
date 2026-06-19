@@ -87,3 +87,7 @@ The contributor classifies version impact at the time of delivery. The reviewer 
 ## Governing Principle
 
 Version impact is a governed classification, not guesswork. When in doubt, classify conservatively — higher impact rather than lower. Underclassifying a breaking change is a compliance violation. Overclassifying a trivial change is cautious but acceptable.
+
+## Forsetti Profile and Enforcement Versioning
+
+Changes that alter selected edition profile meaning, manifest requirements, supported capabilities, dependency rules, public API boundaries, or validator decisions affect downstream consumers and must be classified according to their consumer impact. Breaking governance enforcement changes require explicit migration guidance.

@@ -1,0 +1,17 @@
+{
+  "edition": "shared",
+  "invariants": [
+    "Forsetti is the sealed runtime framework.",
+    "Applications and modules are built inside Forsetti through public contracts.",
+    "Every module must include a Forsetti JSON manifest.",
+    "Modules must be self-contained.",
+    "Modules must not share code directly.",
+    "Modules must not share data directly.",
+    "Modules must not communicate directly.",
+    "Modules must not know other module classes, functions, methods, operators, or databases.",
+    "All module I/O requirements must be declared in the manifest.",
+    "Runtime activation must fail if manifest, entitlement, compatibility, capability, or I/O validation fails.",
+    "All intermodule interaction must go through Forsetti orchestration contracts.",
+    "Default modules are still modules and must obey manifest, entitlement, and isolation rules."
+  ]
+}

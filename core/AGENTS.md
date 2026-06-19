@@ -11,6 +11,7 @@ Core work must preserve portable governance. Changes in `core/` may define host-
 - Treat `core/` as host-neutral.
 - Keep dependency direction one-way: adapters and overlays may consume core concepts; core must not consume adapter or overlay behavior.
 - State portable interfaces in terms of contracts, policies, evidence, validation requests, and validation results.
+- Require Forsetti project context before target app/module work: repository mode, edition, platform, framework version, profile, manifest versions, deployment pattern, module type, requested capabilities, runtime requirement status, public API status, and framework-internals status.
 - Keep execution evidence separate from product requirements. Local tooling used during remediation must not become a core dependency.
 - Escalate before changing root governance authority, root policy meaning, role boundaries, schemas, or machine-readable policies.
 
@@ -30,6 +31,8 @@ Core work must preserve portable governance. Changes in `core/` may define host-
 - Hosted-service requirements
 - MCP or provider-specific requirements
 - Runtime implementation outside an approved task contract
+- Apple or Windows platform runtime behavior
+- MCP, CLU, hosted-service, workflow-runner, or local-helper dependency in core
 - Changes that supersede root constitutional authority
 
 ## Review Expectations

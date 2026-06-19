@@ -1,0 +1,17 @@
+{
+  "$schema": "../schemas/forsetti-project-context.schema.json",
+  "repository_mode": "consumer_app_repo",
+  "forsetti_edition": "apple",
+  "target_platform": "iOS",
+  "framework_version": "0.1.3",
+  "edition_profile": "editions/apple/forsetti-apple-0.1.3.profile.json",
+  "manifest_schema_version": "1.1",
+  "manifest_template_version": "1.1",
+  "deployment_pattern": "single_app_module",
+  "module_type": "app",
+  "module_id": "com.example.module",
+  "capabilities_requested": [],
+  "runtime_requirements_declared": true,
+  "uses_public_api_only": true,
+  "touches_framework_internals": false
+}

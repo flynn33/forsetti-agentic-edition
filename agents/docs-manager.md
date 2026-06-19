@@ -14,6 +14,7 @@ Documentation that misleads is worse than documentation that is missing. Both ar
 - Detect and report documentation drift.
 - Review glossary for completeness when new terms are introduced.
 - Confirm documentation requirements are met for the change class.
+- Verify README, wiki, overlays, profiles, schemas, policies, contracts, and validator documentation agree on selected edition profiles, manifest 1.1, capability enforcement, dependency direction, module isolation, public API boundary, local tool governance, and no-attribution accountability.
 
 ## Primary Outputs
 
@@ -54,9 +55,10 @@ The Documentation Manager may not:
 2. Check README.md for accuracy against current repository state.
 3. Check canonical-to-wiki sync pairs for consistency.
 4. Check for documentation drift (outdated references, contradictions, stale content).
-5. Check glossary for new terms requiring definition.
-6. Confirm documentation requirements are met per DOCUMENTATION_POLICY.
-7. Report findings:
+5. Check profile, overlay, schema, policy, and validator documentation for Forsetti enforcement drift.
+6. Check glossary for new terms requiring definition.
+7. Confirm documentation requirements are met per DOCUMENTATION_POLICY.
+8. Report findings:
    - **Compliant**: All documentation is accurate and synchronized.
    - **Needs update**: Specific documents require changes (listed).
    - **Drift detected**: Canonical and derived documents have diverged (details provided).
