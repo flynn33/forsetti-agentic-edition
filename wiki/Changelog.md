@@ -1,9 +1,11 @@
 # Changelog
 
-[![Ledger](https://img.shields.io/badge/changelog-governance%20ledger-111827)](Changelog) [![Unreleased](https://img.shields.io/badge/current-unreleased%20queue-f59e0b)](Changelog) [![Version](https://img.shields.io/badge/release-v1.0.0-blue)](Releases)
+[![Ledger](https://img.shields.io/badge/changelog-governance%20ledger-111827)](Changelog)
+[![Unreleased](https://img.shields.io/badge/current-unreleased%20queue-f59e0b)](Changelog)
+[![Version](https://img.shields.io/badge/release-v1.0.0-blue)](Releases)
 
 > **Canonical source**: [`changelog/CHANGELOG.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/changelog/CHANGELOG.md)
-> **Purpose**: visual index for release history and unreleased governance records.
+> **Purpose**: visual index for release history, unreleased impact, and traceability. The canonical changelog remains the authoritative ledger.
 
 ---
 
@@ -12,7 +14,7 @@
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#111827","primaryTextColor":"#ffffff","primaryBorderColor":"#f59e0b","lineColor":"#92400e","secondaryColor":"#fffbeb","tertiaryColor":"#f8fafc"}}}%%
 flowchart LR
-    Task["Task reference"] --> Entry["Changelog entry"]
+    Task["task reference"] --> Entry["changelog entry"]
     Entry --> Fields["required fields"]
     Fields --> Impact["version impact"]
     Impact --> Review["release review"]
@@ -25,23 +27,25 @@ flowchart LR
 
 ## Current Unreleased Queue
 
-| Area | Change | Impact | Review Signal |
-|---|---|---|---|
-| Release | Final validation acceptance audit | `none` | Evidence record only; no framework behavior change. |
-| Documentation | Repository documentation product-state alignment | `patch` | README, core docs, wiki, changelog, release summary, and conformance fixture documentation match current product surfaces. |
-| Documentation | Live wiki visual system refresh | `patch` | Curated visual pages and durable live-wiki publication from the repository mirror. |
-| Documentation | GitHub Actions adapter conversion documentation | `patch` | Documentation and traceability alignment. |
-| Features | Native product completion surfaces | `minor` | Swift and C++ command surfaces, trusted source bundle, deterministic product manifest, and product-completion evidence. |
-| Features | Platform overlay guidance profiles | `minor` | Additive Apple, Windows, and generic guidance profiles. |
-| Features | Portable local validator CLI | `minor` | New repository-local validator entry point. |
-| Breaking Changes | Accountability policy surface canonicalization | `major` | Consumers must use `ACCOUNTABILITY_POLICY.md` and `accountability-rules.json` as the canonical policy surfaces. |
-| Breaking Changes | Accountability without attribution credit | `major` | Consumers must maintain human accountability evidence and avoid attribution credit. |
-| Breaking Changes | Policy path, documentation, changelog, and release gates | `major` | Consumers must accept expanded manifest and validator result fields. |
-| Breaking Changes | Task contract scope, approval, and evidence enforcement | `major` | Consumers must provide richer task-contract and changed-file evidence. |
-| Breaking Changes | Canonical compliance rule registry | `major` | Consumers must align rule identifiers to the machine-readable registry. |
-| Governance | GitHub Actions adapter workflow protection | `governance-only` | Adapter workflow scripts require protected-path authority. |
-| Governance | Documentation sync policy manifest paths | `governance-only` | Documentation sync rules point at current canonical sources. |
-| Bugfixes | Windows validator repository-root resolution | `patch` | Validator root discovery corrected. |
+| Area | Change | Impact | Traceability |
+|---|---|---:|---|
+| Release | Final validation acceptance audit | `none` | PR #10 |
+| Documentation | Repository documentation product-state alignment | `patch` | PR #15 |
+| Documentation | Live wiki visual system refresh | `patch` | PR #12 |
+| Documentation | GitHub Actions adapter conversion documentation | `patch` | PR #7 |
+| Feature | Native product completion surfaces | `minor` | PR #14 |
+| Feature | Platform overlay guidance profiles | `minor` | PR #9 |
+| Feature | Portable local validator CLI | `minor` | commit `640453a` |
+| Breaking change | Accountability policy surface canonicalization | `major` | PR #13 |
+| Breaking change | Forsetti edition-profile enforcement | `major` | PR #11 |
+| Breaking change | Accountability without attribution credit | `major` | PR #8 |
+| Breaking change | Policy path, documentation, changelog, and release gates | `major` | PR #4 |
+| Breaking change | Task contract scope, approval, and evidence enforcement | `major` | PR #3 |
+| Breaking change | Canonical compliance rule registry | `major` | commit `7825051` |
+| Governance | GitHub Actions adapter workflow protection | `governance-only` | PR #5 |
+| Governance | Documentation sync policy manifest paths | `governance-only` | commit `c11a371` |
+| Feature | Portable core, adapter, and overlay scaffold | `minor` | commit `9dc9788` |
+| Bugfix | Windows validator repository-root resolution | `patch` | commit `62cf174` |
 
 ---
 
@@ -60,20 +64,58 @@ pie showData
 
 ---
 
-## Release History
-
-| Version | Date | Theme | Included Surfaces |
-|---|---|---|---|
-| `v1.0.0` | 2026-03-16 | Foundation release | Constitution, compliance policy, change control, release policy, documentation policy, vision, role instructions, contract templates, standards, policy manifests, validation schemas, workflow enforcement, issue templates, pull request template, CODEOWNERS, labels, wiki seed pages, and guardrail scripts. |
-
----
-
-## Entry Quality Bar
+## Traceability Model
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#0f172a","primaryTextColor":"#ffffff","primaryBorderColor":"#38bdf8","lineColor":"#2563eb","secondaryColor":"#eff6ff","tertiaryColor":"#f8fafc"}}}%%
 flowchart TB
-    Entry["Changelog entry"] --> Specific["specific"]
+    Change["repository change"] --> Class["change class"]
+    Change --> Impact["version impact"]
+    Change --> Affected["affected area"]
+    Change --> Task["task or PR reference"]
+    Change --> Approval["approval class"]
+    Class --> Entry["changelog entry"]
+    Impact --> Entry
+    Affected --> Entry
+    Task --> Entry
+    Approval --> Entry
+    Entry --> Release["release review"]
+    Release --> Docs["wiki and README alignment"]
+```
+
+---
+
+## Required Entry Fields
+
+| Field | Required | Purpose |
+|---|---:|---|
+| Title | yes | names the change in reviewable language |
+| Change Class | yes | maps to change control policy |
+| Version Impact | yes | maps to release policy |
+| Summary | yes | states what changed and why |
+| Affected Area | yes | identifies touched product or governance surfaces |
+| Task Reference | yes | connects change to an authorizing task, issue, PR, or commit |
+| Approval Class | yes | records required authority path |
+| Migration Note | breaking only | tells consumers what to do |
+| Migration Guidance | breaking only | expands migration steps |
+| Affected Consumers | breaking only | names downstream consumers that must adapt |
+
+---
+
+## Release History
+
+| Version | Date | Theme | Included Surfaces |
+|---|---|---|---|
+| `v1.0.0` | 2026-03-16 | Foundation release | constitution, policies, role instructions, contract templates, standards, policy manifests, schemas, workflows, issue templates, pull request template, CODEOWNERS, labels, wiki seed pages, and validation scripts |
+
+---
+
+## Changelog Quality Bar
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#0f172a","primaryTextColor":"#ffffff","primaryBorderColor":"#38bdf8","lineColor":"#2563eb","secondaryColor":"#eff6ff","tertiaryColor":"#f8fafc"}}}%%
+flowchart TB
+    Entry["changelog entry"] --> Specific["specific"]
     Entry --> Traceable["traceable"]
     Entry --> Classified["classified"]
     Entry --> Complete["complete"]
@@ -87,13 +129,4 @@ flowchart TB
 
 ---
 
-<details>
-<summary><strong>Canonical Detail</strong></summary>
-
-This page is an index. The full authoritative changelog entries, including task references, approval classes, migration guidance, affected consumers, and detailed summaries, remain in [`changelog/CHANGELOG.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/changelog/CHANGELOG.md).
-
-</details>
-
----
-
-**Navigation**: [Home](Home) | [Overview](Overview) | [Workflow](Workflow) | [Compliance](Compliance) | [Agent Roles](Agent-Roles) | [Documentation](Documentation) | [Releases](Releases) | [Glossary](Glossary)
+**Navigation**: [Home](Home) | [Overview](Overview) | [Workflow](Workflow) | [Compliance](Compliance) | [Agent Roles](Agent-Roles) | [Documentation](Documentation) | [Releases](Releases) | [Constitution](Constitution) | [Glossary](Glossary)
