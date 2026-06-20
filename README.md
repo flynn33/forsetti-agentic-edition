@@ -71,7 +71,7 @@ These concerns belong to downstream repositories and their own governance models
 
 ## Portable Architecture
 
-Forsetti Agentic Edition is organized around a portable governance core, optional adapters, and platform overlays.
+Forsetti Agentic Edition is organized around a portable governance core, optional adapters, platform overlays, a trusted source bundle, and native host product surfaces.
 
 | Layer | Path | Purpose |
 |---|---|---|
@@ -79,12 +79,21 @@ Forsetti Agentic Edition is organized around a portable governance core, optiona
 | Adapters | `adapters/` | Optional host integrations that translate local or hosted platform context into portable validation inputs. |
 | Overlays | `overlays/` | Host-neutral and platform-specific execution guidance that preserves core governance meaning while documenting local expectations. |
 | Edition profiles | `editions/` | Binding Apple, Windows, and shared Forsetti invariant profiles used by contracts, validator modes, overlays, and completion evidence. |
+| Source bundle | `bundle/` | Versioned portable schemas, policies, edition profiles, target instructions, and `product-manifest.json` hash inventory for downstream installation and verification. |
+| Native products | `products/` | Swift and C++ host command surfaces that verify the trusted bundle and expose governed repository bootstrap or inspection workflows where implemented. |
+| Product evidence | `.forsetti/product-completion/` | Phase 00 through Phase 05 implementation evidence for the current native product and bundle completion pass. |
 
-The portable core must not depend on adapters, overlays, hosted workflow runners, IDEs, local MCP servers, container runtimes, or provider-specific tooling. Those tools may support evidence collection in a governed task, but they are not core product dependencies.
+The portable core must not depend on adapters, overlays, native product hosts, hosted workflow runners, IDEs, local MCP servers, container runtimes, or provider-specific tooling. Those tools may support evidence collection in a governed task, but they are not core product dependencies.
 
-Phase 08 expands overlays into usable guidance profiles: `overlays/generic/` for host-neutral work, `overlays/forsetti-apple/` for Apple-platform alignment, and `overlays/forsetti-windows/` for Windows-native execution evidence. Overlays remain subordinate documentation surfaces. They do not define canonical compliance rules, change role authority, or make platform tools portable core dependencies.
+Overlays provide usable guidance profiles: `overlays/generic/` for host-neutral work, `overlays/forsetti-apple/` for Apple-platform alignment, and `overlays/forsetti-windows/` for Windows-native execution evidence. Overlays remain subordinate documentation surfaces. They do not define canonical compliance rules, change role authority, or make platform tools portable core dependencies.
 
 GitHub Actions support belongs in `adapters/github-actions/` as an optional adapter surface. It does not define canonical compliance rules. Workflow files under `.github/workflows/` are thin hosted wrappers that preserve GitHub check names and delegate implementation to adapter-owned scripts under `adapters/github-actions/workflows/`.
+
+`bundle/product-manifest.json` currently declares product version `1.0.0`, schema version `2.0`, source platform `source`, portable architecture, and 46 required hashed bundle entries. `scripts/generate-product-manifest.py` regenerates that manifest deterministically from the bundle tree.
+
+The Apple native product in `products/apple/` builds the `forsetti-governance` Swift executable and the `GovernanceContracts`, `GovernanceCore`, and `GovernanceApple` libraries. Its implemented commands are `version`, `bundle verify`, `init`, `doctor`, and `discover`.
+
+The Windows native product in `products/windows/` builds the `forsetti-governance` C++20 executable and `forsetti_governance_core` library. Its implemented commands are `version` and `bundle verify`; Apple-only bootstrap and discovery parity is not claimed by this repository state.
 
 ---
 
@@ -197,95 +206,56 @@ This framework operates with a **strict default posture**.
 ## Repository Structure
 
 ```
-├── AGENTS.md
-├── ACCOUNTABILITY_POLICY.md
-├── CHANGE_CONTROL_POLICY.md
-├── CODE_OF_DELIVERY.md
-├── COMPLIANCE_POLICY.md
-├── CONTRIBUTING.md
-├── DOCUMENTATION_POLICY.md
-├── FORSETTI_CONSTITUTION.md
-├── LICENSE.md
-├── README.md
-├── RELEASE_POLICY.md
-├── VERSION
-├── VISION.md
+├── Root governance policy, constitution, delivery, release, documentation, and contribution documents
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   └── workflows/
+├── .forsetti/
+│   ├── product-completion/
+│   ├── remediation/
+│   ├── remediation-v2/
+│   └── remediation-v3/
 ├── adapters/
-  ├── github-actions/
-    ├── README.md
-    ├── workflows/
+│   └── github-actions/
+│       ├── README.md
+│       └── workflows/
 ├── agents/
-  ├── architect.md
-  ├── builder.md
-  ├── docs-manager.md
-  ├── release-manager.md
-  ├── validator.md
+├── bundle/
+│   ├── VERSION
+│   ├── editions/
+│   ├── instructions/
+│   ├── policies/
+│   ├── product-manifest.json
+│   └── schemas/
 ├── changelog/
-  ├── CHANGELOG.md
-  ├── release-notes-template.md
 ├── contracts/
-  ├── bugfix-contract-template.md
-  ├── governance-change-template.md
-  ├── release-contract-template.md
-  ├── task-contract-template.md
 ├── core/
-  ├── AGENTS.md
-  ├── FORSETTI_AGENTIC_CONSTITUTION.md
-  ├── README.md
-  ├── contracts/
-    ├── task-contract-template.json
-  ├── policies/
-    ├── accountability-rules.json
-    ├── changelog-rules.json
-    ├── compliance-rules.json
-    ├── docs-sync-rules.json
-    ├── repo-boundaries.json
-    ├── versioning-rules.json
-  ├── schemas/
-    ├── task-contract.schema.json
-    ├── validator-result.schema.json
-  ├── validator/
-    ├── contract_rules.ps1
-    ├── README.md
-    ├── forsetti_validate.ps1
+│   ├── contracts/
+│   ├── enforcement/
+│   ├── policies/
+│   ├── schemas/
+│   └── validator/
+├── editions/
+│   ├── apple/
+│   ├── shared/
+│   └── windows/
 ├── overlays/
-  ├── forsetti-apple/
-    ├── README.md
-  ├── forsetti-windows/
-    ├── README.md
-  ├── generic/
-    ├── README.md
+│   ├── forsetti-apple/
+│   ├── forsetti-windows/
+│   └── generic/
 ├── policies/
-  ├── agent-roles.json
-  ├── accountability-rules.json
-  ├── changelog-rules.json
-  ├── compliance-rules.json
-  ├── docs-sync-rules.json
-  ├── labels.json
-  ├── repo-boundaries.json
-  ├── versioning-rules.json
+├── products/
+│   ├── apple/
+│   └── windows/
 ├── schemas/
-  ├── compliance-report.schema.json
-  ├── release-entry.schema.json
-  ├── task-contract.schema.json
 ├── scripts/
-  ├── validate-repo.ps1
-  ├── validate-repo.sh
+│   ├── generate-product-manifest.py
+│   ├── validate-repo.ps1
+│   └── validate-repo.sh
 ├── standards/
-  ├── changelog-standard.md
-  ├── documentation-standard.md
-  ├── naming-standard.md
-  ├── review-standard.md
-  ├── versioning-standard.md
-├── wiki/
-  ├── Agent-Roles.md
-  ├── Compliance.md
-  ├── Constitution.md
-  ├── Glossary.md
-  ├── Home.md
-  ├── Overview.md
-  ├── Releases.md
-  ├── Workflow.md
+├── tests/
+│   └── conformance/
+└── wiki/
 ```
 
 ---

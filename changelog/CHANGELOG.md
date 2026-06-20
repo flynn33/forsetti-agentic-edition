@@ -13,7 +13,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: major
 **Summary**: Removed obsolete duplicate accountability policy names and manifests so `ACCOUNTABILITY_POLICY.md` and `core/policies/accountability-rules.json` are the canonical no-attribution accountability surfaces, with the root policy mirror kept byte-identical.
 **Affected Area**: compliance, policies, documentation sync, contracts, changelog
-**PR Reference**: pending
+**PR Reference**: PR #13, merge commit `a70bc6545de90d465e7b1ab4f760b1f93acc86c8`
 **Task Reference**: FAE-GOV-2026-05-11-012
 **Approval Class**: governance-class
 **breaking_change**: true
@@ -26,7 +26,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: major
 **Summary**: Added Forsetti project context requirements, Apple and Windows edition profiles, shared sealed-runtime invariants, manifest 1.1 schema validation, Forsetti enforcement rules `FAE-F001` through `FAE-F020`, and local validator modes for profile, manifest, dependency, capability, module-isolation, and evidence checks.
 **Affected Area**: core schemas, core policies, edition profiles, task contracts, validator, agents, overlays, wiki, standards
-**PR Reference**: pending
+**PR Reference**: PR #11, merge commit `1d380a1d4c640d0b5a0e14cadcf076e283347365`
 **Task Reference**: FFAE-GOVERNANCE-ENFORCEMENT-REMEDIATION
 **Approval Class**: governance-class
 **breaking_change**: true
@@ -41,18 +41,27 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: none
 **Summary**: Added Phase 09 final validation, regression, readiness, and acceptance audit evidence for the v3 remediation package without changing framework behavior, policy meaning, schema shape, workflow behavior, or consumer obligations.
 **Affected Area**: remediation evidence, release readiness
-**PR Reference**: pending pull request for `test/v3-final-validation`
+**PR Reference**: PR #10, merge commit `7c58ecce0f8371c7b0d4d5433590135fe864ddc7`
 **Task Reference**: FAE-TASK-2026-05-12-014
 **Approval Class**: release-critical
 
 ### Documentation
+
+**Title**: Align repository documentation with current product state
+**Change Class**: docs
+**Version Impact**: patch
+**Summary**: Updated README, core documentation, wiki summary pages, release/changelog summaries, and conformance fixture documentation so they match the merged source bundle, native product command surfaces, product-completion evidence, and current repository layout.
+**Affected Area**: README, core documentation, wiki, changelog, tests
+**PR Reference**: No PR; local documentation alignment change
+**Task Reference**: Post-merge repository documentation alignment
+**Approval Class**: standard
 
 **Title**: Refresh live wiki visual system
 **Change Class**: docs
 **Version Impact**: patch
 **Summary**: Replaced raw wiki mirrors with curated high-density navigation pages, architecture diagrams, logic-flow diagrams, decision matrices, and a durable publication adapter that syncs the repository wiki mirror to the live GitHub Wiki.
 **Affected Area**: wiki, documentation sync, GitHub Actions adapter
-**PR Reference**: pending
+**PR Reference**: PR #12, merge commit `0055eb23d5d311cc57fac52b1e5a79ef85aea35d`
 **Task Reference**: FAE-GOV-2026-06-19-001
 **Approval Class**: governance-class
 
@@ -61,19 +70,28 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: patch
 **Summary**: Updated README, adapter guide, wiki, and release traceability documentation to describe the Phase 06A conversion of GitHub Actions workflows into optional adapter-owned scripts while keeping final Phase 06 acceptance dependent on the Phase 06B evidence.
 **Affected Area**: README, adapters, wiki, changelog, remediation evidence
-**PR Reference**: pending pull request for `fix/v3-github-adapter-docs-06b`
+**PR Reference**: PR #7, merge commit `ccac86a47c49c56f2526fcbac2e2aec349e0713b`
 **Task Reference**: FAE-TASK-2026-05-11-011
 **Approval Class**: standard
 **Phase 06A Reference**: PR #6, merge commit `0c0a2cf6fa4b99de1bd839332991ec26ba6c354e`, evidence under `.forsetti/remediation-v3/phase-06a-*`
 
 ### Features
 
+**Title**: Add native product completion surfaces
+**Change Class**: feature
+**Version Impact**: minor
+**Summary**: Added product-completion evidence, Swift and C++ native product surfaces, deterministic source bundle manifest generation, bundle integrity verification, Apple repository bootstrap and doctor commands, Apple project discovery, Windows version and bundle verification commands, and shared native conformance fixture scaffolding while keeping the portable core governance-only.
+**Affected Area**: products, bundle, scripts, tests, core contracts, native validation, product evidence, documentation
+**PR Reference**: PR #14, merge commit `16c2b453192e213837d03b68635bfa923a6d4912`
+**Task Reference**: Final product completion package
+**Approval Class**: release-critical
+
 **Title**: Add platform overlay guidance profiles
 **Change Class**: feature
 **Version Impact**: minor
 **Summary**: Expanded generic, Apple, and Windows overlays from scaffolds into guidance profiles for host-neutral operation, Apple-platform alignment, and Windows-native evidence collection while preserving portable core boundaries and avoiding product dependency on platform tooling.
 **Affected Area**: overlays, README, wiki, changelog, remediation evidence
-**PR Reference**: pending pull request for `fix/v3-platform-overlays`
+**PR Reference**: PR #9, merge commit `5c53d307a5f4c33fb95892a1091d6b4da1d6210b`
 **Task Reference**: FAE-TASK-2026-05-11-013
 **Approval Class**: sensitive
 
@@ -82,7 +100,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: minor
 **Summary**: Added a PowerShell-native local validator under `core/validator/`, a machine-readable validator result schema, and root validation wrappers that delegate to the core validator. This establishes a repository-local validation entry point for later contract, policy path, adapter, and final acceptance phases.
 **Affected Area**: core, validator, schemas, scripts, documentation, changelog, contracts
-**PR Reference**: pending pull request for `fix/v3-local-validator-cli`
+**PR Reference**: No PR; repository commit `640453a`
 **Task Reference**: FAE-TASK-2026-05-08-006
 **Approval Class**: governance-class
 
@@ -93,7 +111,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: major
 **Summary**: Added a compliance support policy and machine-readable manifest requiring a human accountable owner, governed role, contract or phase reference, review evidence, validation evidence, and required approval evidence while prohibiting attribution credit across governed delivery surfaces. Consumers must now collect and validate the accountability record for assisted work.
 **Affected Area**: compliance, policies, documentation, wiki, changelog
-**PR Reference**: pending pull request for accountability-without-attribution work
+**PR Reference**: PR #8, merge commit `7de0a72223c0fe062fe97a40d2f090c68e7dea9d`
 **Task Reference**: FAE-GOV-2026-05-11-012
 **Approval Class**: governance-class
 **breaking_change**: true
@@ -106,7 +124,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: major
 **Summary**: Updated repository boundary, documentation sync, changelog, and versioning manifests with enforceable rule identifiers, pre-merge gate metadata, required evidence, rejection conditions, and byte-identical root mirror metadata. Contract-mode validation now consumes the boundary manifest for protected and role-limited path checks, consumes the docs sync manifest for changed canonical source checks, validates changelog entries against task contract fields, and reports policy rule, condition, and gate identifiers in validator findings.
 **Affected Area**: policies, core validator, validator result schema, documentation, changelog
-**PR Reference**: pending pull request for `fix/v3-policy-paths-docs-release`
+**PR Reference**: PR #4, merge commit `c164ef279a8924604074ed50cdb321f0fa9f6eb9`
 **Task Reference**: FAE-GOV-2026-05-10-008
 **Approval Class**: governance-class
 **breaking_change**: true
@@ -119,7 +137,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: major
 **Summary**: Added an enforceable task contract schema under `core/schemas/`, a JSON task contract template under `core/contracts/`, contract enforcement rules under `core/validator/`, and validator CLI inputs for contract path and changed-file evidence. Contract mode now checks required contract fields, changed-file scope, protected-path approval class, required outputs, documentation impact, changelog impact, and evidence artifacts.
 **Affected Area**: contracts, schemas, core validator, scripts, documentation, changelog
-**PR Reference**: pending pull request for `fix/v3-contract-enforcement`
+**PR Reference**: PR #3, merge commit `a1295cdaaeceee80d6f849b2b20848e70008c4e5`
 **Task Reference**: FAE-GOV-2026-05-10-007
 **Approval Class**: governance-class
 **breaking_change**: true
@@ -132,7 +150,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: major
 **Summary**: Established `core/policies/compliance-rules.json` as the canonical registry for `FAE-C001` through `FAE-C012`, mirrored the compatibility registry at `policies/compliance-rules.json`, aligned repository boundary manifests, and updated policy and wiki references so Markdown and JSON use the same compliance rule meanings.
 **Affected Area**: compliance, policies, core, documentation, changelog, contracts
-**PR Reference**: pending pull request for `fix/v3-canonical-policy-registry`
+**PR Reference**: No PR; repository commit `7825051`
 **Task Reference**: FAE-GOV-2026-05-08-005
 **Approval Class**: governance-class
 **breaking_change**: true
@@ -147,7 +165,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: governance-only
 **Summary**: Updated the repository boundary manifest so future `adapters/github-actions/workflows/**` scripts are protected, role-limited to Architect or Governance Steward authority, and require sensitive approval or higher before merge. This prevents Phase 06 from moving hosted enforcement logic into an under-protected adapter path.
 **Affected Area**: policies, adapters, workflows, documentation, changelog
-**PR Reference**: pending pull request for `fix/v3-adapter-workflow-boundary-protection`
+**PR Reference**: PR #5, merge commit `0ed1dc9b3f86f305c3eba3de717a2245723ae1e9`
 **Task Reference**: FAE-GOV-2026-05-11-009
 **Approval Class**: governance-class
 
@@ -156,7 +174,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: governance-only
 **Summary**: Corrected `policies/docs-sync-rules.json` so documentation sync pairs reference current repository canonical sources and wiki-derived pages required by `DOCUMENTATION_POLICY.md`, including the missing documentation page, instead of stale `docs/*`, `CONSTITUTION.md`, and root `CHANGELOG.md` paths.
 **Affected Area**: policies, wiki, changelog, contracts
-**PR Reference**: pending pull request for `fix/v3-docs-sync-rules-drift`
+**PR Reference**: No PR; repository commit `c11a371`
 **Task Reference**: FAE-GOV-2026-05-08-004
 **Approval Class**: governance-class
 
@@ -167,7 +185,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: minor
 **Summary**: Added the Phase 01 portable scaffold for `core/`, `adapters/`, and `overlays/` so host-neutral governance doctrine is separated from optional host integrations and platform-specific execution guidance.
 **Affected Area**: core, adapters, overlays, README, wiki, changelog, contracts
-**PR Reference**: pending pull request for `fix/v3-portable-core-scaffold`
+**PR Reference**: No PR; repository commit `9dc9788`
 **Task Reference**: FAE-TASK-2026-05-08-002
 **Approval Class**: sensitive
 
@@ -178,7 +196,7 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Version Impact**: patch
 **Summary**: Corrected `scripts/validate-repo.ps1` so it resolves the Forsetti repository root as the parent of the `scripts/` directory instead of the parent workspace. This prevents false missing-file errors and unrelated JSON parsing failures when validating from the Windows project folder.
 **Affected Area**: scripts, changelog, contracts
-**PR Reference**: pending pull request for `fix/v3-portable-core-scaffold`
+**PR Reference**: No PR; repository commit `62cf174`
 **Task Reference**: FAE-BUG-2026-05-08-001
 **Approval Class**: standard
 

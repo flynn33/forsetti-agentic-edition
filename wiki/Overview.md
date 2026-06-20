@@ -3,7 +3,7 @@
 [![Architecture](https://img.shields.io/badge/architecture-portable%20core%20%2B%20profiles%20%2B%20adapters-0ea5e9)](Overview) [![Boundary](https://img.shields.io/badge/boundary-governance--only-16a34a)](Compliance)
 
 > **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
-> **Model**: portable governance core, optional host adapters, platform overlays, and binding edition profiles.
+> **Model**: portable governance core, optional host adapters, platform overlays, binding edition profiles, source bundle, and native host products.
 
 ---
 
@@ -37,11 +37,20 @@ flowchart TB
         W["wiki"]
     end
 
+    subgraph Product["Product Surfaces"]
+        B["bundle/product-manifest.json"]
+        PA["products/apple"]
+        PW["products/windows"]
+    end
+
     H --> P --> S --> T --> Core
     M --> C2
     Core --> A
     Core --> O
     Core --> W
+    Core --> B
+    B --> PA
+    B --> PW
     A -. wrapper only .-> C4
 ```
 
@@ -53,6 +62,8 @@ flowchart TB
 |---|---|---|
 | Portable core | Policies, schemas, contracts, validator, authority model | Hosted service, runtime SDK, CLU dependency, MCP dependency |
 | Edition profiles | Apple `0.1.3`, Windows `0.2.0`, shared invariants | Platform runtime implementation |
+| Source bundle | `bundle/` policies, schemas, profiles, target instructions, and manifest hash inventory | Canonical policy authority beyond repository sources |
+| Native products | Apple Swift command surface and Windows C++ command surface | Replacement for portable policy, schema, or review authority |
 | Adapters | GitHub Actions event translation and wrapper scripts | Canonical compliance authority |
 | Overlays | Platform guidance for Apple, Windows, and generic work | Policy override layer |
 | Wiki | Derived orientation and visual navigation | Canonical source of truth |
@@ -70,6 +81,9 @@ flowchart LR
     WindowsProfile --> FFAE
     FFAE --> Contracts["Task contracts"]
     FFAE --> Validator["Local validator"]
+    FFAE --> Bundle["Source bundle<br/>schema 2.0, 46 entries"]
+    Bundle --> AppleCLI["Apple CLI<br/>version, bundle verify, init, doctor, discover"]
+    Bundle --> WindowsCLI["Windows CLI<br/>version, bundle verify"]
     FFAE --> Docs["Docs and wiki"]
 ```
 
@@ -84,6 +98,8 @@ flowchart LR
 | Manifest model | `core/schemas/module-manifest-1.1.schema.json` | Does the module declare identity, capabilities, entry point, and runtime requirements? |
 | Rule registry | `core/policies/forsetti-enforcement-rules.json` | Which `FAE-F###` rule decides the result? |
 | Validator | `core/validator/forsetti_validate.ps1` | Can the repository or target module produce evidence-backed findings? |
+| Product bundle | `bundle/product-manifest.json` | Do bundled schemas, policies, profiles, and instructions match their required hashes? |
+| Native products | `products/apple`, `products/windows` | Which host command surface is implemented for bundle verification, bootstrap, or discovery? |
 | Documentation | `wiki/*.md`, `README.md`, standards | Does human-facing guidance match canonical policy? |
 
 ---
@@ -93,6 +109,7 @@ flowchart LR
 
 - FFAE governs architecture compliance; it does not implement runtime architecture.
 - FFAE can inspect target repositories; it does not host target applications.
+- Native products verify and apply the source bundle; they do not replace canonical governance sources.
 - GitHub Actions may call the local validator; GitHub Actions do not define compliance.
 - Local tools may collect evidence; local tools are not authorities.
 - Wiki pages explain and visualize; canonical repository files govern.
