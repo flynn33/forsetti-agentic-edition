@@ -1,12 +1,13 @@
 # Glossary
 
-[![Glossary](https://img.shields.io/badge/glossary-governance%20terms-4f46e5)](Glossary)
+[![Glossary](https://img.shields.io/badge/glossary-product%20and%20governance%20terms-4f46e5)](Glossary)
+[![Rules](https://img.shields.io/badge/terms-linked%20to%20enforcement-0f766e)](Compliance)
 
-> **Purpose**: shared terminology for interpreting FFAE governance, profiles, validation, and documentation surfaces.
+> **Purpose**: shared terminology for interpreting FFAE governance, profiles, validation, native product surfaces, source bundle integrity, and documentation publication.
 
 ---
 
-## Concept Map
+## Concept Graph
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#111827","primaryTextColor":"#ffffff","primaryBorderColor":"#a78bfa","lineColor":"#4f46e5","secondaryColor":"#eef2ff","tertiaryColor":"#f8fafc"}}}%%
@@ -19,6 +20,8 @@ flowchart LR
     Manifest --> Runtime["Runtime Requirements"]
     Profile --> Boundary["Public API Boundary"]
     Boundary --> Isolation["Module Isolation"]
+    Bundle["Source Bundle"] --> Native["Native Product"]
+    Native --> Evidence
     Evidence --> Compliance["Compliance Decision"]
     Scope --> Compliance
     Isolation --> Compliance
@@ -30,37 +33,63 @@ flowchart LR
 
 | Term | Meaning |
 |---|---|
-| Agent | A governed contributor role operating under FFAE rules. |
-| Accountability Evidence | Required proof identifying the accountable human owner, governed role, contract or phase reference, review evidence, validation evidence, and required approval evidence. |
+| Accountability Evidence | Proof identifying the accountable human owner, governed role, contract or phase reference, review evidence, validation evidence, and required approval evidence. |
+| Adapter | Optional host integration that translates platform context into repository-local validation inputs. |
 | Approval Class | Required authority level for a change: standard, sensitive, governance-class, emergency, or release-critical. |
-| Attribution Credit | Prohibited credit that treats a tool, model, vendor, automation, or agent as an author, contributor, reviewer, validator, approver, releaser, maintainer, or source of work. |
-| Capability | A declared permission or behavior surface that must appear in the manifest before code uses it. |
-| Compliance Decision | The result of validation: pass, request changes, or block. |
-| Contract | A task-level governance document defining scope, outputs, evidence, and reviewers. |
-| Derived Surface | A documentation page that explains canonical sources but does not override them. The wiki is derived. |
-| Edition Profile | Machine-readable Apple or Windows profile binding platform, version, tools, capabilities, manifest rules, and verification commands. |
-| Evidence | Specific current proof: commands, outputs, changed-file lists, manifests, review records, or reports. |
-| Forsetti Project Context | Required pre-execution context: repository mode, edition, target platform, framework version, profile, manifest version, deployment pattern, module type, capabilities, public API status, and internals status. |
-| Governance-Class | Elevated approval class for protected governance content. |
-| Manifest 1.1 | Module manifest model requiring identity, supported platforms, capabilities, entry point, and runtime requirements. |
-| Module Isolation | Rule that modules must not directly import, include, call, or share storage with other module implementation symbols. |
-| Public API Boundary | Requirement that consumer code uses public Forsetti contracts and products only. |
-| Sealed Internals | Framework implementation surfaces that downstream consumers must not patch or depend on. |
-| Source Truth | The authoritative repository or document used to derive profiles, rules, or documentation. |
-| Validator Mode | Local validator operation such as repo, contract, manifest, capabilities, or evidence. |
+| Bundle Manifest | `bundle/product-manifest.json`, the schema `2.0` inventory of required bundle files and SHA-256 hashes. |
+| Capability | Declared permission or behavior surface that must appear in the manifest before code uses it. |
+| Changelog Entry | Required trace record for meaningful changes, including class, impact, affected area, task reference, and approval class. |
+| Compliance Decision | Result of validation: pass, request changes, or block. |
+| Contract | Task-level governance document defining scope, outputs, evidence, reviewers, and approval path. |
+| Derived Surface | Documentation that explains canonical sources but does not override them. The wiki is derived. |
+| Documentation Sync Pair | Policy-defined canonical-to-derived documentation relationship that must stay aligned. |
+| Edition Profile | Machine-readable Apple or Windows profile binding platform, version, manifest, capability, dependency, and verification expectations. |
+| Evidence Bundle | Collected proof that commands ran, findings were addressed, and completion claims map to the selected profile. |
+| Forsetti Project Context | Required target context: repository mode, edition, platform, version, module type, manifest status, capability requests, runtime requirements, and API-boundary status. |
+| Governance Steward | Elevated authority for governance-class work and protected governance assets. |
+| Integrity Failure | Native product result when bundle verification fails closed. |
+| Live Wiki | The public GitHub Wiki stored in `forsetti-agentic-edition.wiki.git`. |
+| Manifest 1.1 | Current Forsetti module manifest contract used by edition profiles and validator modes. |
+| Module Isolation | Rule family requiring modules to avoid direct dependencies and data sharing outside framework contracts. |
+| Native Product | Host implementation under `products/apple` or `products/windows`. |
+| Policy Gate | Machine-readable rule used by validator or adapter checks to request changes or block. |
+| Product Lock | Installed target record that binds a repository to a verified product bundle. |
+| Profile Lock | Installed target record that pins the selected edition profile. |
+| Public API Boundary | Constraint requiring consumer code to use public Forsetti products only. |
+| Release Impact | Version classification: none, patch, minor, major, or governance-only. |
+| Source Bundle | Versioned portable package under `bundle/` containing schemas, policies, profiles, instructions, and manifest hashes. |
+| Task State | Installed target state showing active governed work and evidence obligations. |
+| Validator Mode | Local validator operation such as `repo`, `contract`, `manifest`, `dependencies`, or `evidence`. |
+| Wiki Mirror | Repository-tracked `wiki/*.md` page set used for reviewed wiki source content. |
 
 ---
 
-## Decision Words
+## Product Acronyms And IDs
 
-| Word | Use Precisely |
+| Identifier | Meaning |
 |---|---|
-| Pass | Required conditions are met and evidence is present. |
-| Request changes | The issue is fixable inside current scope before approval. |
-| Block | Work must stop until the governance basis or hard violation is repaired. |
-| Not verified | The check did not run or could not run; it is not a pass. |
-| Out of scope | The work is not authorized by the current task contract. |
+| `FAE-C###` | Core compliance rule identifier. |
+| `FAE-F###` | Forsetti-specific enforcement rule identifier. |
+| `DOCSYNC-###` | Documentation synchronization policy rule identifier. |
+| `CHANGELOG-*` | Changelog policy rule family. |
+| `ffae-1.0.0-source` | Current source bundle ID. |
+| `product-manifest.schema.json` | Bundle manifest schema for product file inventory. |
+| `forsetti-governance` | Native executable name for Apple and Windows command surfaces. |
 
 ---
 
-**Navigation**: [Home](Home) | [Overview](Overview) | [Workflow](Workflow) | [Compliance](Compliance) | [Agent Roles](Agent-Roles) | [Documentation](Documentation) | [Releases](Releases)
+## Term Relationship Table
+
+| If You See | Check This First | Then Check |
+|---|---|---|
+| missing profile | edition profile path and Forsetti project context | shared invariants |
+| module boundary violation | manifest module ID, dependency graph, source roots | `FAE-F006` through `FAE-F013` |
+| capability use | manifest `capabilitiesRequested` | profile capability list |
+| docs drift | docs-sync rule pair | repo mirror and live wiki |
+| release uncertainty | version impact rule | changelog entry and affected consumers |
+| bundle failure | product manifest and file hashes | product lock |
+| unsupported native command | command matrix | relevant product source |
+
+---
+
+**Navigation**: [Home](Home) | [Overview](Overview) | [Workflow](Workflow) | [Compliance](Compliance) | [Agent Roles](Agent-Roles) | [Documentation](Documentation) | [Releases](Releases) | [Changelog](Changelog) | [Constitution](Constitution)
