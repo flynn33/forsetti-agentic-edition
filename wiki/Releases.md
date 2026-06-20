@@ -39,6 +39,17 @@ flowchart LR
 
 ---
 
+## Product Surface Snapshot
+
+| Surface | Current State | Release Note |
+|---|---|---|
+| Repository version | `1.0.0` | No version bump has been applied after the merged product-completion work. |
+| Source bundle | `bundle/product-manifest.json` schema `2.0`, 46 required entries | Bundle integrity is verified by native product command surfaces. |
+| Apple product | `forsetti-governance` Swift executable | Implements `version`, `bundle verify`, `init`, `doctor`, and `discover`. |
+| Windows product | `forsetti-governance` C++20 executable | Implements `version` and `bundle verify`. |
+
+---
+
 ## Breaking-Change Path
 
 ```mermaid

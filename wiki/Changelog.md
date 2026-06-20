@@ -3,7 +3,7 @@
 [![Ledger](https://img.shields.io/badge/changelog-governance%20ledger-111827)](Changelog) [![Unreleased](https://img.shields.io/badge/current-unreleased%20queue-f59e0b)](Changelog) [![Version](https://img.shields.io/badge/release-v1.0.0-blue)](Releases)
 
 > **Canonical source**: [`changelog/CHANGELOG.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/changelog/CHANGELOG.md)
-> **Purpose**: visual index for release history and pending governance records.
+> **Purpose**: visual index for release history and unreleased governance records.
 
 ---
 
@@ -28,8 +28,10 @@ flowchart LR
 | Area | Change | Impact | Review Signal |
 |---|---|---|---|
 | Release | Final validation acceptance audit | `none` | Evidence record only; no framework behavior change. |
+| Documentation | Repository documentation product-state alignment | `patch` | README, core docs, wiki, changelog, release summary, and conformance fixture documentation match current product surfaces. |
 | Documentation | Live wiki visual system refresh | `patch` | Curated visual pages and durable live-wiki publication from the repository mirror. |
 | Documentation | GitHub Actions adapter conversion documentation | `patch` | Documentation and traceability alignment. |
+| Features | Native product completion surfaces | `minor` | Swift and C++ command surfaces, trusted source bundle, deterministic product manifest, and product-completion evidence. |
 | Features | Platform overlay guidance profiles | `minor` | Additive Apple, Windows, and generic guidance profiles. |
 | Features | Portable local validator CLI | `minor` | New repository-local validator entry point. |
 | Breaking Changes | Accountability policy surface canonicalization | `major` | Consumers must use `ACCOUNTABILITY_POLICY.md` and `accountability-rules.json` as the canonical policy surfaces. |
@@ -50,8 +52,8 @@ flowchart LR
 pie showData
     title Unreleased Impact Mix
     "none" : 1
-    "patch" : 3
-    "minor" : 2
+    "patch" : 4
+    "minor" : 3
     "major" : 5
     "governance-only" : 2
 ```

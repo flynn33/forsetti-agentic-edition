@@ -1,6 +1,6 @@
 # Forsetti Agentic Edition
 
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![Governance](https://img.shields.io/badge/governance-local--first-0f766e)](Compliance) [![Profiles](https://img.shields.io/badge/edition%20profiles-Apple%200.1.3%20%7C%20Windows%200.2.0-4f46e5)](Overview) [![Validator](https://img.shields.io/badge/validator-repo%20%7C%20contract%20%7C%20target-9333ea)](Workflow)
+[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/flynn33/forsetti-agentic-edition) [![Governance](https://img.shields.io/badge/governance-local--first-0f766e)](Compliance) [![Profiles](https://img.shields.io/badge/edition%20profiles-Apple%200.1.3%20%7C%20Windows%200.2.0-4f46e5)](Overview) [![Bundle](https://img.shields.io/badge/bundle-schema%202.0%20%7C%2046%20entries-0f766e)](Overview) [![Validator](https://img.shields.io/badge/validator-repo%20%7C%20contract%20%7C%20target-9333ea)](Workflow)
 
 > **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
 > **Wiki purpose**: high-signal orientation for the live GitHub Wiki. Repository files remain authoritative.
@@ -9,11 +9,11 @@
 
 ## Command Center
 
-Forsetti Agentic Edition is a governance-only enforcement framework for Forsetti-compliant applications and modules. It does not implement Apple or Windows runtime behavior. It governs context, profiles, manifests, capabilities, dependency direction, module isolation, public API boundaries, evidence, and release integrity.
+Forsetti Agentic Edition is a governance-only enforcement framework for Forsetti-compliant applications and modules. It does not implement Apple or Windows runtime behavior. It governs context, profiles, manifests, capabilities, dependency direction, module isolation, public API boundaries, evidence, source bundle integrity, and release traceability.
 
 | Start Here | Use When | Visual Focus |
 |---|---|---|
-| [Overview](Overview) | You need the system map and architecture boundaries. | Layer map, source-truth flow, validation surfaces |
+| [Overview](Overview) | You need the system map and architecture boundaries. | Layer map, source-truth flow, bundle and product surfaces |
 | [Workflow](Workflow) | You need the execution path from request to completion. | State machine, sequence flow, evidence gates |
 | [Compliance](Compliance) | You need rule outcomes and enforcement families. | Decision lattice, C/F rule matrix, blocker map |
 | [Agent Roles](Agent-Roles) | You need role authority and handoff boundaries. | Role lattice, RACI matrix, escalation paths |
@@ -40,10 +40,12 @@ flowchart LR
 
     C --> C1["Apple 0.1.3"]
     C --> C2["Windows 0.2.0"]
+    G --> G0["bundle integrity"]
     G --> G1["manifest"]
     G --> G2["capabilities"]
     G --> G3["module isolation"]
     G --> G4["evidence"]
+    K["Trusted source bundle"] --> G0
 ```
 
 ---
@@ -65,11 +67,12 @@ flowchart LR
 ## Fast Path
 
 1. Choose the [edition profile](Overview): Apple `0.1.3` or Windows `0.2.0`.
-2. Complete Forsetti project context before implementation.
-3. Bind work to a task contract and authorized scope.
-4. Validate manifests, capabilities, dependency direction, public API use, module isolation, and evidence.
-5. Publish documentation and changelog updates in the same change set.
-6. Report limitations precisely; unavailable checks are not passing checks.
+2. Verify the source bundle when using a native product command surface.
+3. Complete Forsetti project context before implementation.
+4. Bind work to a task contract and authorized scope.
+5. Validate manifests, capabilities, dependency direction, public API use, module isolation, and evidence.
+6. Publish documentation and changelog updates in the same change set.
+7. Report limitations precisely; unavailable checks are not passing checks.
 
 ---
 
