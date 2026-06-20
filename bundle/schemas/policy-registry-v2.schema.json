@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/policy-registry-v2.schema.json",
+  "title": "FFAE Policy Registry v2",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "registryID",
+    "rules"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "registryID": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "localRuleID",
+          "canonicalRuleID",
+          "title",
+          "severity",
+          "decision",
+          "modes",
+          "requiredInputs",
+          "conditions",
+          "remediation"
+        ],
+        "properties": {
+          "localRuleID": {
+            "type": "string",
+            "minLength": 1
+          },
+          "canonicalRuleID": {
+            "pattern": "^FAE-[CF]\\d{3}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "enum": [
+              "info",
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "decision": {
+            "enum": [
+              "pass",
+              "request_changes",
+              "block"
+            ]
+          },
+          "modes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "requiredInputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "conditions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "conditionID",
+                "description",
+                "evaluator",
+                "evidence"
+              ],
+              "properties": {
+                "conditionID": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "evaluator": {
+                  "type": "string"
+                },
+                "evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "remediation": {
+            "type": "object",
+            "required": [
+              "summary",
+              "requiredAction"
+            ],
+            "properties": {
+              "summary": {
+                "type": "string"
+              },
+              "requiredAction": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

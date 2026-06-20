@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/task-contract-v2.schema.json",
+  "title": "FFAE Task Contract v2",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "taskID",
+    "title",
+    "createdAtUTC",
+    "accountableOwner",
+    "actingRole",
+    "reviewerRole",
+    "changeClass",
+    "approvalClass",
+    "objective",
+    "affectedModuleIDs",
+    "scope",
+    "requiredOutputs",
+    "requiredValidation",
+    "definitionOfDone"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "taskID": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9._-]{2,127}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "createdAtUTC": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "accountableOwner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actingRole": {
+      "enum": [
+        "architect",
+        "builder",
+        "validator",
+        "release_manager",
+        "documentation_manager",
+        "governance_steward"
+      ]
+    },
+    "reviewerRole": {
+      "enum": [
+        "validator",
+        "governance_steward"
+      ]
+    },
+    "changeClass": {
+      "enum": [
+        "feature",
+        "bugfix",
+        "refactor",
+        "docs",
+        "governance",
+        "release",
+        "metadata",
+        "breaking-change"
+      ]
+    },
+    "approvalClass": {
+      "enum": [
+        "standard",
+        "sensitive",
+        "governance-class",
+        "emergency",
+        "release-critical"
+      ]
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1
+    },
+    "businessReason": {
+      "type": "string"
+    },
+    "affectedModuleIDs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9]+(?:[.-][A-Za-z0-9_-]+)+$"
+      }
+    },
+    "scope": {
+      "type": "object",
+      "required": [
+        "inScope",
+        "outOfScope"
+      ],
+      "properties": {
+        "inScope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "outOfScope": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "requiredOutputs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "requiredValidation": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "allowedCapabilityChanges": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "definitionOfDone": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "governanceAuthorization": {
+      "type": "object",
+      "required": [
+        "required",
+        "authority",
+        "evidence"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "authority": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

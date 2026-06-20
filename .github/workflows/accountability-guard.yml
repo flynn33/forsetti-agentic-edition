@@ -1,4 +1,4 @@
-name: Contributor Guard
+name: Accountability Guard
 
 on:
   pull_request:
@@ -11,8 +11,8 @@ permissions:
   pull-requests: read
 
 jobs:
-  attribution-rejection:
-    name: Reject Contributor Attribution
+  accountability-guard:
+    name: Reject Restricted Attribution
     runs-on: ubuntu-latest
     if: github.actor != 'github-actions[bot]'
     steps:
@@ -22,6 +22,6 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Check for restricted contributor attribution
+      - name: Check accountability metadata
         shell: pwsh
-        run: ./adapters/github-actions/workflows/check-contributor-attribution.ps1
+        run: ./adapters/github-actions/workflows/check-accountability-guard.ps1

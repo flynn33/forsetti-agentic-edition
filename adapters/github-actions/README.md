@@ -29,7 +29,7 @@ Repository workflows under `.github/workflows/` are wrappers. They preserve work
 
 | Workflow | Adapter script |
 |---|---|
-| Contributor Guard | `workflows/check-contributor-attribution.ps1` |
+| Accountability Guard | `workflows/check-accountability-guard.ps1` |
 | Changelog Validation | `workflows/check-changelog-entry.ps1` |
 | PR Policy Check | `workflows/check-pr-template.ps1` |
 | Protected Path Check | `workflows/check-protected-paths.ps1` |

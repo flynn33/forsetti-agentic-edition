@@ -72,7 +72,7 @@ foreach ($line in $nameLines) {
 }
 
 if ($eventName -eq "pull_request" -and -not [string]::IsNullOrWhiteSpace($body)) {
-    Write-Host "=== Checking PR body for attribution ==="
+    Write-Host "=== Checking PR body for restricted attribution ==="
     foreach ($pattern in $prBodyPatterns) {
         if ($body -match "(?i)$pattern") {
             $violations.Add("PR body contains restricted attribution language.")
@@ -88,4 +88,4 @@ if ($violations.Count -gt 0) {
     exit 1
 }
 
-Write-Host "No restricted contributor attribution detected. Guard passed."
+Write-Host "No restricted attribution detected. Guard passed."

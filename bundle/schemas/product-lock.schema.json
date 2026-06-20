@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/product-lock.schema.json",
+  "title": "FFAE Product Lock",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "lockedAtUTC",
+    "sha256",
+    "productVersion",
+    "bundleID",
+    "platform"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "lockedAtUTC": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "productVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "bundleID": {
+      "type": "string",
+      "minLength": 1
+    },
+    "platform": {
+      "enum": [
+        "apple-host",
+        "windows-host"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

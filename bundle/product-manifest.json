@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "2.0",
+  "product": "Forsetti Agentic Edition",
+  "version": "1.0.0",
+  "bundleID": "ffae-1.0.0-source",
+  "platform": "source",
+  "architecture": "portable",
+  "entryPoint": null,
+  "policyBundleHash": "2c543bb7562f25918bc2ca03fbc8eec7539ba5c232cf686acb2da26e91e4e95a",
+  "files": [
+    {
+      "path": "VERSION",
+      "sha256": "59854984853104df5c353e2f681a15fc7924742f9a2e468c29af248dce45ce03",
+      "required": true
+    },
+    {
+      "path": "editions/apple/forsetti-apple-0.1.3.profile.json",
+      "sha256": "81af5e20dbee88900f490e37479e87a85e4f2c7b7fe093d2ab237bc22534293f",
+      "required": true
+    },
+    {
+      "path": "editions/shared/shared-forsetti-invariants.json",
+      "sha256": "a6ce108da5ba8f65140b6c4b77e7204763d86153828bb3412c9b37fb73263ec0",
+      "required": true
+    },
+    {
+      "path": "editions/windows/forsetti-windows-0.2.0.profile.json",
+      "sha256": "4a65c4c986da951cddd2376de39ebc87f1186b21c147c53c122ce0c10ac19c8a",
+      "required": true
+    },
+    {
+      "path": "instructions/target-agents-section.md",
+      "sha256": "91ec96492e413bcdc783b260a1eccb87f0a685f534e5bf76c443f9931e5fccc5",
+      "required": true
+    },
+    {
+      "path": "policies/accountability-rules.json",
+      "sha256": "a50615ab184f49e6203c76564c382f1dd7c785be15f0553d2f17329bb56e2e0f",
+      "required": true
+    },
+    {
+      "path": "policies/agent-enforcement-actions.json",
+      "sha256": "92db4f6ebfe2ede1b663ad6c89b2675dcf302109ffad8678864b4228c14b5a50",
+      "required": true
+    },
+    {
+      "path": "policies/agent-roles.json",
+      "sha256": "1881906db1ff0269f9292e5a98d607f8a31388ae95091c0c32335a74b9647f22",
+      "required": true
+    },
+    {
+      "path": "policies/capability-rules.json",
+      "sha256": "fc3f71e3feaedac3dd147d98da12b49957f283e1ec7479c959628d3025692d55",
+      "required": true
+    },
+    {
+      "path": "policies/changelog-rules.json",
+      "sha256": "ed5b818a66ea9145f21b89361f5291e1b145350d27b47d33abfe93b3b6826cc7",
+      "required": true
+    },
+    {
+      "path": "policies/compliance-rules.json",
+      "sha256": "807458bdfe356eccdbbb250636aa68ac3c6561c4f6938b50406bed27e4910be7",
+      "required": true
+    },
+    {
+      "path": "policies/dependency-boundary-rules.json",
+      "sha256": "b4cc2ea0a9ae9a9e3fc021d94fcfb05b6af3e8f8681cf09ca0c1471f0e7dff7a",
+      "required": true
+    },
+    {
+      "path": "policies/docs-sync-rules.json",
+      "sha256": "2a9b4f1bd439fd72c2e582d4736f276341d2d7067aae628a37b1c280756e2089",
+      "required": true
+    },
+    {
+      "path": "policies/forsetti-enforcement-rules.json",
+      "sha256": "52ed93f4a4c22c2094791339f88092e034fa727dedd4c0d26fbb9f820b2a7669",
+      "required": true
+    },
+    {
+      "path": "policies/labels.json",
+      "sha256": "d2e5f68455985ec1068210471a3c05b491c4df59afa99af502f6e67a590e637a",
+      "required": true
+    },
+    {
+      "path": "policies/manifest-rules.json",
+      "sha256": "cdcc0c34f3b8a899a8b97eb1be576d7550f5c061f2c4382cfd38b7872fc127b1",
+      "required": true
+    },
+    {
+      "path": "policies/mcp-provider-policy.json",
+      "sha256": "99371eabc9dc6cf8b316d6d1f600a1bdd2dcddf4d9a6bdb59732bc551e7d772c",
+      "required": true
+    },
+    {
+      "path": "policies/mcp-resolution-order.json",
+      "sha256": "a2952c18acf8b92b5370f98fc1eaf331a54f78a3a01743e2d842c1f52720affd",
+      "required": true
+    },
+    {
+      "path": "policies/module-isolation-rules.json",
+      "sha256": "1067a233545ac2f4195f912d4626cb8a0c6ebead414639b6bc681cb08988ee62",
+      "required": true
+    },
+    {
+      "path": "policies/public-api-rules.json",
+      "sha256": "37f70e0880144dbb977f43b0d7a33a522de275b4bcbf035634184e76e2312fe1",
+      "required": true
+    },
+    {
+      "path": "policies/repo-boundaries.json",
+      "sha256": "a70d4451f74c2d0355dfa9a964b446daf92c6e0b40e8d6bfc3a75e4f3af0ce2d",
+      "required": true
+    },
+    {
+      "path": "policies/runtime-requirement-rules.json",
+      "sha256": "10da5a42e90d961e272219361e66d8488f52a38322a033634f5ee4b41b80bf87",
+      "required": true
+    },
+    {
+      "path": "policies/service-access-rules.json",
+      "sha256": "b4b0557fbf365dc73fd504f9b1a8bf1af17c4212cd46a4f27761c592b533a7b2",
+      "required": true
+    },
+    {
+      "path": "policies/ui-contribution-rules.json",
+      "sha256": "9d6467e5b4b6108aaa6c5df498b2393f497eee2b6e6f4dffe72c008b69da588b",
+      "required": true
+    },
+    {
+      "path": "policies/versioning-rules.json",
+      "sha256": "fe8260f371cffe0f39d91bf08de5661b12235b3b9fbd58e3380daa9cc9c35bff",
+      "required": true
+    },
+    {
+      "path": "schemas/command-evidence.schema.json",
+      "sha256": "7c2f18ab344ef64e3c1989c8e87b07f36e6a3462d4dfdba67f740ace97c399fd",
+      "required": true
+    },
+    {
+      "path": "schemas/edition-profile-v2.schema.json",
+      "sha256": "80098cec1623731889604cdbd4945e8effe2d41d0153b0b29e1ae082bdd00ecc",
+      "required": true
+    },
+    {
+      "path": "schemas/evidence-bundle.schema.json",
+      "sha256": "e0a14051329e2b76d781d6a945477dfd30e68bf1131c78b2f4f8d42036542a1a",
+      "required": true
+    },
+    {
+      "path": "schemas/fixture-expectation.schema.json",
+      "sha256": "c658dde3d4695c9bec0c85910a324c92fe722cecab1d2fda2f7ba09adedcad22",
+      "required": true
+    },
+    {
+      "path": "schemas/forsetti-module-manifest-1.0.schema.json",
+      "sha256": "c8cdd5ab65b993c737a9b42cb8e9d705081f8ab085845090990d456e49bcb6e8",
+      "required": true
+    },
+    {
+      "path": "schemas/forsetti-module-manifest-1.1.schema.json",
+      "sha256": "5c1654bbaf4e673d28066211d24488ccf7d46088677af77a83e7f0f16aadadc8",
+      "required": true
+    },
+    {
+      "path": "schemas/modules.schema.json",
+      "sha256": "065e43cf480a0c92ddd31bb05225c6ad46ffe3521f53d7a624b41b8ab48a3ef9",
+      "required": true
+    },
+    {
+      "path": "schemas/policy-lock.schema.json",
+      "sha256": "62ff70ceab62533501a4ebd970a13e1d50ee5c39ba25fe7509e8d8b3a7aacb8d",
+      "required": true
+    },
+    {
+      "path": "schemas/policy-registry-v2.schema.json",
+      "sha256": "af206e53e2209034d0a792dcde3e2e3d5264e79a553b555457df299a77c51148",
+      "required": true
+    },
+    {
+      "path": "schemas/product-lock.schema.json",
+      "sha256": "6c34ad11c8768f992eef55731768d5f61e50e9a24773c49bcd8869e815aff24c",
+      "required": true
+    },
+    {
+      "path": "schemas/product-manifest.schema.json",
+      "sha256": "e1a114935a41de4ef8121bfc2d4933b8494438abb72a8c0504e84b5a5d8f6353",
+      "required": true
+    },
+    {
+      "path": "schemas/profile-lock.schema.json",
+      "sha256": "5ac3b5e2646a5650b79a5405b85b6a237f4d9167c391b52a63188d69f91fb30a",
+      "required": true
+    },
+    {
+      "path": "schemas/profile-registry.schema.json",
+      "sha256": "a3a7977e0e03281188c38a15f48bd491ad46c0859203b3032879d9d296fa575a",
+      "required": true
+    },
+    {
+      "path": "schemas/project-discovery-result.schema.json",
+      "sha256": "864bb342655ca0c50f700edc7256081e69662ccddf360ecd797eab37fdd881c1",
+      "required": true
+    },
+    {
+      "path": "schemas/project.schema.json",
+      "sha256": "ed729d727ee99d9b5104c844b75c7b7a639421a2c69f49700f3d7abdf2f18e8e",
+      "required": true
+    },
+    {
+      "path": "schemas/release-manifest.schema.json",
+      "sha256": "f6eb02daa32e79fa23a86ee6340f51f2f9f406a8dd7432d0d02540bad05877e6",
+      "required": true
+    },
+    {
+      "path": "schemas/role-ledger.schema.json",
+      "sha256": "eb4431977a5f8de63395b72cc6a8271d443f0df2becbb25d755fe83414d0b58c",
+      "required": true
+    },
+    {
+      "path": "schemas/task-contract-v2.schema.json",
+      "sha256": "5e12305322cb95a864e75eb1863491bef5abfc5097ea84c5683c037ed8902f57",
+      "required": true
+    },
+    {
+      "path": "schemas/task-state.schema.json",
+      "sha256": "bc51a84257c5341e1690415720ef2df57eb1c10e13d610b5d128b68021d5cc26",
+      "required": true
+    },
+    {
+      "path": "schemas/validation-request-v2.schema.json",
+      "sha256": "e422c2a7d9961b83d2133d767c4c332959e4fdfecd3dad1f335b8220ef938432",
+      "required": true
+    },
+    {
+      "path": "schemas/validation-result-v2.schema.json",
+      "sha256": "60c86b2aa875a96903a86fad14c0777469afd2d55e5c9b5d9c8bebc4a1bb8e97",
+      "required": true
+    }
+  ],
+  "createdAtUTC": "1970-01-01T00:00:00Z"
+}

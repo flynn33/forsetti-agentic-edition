@@ -1,0 +1,163 @@
+{
+  "schemaVersion": "1.0",
+  "capturedAtUTC": "2026-06-20T13:40:17Z",
+  "phase": "00",
+  "repository": "flynn33/forsetti-agentic-edition",
+  "branch": "release/ffae-product-completion",
+  "headCommit": "a70bc6545de90d465e7b1ab4f760b1f93acc86c8",
+  "defaultBranch": "origin/main",
+  "mergeBaseWithDefaultBranch": "a70bc6545de90d465e7b1ab4f760b1f93acc86c8",
+  "workingTree": {
+    "statusBeforePhaseEvidence": "clean",
+    "openLocalChangesBeforePhaseEvidence": []
+  },
+  "version": "1.0.0",
+  "sourceBaselineComparison": {
+    "packageAuditedDefaultBranchCommit": "0055eb23d5d311cc57fac52b1e5a79ef85aea35d",
+    "currentHeadRelationship": "current default branch is newer",
+    "accountabilitySurfaceCleanup": "present in current default branch through merge a70bc6545de90d465e7b1ab4f760b1f93acc86c8"
+  },
+  "openOrUnmergedWork": {
+    "githubOpenPullRequests": [],
+    "localBranchesNotAtCurrentHead": [
+      "docs/wiki-visual-alignment",
+      "governance/accountability-policy-surface-sync",
+      "governance/enforcement-remediation",
+      "main"
+    ],
+    "remoteBranches": [
+      "origin/governance/accountability-policy-surface-sync",
+      "origin/main"
+    ]
+  },
+  "existingProductSourceTrees": {
+    "productsDirectoryPresent": false,
+    "appleNativeProductPresent": false,
+    "windowsNativeProductPresent": false,
+    "currentCanonicalValidator": "core/validator/forsetti_validate.ps1",
+    "currentWrappers": [
+      "scripts/validate-repo.sh",
+      "scripts/validate-repo.ps1"
+    ]
+  },
+  "existingTests": [
+    "tests/test_remediation_acceptance.py"
+  ],
+  "baselineCommands": [
+    {
+      "command": "git status --short --branch",
+      "exitCode": 0,
+      "result": "clean release branch tracking origin/main"
+    },
+    {
+      "command": "python3 -c parse-json",
+      "exitCode": 0,
+      "result": "88 JSON files parsed"
+    },
+    {
+      "command": "python3 -m unittest tests/test_remediation_acceptance.py",
+      "exitCode": 0,
+      "result": "7 tests passed"
+    },
+    {
+      "command": "bash -n scripts/validate-repo.sh",
+      "exitCode": 0,
+      "result": "shell wrapper syntax valid"
+    },
+    {
+      "command": "bash scripts/validate-repo.sh",
+      "exitCode": 1,
+      "result": "PowerShell host unavailable on this machine"
+    },
+    {
+      "command": "pwsh -NoProfile -File scripts/validate-repo.ps1",
+      "exitCode": 127,
+      "result": "pwsh executable unavailable on this machine"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "result": "no whitespace errors"
+    },
+    {
+      "command": "python3 -c duplicate-json-key-scan",
+      "exitCode": 0,
+      "result": "2 duplicate key errors found"
+    },
+    {
+      "command": "gh pr list --state open",
+      "exitCode": 0,
+      "result": "no open pull requests"
+    }
+  ],
+  "baselineLimitations": [
+    {
+      "check": "PowerShell validator execution",
+      "reason": "PowerShell host unavailable on this machine",
+      "phaseImpact": "must not be counted as passing baseline validation"
+    },
+    {
+      "check": "Windows native product validation",
+      "reason": "no Windows native product exists at baseline and this host cannot run MSVC validation",
+      "phaseImpact": "must be implemented and validated in later phases"
+    }
+  ],
+  "currentProductDefectsMappedToPhases": [
+    {
+      "defect": "manifest schema contains duplicate defaultModuleRole keys and obsolete default role enum",
+      "files": [
+        "core/schemas/module-manifest-1.1.schema.json",
+        "schemas/module-manifest-1.1.schema.json",
+        "tests/test_remediation_acceptance.py",
+        "core/validator/forsetti_validate.ps1"
+      ],
+      "responsiblePhases": [
+        "01",
+        "09"
+      ]
+    },
+    {
+      "defect": "acceptance test still treats file presence as product acceptance",
+      "files": [
+        "tests/test_remediation_acceptance.py"
+      ],
+      "responsiblePhases": [
+        "01",
+        "19"
+      ]
+    },
+    {
+      "defect": "no native Apple or Windows product source trees exist",
+      "files": [],
+      "responsiblePhases": [
+        "02",
+        "16",
+        "17"
+      ]
+    },
+    {
+      "defect": "current wrappers delegate to a PowerShell-only validator",
+      "files": [
+        "scripts/validate-repo.sh",
+        "scripts/validate-repo.ps1",
+        "core/validator/forsetti_validate.ps1"
+      ],
+      "responsiblePhases": [
+        "08",
+        "18"
+      ]
+    },
+    {
+      "defect": "no installable release bundle, target initialization, task lifecycle, or product-generated evidence exists",
+      "files": [],
+      "responsiblePhases": [
+        "03",
+        "04",
+        "07",
+        "13",
+        "21"
+      ]
+    }
+  ],
+  "phaseDecision": "pass"
+}
