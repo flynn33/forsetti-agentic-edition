@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/validation-result-v2.schema.json",
+  "title": "FFAE Validation Result v2",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "status",
+    "mode",
+    "productVersion",
+    "invocationID",
+    "startedAtUTC",
+    "finishedAtUTC",
+    "summary",
+    "findings"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "request_changes",
+        "block"
+      ]
+    },
+    "mode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "productVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "invocationID": {
+      "type": "string",
+      "minLength": 1
+    },
+    "startedAtUTC": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finishedAtUTC": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "total",
+        "passed",
+        "requestChanges",
+        "blocked"
+      ],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestChanges": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocked": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "canonicalRuleID",
+          "conditionID",
+          "severity",
+          "decision",
+          "message",
+          "evidence",
+          "remediation"
+        ],
+        "properties": {
+          "canonicalRuleID": {
+            "type": "string",
+            "pattern": "^FAE-[CF]\\d{3}$"
+          },
+          "localRuleID": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "conditionID": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "enum": [
+              "info",
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "decision": {
+            "enum": [
+              "pass",
+              "request_changes",
+              "block"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "moduleID": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "remediation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

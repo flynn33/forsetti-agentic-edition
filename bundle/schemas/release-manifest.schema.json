@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/release-manifest.schema.json",
+  "title": "FFAE Release Manifest",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "version",
+    "artifacts",
+    "sourceRevision",
+    "builtAtUTC",
+    "acceptanceEvidence"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "sourceRevision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "builtAtUTC": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "platform",
+          "sha256",
+          "sizeBytes"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "platform": {
+            "enum": [
+              "apple-host",
+              "windows-host",
+              "source"
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "acceptanceEvidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

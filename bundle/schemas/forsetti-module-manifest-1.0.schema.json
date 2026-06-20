@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/forsetti-module-manifest-1.0.schema.json",
+  "title": "Forsetti Module Manifest 1.0",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "moduleID",
+    "displayName",
+    "moduleVersion",
+    "moduleType",
+    "supportedPlatforms",
+    "minForsettiVersion",
+    "capabilitiesRequested",
+    "entryPoint"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "manifestTemplateVersion": {
+      "const": "1.0"
+    },
+    "moduleID": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+(?:[.-][A-Za-z0-9_-]+)+$"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "moduleVersion": {
+      "type": "object",
+      "required": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "properties": {
+        "major": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "patch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prerelease": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "moduleType": {
+      "enum": [
+        "service",
+        "ui",
+        "app"
+      ]
+    },
+    "supportedPlatforms": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "iOS",
+          "macOS",
+          "Windows"
+        ]
+      }
+    },
+    "minForsettiVersion": {
+      "type": "object",
+      "required": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "properties": {
+        "major": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "patch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prerelease": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "maxForsettiVersion": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "major",
+            "minor",
+            "patch"
+          ],
+          "properties": {
+            "major": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "minor": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "patch": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "prerelease": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "capabilitiesRequested": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "iapProductID": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "entryPoint": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}

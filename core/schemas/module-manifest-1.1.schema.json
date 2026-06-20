@@ -148,14 +148,6 @@
         }
       },
       "additionalProperties": false
-    },
-    "defaultModuleRole": {
-      "enum": [
-        "app",
-        "ui",
-        "service",
-        "none"
-      ]
     }
   },
   "$defs": {
@@ -203,11 +195,17 @@
         },
         "kind": {
           "enum": [
+            "networking",
             "storage",
             "secure_storage",
-            "networking",
             "file_export",
-            "telemetry"
+            "crypto_utilities",
+            "telemetry",
+            "shared_database",
+            "authentication",
+            "diagnostics",
+            "api",
+            "security"
           ]
         },
         "access": {
@@ -215,7 +213,9 @@
             "read",
             "write",
             "read_write",
-            "emit"
+            "execute",
+            "emit",
+            "consume"
           ]
         },
         "required": {
@@ -225,7 +225,7 @@
           "type": "string"
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
     "uiRequirement": {
       "type": "object",

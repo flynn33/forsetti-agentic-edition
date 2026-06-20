@@ -513,8 +513,20 @@ function Test-Manifest {
     if ($manifest.moduleType -in @("ui", "app") -and $runtime.PSObject.Properties["ui"] -and $null -eq $runtime.ui) {
         Add-Finding -RuleId "FAE-F014" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "UI/app module lacks active UI runtime surface." -Evidence "runtimeRequirements.ui=null" -Remediation "Declare the UI runtime surface required by the selected profile."
     }
-    if ($manifest.PSObject.Properties["defaultModuleRole"] -and $manifest.defaultModuleRole -notin @("app", "ui", "service", "none")) {
-        Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest has invalid default module role." -Evidence ([string]$manifest.defaultModuleRole) -Remediation "Use app, ui, service, or none for defaultModuleRole."
+    $validDefaultRoles = @("ui", "shared_database", "authentication", "diagnostics", "api", "security")
+    if ($manifest.PSObject.Properties["defaultModuleRole"] -and $null -ne $manifest.defaultModuleRole -and $manifest.defaultModuleRole -notin $validDefaultRoles) {
+        Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest has invalid default module role." -Evidence ([string]$manifest.defaultModuleRole) -Remediation "Use ui, shared_database, authentication, diagnostics, api, security, or null for defaultModuleRole."
+    }
+    if ($manifest.PSObject.Properties["defaultModuleRole"] -and $null -ne $manifest.defaultModuleRole) {
+        if ($manifest.defaultModuleRole -eq "ui" -and $manifest.moduleType -notin @("ui", "app")) {
+            Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "UI default role is only valid for UI or app modules." -Evidence ([string]$manifest.moduleType) -Remediation "Use a service default role or change moduleType."
+        }
+        if ($manifest.defaultModuleRole -ne "ui" -and $manifest.moduleType -ne "service") {
+            Add-Finding -RuleId "FAE-F004" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Service default roles are only valid for service modules." -Evidence ([string]$manifest.moduleType) -Remediation "Use ui for UI/app modules or null when no default role applies."
+        }
+        if ($manifest.defaultModuleRole -ne "ui" -and @($manifest.capabilitiesRequested) -notcontains $manifest.defaultModuleRole) {
+            Add-Finding -RuleId "FAE-F009" -Severity "critical" -Decision "block" -Category "manifest" -Path (Get-RepoPath $path) -Message "Default role requires its matching capability." -Evidence ([string]$manifest.defaultModuleRole) -Remediation "Declare the matching capability or set defaultModuleRole to null."
+        }
     }
 
     Add-Finding -RuleId "FAE-F004" -Severity "info" -Decision "pass" -Category "manifest" -Path (Get-RepoPath $path) -Message "Manifest file was inspected." -Evidence ([string]$manifest.moduleID) -Remediation $null

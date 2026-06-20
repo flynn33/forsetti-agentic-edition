@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/modules.schema.json",
+  "title": "Forsetti Module Inventory",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "modules"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "modules": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": [
+          "moduleID",
+          "moduleType",
+          "manifestPath",
+          "targetName",
+          "sourceRoots",
+          "resourceRoots",
+          "capabilitiesRequested",
+          "runtimeRequirementsDeclared",
+          "platforms"
+        ],
+        "properties": {
+          "moduleID": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9]+(?:[.-][A-Za-z0-9_-]+)+$"
+          },
+          "moduleType": {
+            "enum": [
+              "app",
+              "ui",
+              "service"
+            ]
+          },
+          "defaultModuleRole": {
+            "enum": [
+              "ui",
+              "shared_database",
+              "authentication",
+              "diagnostics",
+              "api",
+              "security",
+              null
+            ]
+          },
+          "manifestPath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "buildSystem": {
+            "enum": [
+              "swiftpm",
+              "xcode",
+              "cmake",
+              "msbuild"
+            ]
+          },
+          "sourceRoots": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "resourceRoots": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "capabilitiesRequested": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "runtimeRequirementsDeclared": {
+            "type": "boolean"
+          },
+          "platforms": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "iOS",
+                "macOS",
+                "Windows"
+              ]
+            }
+          },
+          "publicDependencies": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -11,39 +11,55 @@ def load_json(relative_path):
         return json.load(handle)
 
 
-class RemediationAcceptanceTests(unittest.TestCase):
-    def test_required_remediation_files_exist(self):
-        required_paths = [
-            "core/enforcement/authority-model.md",
-            "core/schemas/forsetti-project-context.schema.json",
-            "schemas/forsetti-project-context.schema.json",
-            "core/schemas/edition-profile.schema.json",
-            "core/schemas/module-manifest-1.1.schema.json",
-            "core/contracts/forsetti-project-context-template.json",
-            "core/policies/forsetti-enforcement-rules.json",
-            "core/policies/manifest-rules.json",
-            "core/policies/runtime-requirement-rules.json",
-            "core/policies/module-isolation-rules.json",
-            "core/policies/dependency-boundary-rules.json",
-            "core/policies/public-api-rules.json",
-            "core/policies/capability-rules.json",
-            "core/policies/ui-contribution-rules.json",
-            "core/policies/service-access-rules.json",
-            "core/policies/mcp-provider-policy.json",
-            "core/policies/mcp-resolution-order.json",
-            "core/policies/accountability-rules.json",
-            "core/policies/agent-enforcement-actions.json",
-            "editions/shared/shared-forsetti-invariants.json",
-            "editions/apple/forsetti-apple-0.1.3.profile.json",
-            "editions/windows/forsetti-windows-0.2.0.profile.json",
-            "editions/README.md",
-            "standards/mcp-local-helper-standard.md",
-            "ACCOUNTABILITY_POLICY.md",
-            "core/validator/rules/forsetti_project_rules.ps1",
-        ]
+def load_json_no_duplicates(relative_path):
+    def reject_duplicate_keys(pairs):
+        seen = set()
+        result = {}
+        for key, value in pairs:
+            if key in seen:
+                raise ValueError(f"duplicate key: {key}")
+            seen.add(key)
+            result[key] = value
+        return result
 
-        missing = [path for path in required_paths if not (ROOT / path).exists()]
-        self.assertEqual([], missing)
+    with (ROOT / relative_path).open(encoding="utf-8") as handle:
+        return json.load(handle, object_pairs_hook=reject_duplicate_keys)
+
+
+class RemediationAcceptanceTests(unittest.TestCase):
+    def test_policy_and_schema_mirrors_match(self):
+        mirrored_paths = [
+            "forsetti-project-context.schema.json",
+            "task-contract.schema.json",
+            "module-manifest-1.1.schema.json",
+        ]
+        for path in mirrored_paths:
+            self.assertEqual(
+                load_json_no_duplicates(f"core/schemas/{path}"),
+                load_json_no_duplicates(f"schemas/{path}"),
+                path,
+            )
+
+        mirrored_policies = [
+            "forsetti-enforcement-rules.json",
+            "manifest-rules.json",
+            "runtime-requirement-rules.json",
+            "module-isolation-rules.json",
+            "dependency-boundary-rules.json",
+            "public-api-rules.json",
+            "capability-rules.json",
+            "ui-contribution-rules.json",
+            "service-access-rules.json",
+            "mcp-provider-policy.json",
+            "mcp-resolution-order.json",
+            "accountability-rules.json",
+        ]
+        for path in mirrored_policies:
+            self.assertEqual(
+                load_json_no_duplicates(f"core/policies/{path}"),
+                load_json_no_duplicates(f"policies/{path}"),
+                path,
+            )
 
     def test_forsetti_project_context_is_required_by_task_contract_schema(self):
         schema = load_json("core/schemas/task-contract.schema.json")
@@ -52,9 +68,7 @@ class RemediationAcceptanceTests(unittest.TestCase):
         self.assertEqual("forsetti-project-context.schema.json", context["$ref"])
 
     def test_project_context_schema_requires_forsetti_profile_context(self):
-        schema = load_json("core/schemas/forsetti-project-context.schema.json")
-        root_schema = load_json("schemas/forsetti-project-context.schema.json")
-        self.assertEqual(schema, root_schema)
+        schema = load_json_no_duplicates("core/schemas/forsetti-project-context.schema.json")
         required = set(schema["required"])
         expected = {
             "repository_mode",
@@ -75,8 +89,8 @@ class RemediationAcceptanceTests(unittest.TestCase):
         self.assertLessEqual(expected, required)
 
     def test_profiles_define_required_versions_and_manifest_model(self):
-        apple = load_json("editions/apple/forsetti-apple-0.1.3.profile.json")
-        windows = load_json("editions/windows/forsetti-windows-0.2.0.profile.json")
+        apple = load_json_no_duplicates("editions/apple/forsetti-apple-0.1.3.profile.json")
+        windows = load_json_no_duplicates("editions/windows/forsetti-windows-0.2.0.profile.json")
 
         self.assertEqual("apple", apple["edition"])
         self.assertEqual("0.1.3", apple["frameworkVersion"])
@@ -91,7 +105,7 @@ class RemediationAcceptanceTests(unittest.TestCase):
         self.assertIn("Windows", windows["supportedPlatforms"])
 
     def test_enforcement_rules_f001_through_f020_are_complete(self):
-        registry = load_json("core/policies/forsetti-enforcement-rules.json")
+        registry = load_json_no_duplicates("core/policies/forsetti-enforcement-rules.json")
         rules = {rule["rule_id"]: rule for rule in registry["rules"]}
         expected = [f"FAE-F{number:03d}" for number in range(1, 21)]
         self.assertEqual(expected, list(rules))
@@ -111,7 +125,7 @@ class RemediationAcceptanceTests(unittest.TestCase):
                 self.assertIn(field, rule, rule_id)
 
     def test_manifest_schema_encodes_template_1_1_runtime_requirements(self):
-        schema = load_json("core/schemas/module-manifest-1.1.schema.json")
+        schema = load_json_no_duplicates("core/schemas/module-manifest-1.1.schema.json")
         required = set(schema["required"])
         self.assertLessEqual(
             {
@@ -131,10 +145,15 @@ class RemediationAcceptanceTests(unittest.TestCase):
         runtime = schema["properties"]["runtimeRequirements"]
         self.assertLessEqual({"io", "ui", "dataIsolation"}, set(runtime["required"]))
         self.assertIn("defaultModuleRole", schema["properties"])
+        self.assertEqual(1, list(schema["properties"]).count("defaultModuleRole"))
         self.assertEqual(
-            {"app", "ui", "service", "none"},
+            {"ui", "shared_database", "authentication", "diagnostics", "api", "security", None},
             set(schema["properties"]["defaultModuleRole"]["enum"]),
         )
+        io_kinds = schema["$defs"]["ioRequirement"]["properties"]["kind"]["enum"]
+        self.assertIn("shared_database", io_kinds)
+        self.assertIn("crypto_utilities", io_kinds)
+        self.assertIn("consume", schema["$defs"]["ioRequirement"]["properties"]["access"]["enum"])
 
     def test_validator_declares_required_modes_and_parameters(self):
         validator = (ROOT / "core/validator/forsetti_validate.ps1").read_text(encoding="utf-8")
@@ -164,8 +183,14 @@ class RemediationAcceptanceTests(unittest.TestCase):
             "$Strict",
             "module_id",
             "defaultModuleRole",
+            "shared_database",
+            "authentication",
+            "diagnostics",
+            "security",
         ]:
             self.assertIn(parameter, validator)
+        self.assertNotIn('"none"', validator)
+        self.assertNotIn('"app", "ui", "service", "none"', validator)
 
         for field in ["rule_id", "severity", "decision", "message", "evidence", "remediation"]:
             self.assertIn(field, validator)

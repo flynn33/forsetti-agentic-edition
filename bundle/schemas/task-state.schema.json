@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/task-state.schema.json",
+  "title": "FFAE Task State",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "taskID",
+    "state",
+    "baseline",
+    "snapshots",
+    "implementationSessionID",
+    "updatedAtUTC"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "taskID": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9._-]{2,127}$"
+    },
+    "state": {
+      "enum": [
+        "ready",
+        "authorized",
+        "implementation",
+        "validation_pending",
+        "request_changes",
+        "blocked",
+        "validated",
+        "completed"
+      ]
+    },
+    "baseline": {
+      "type": "object",
+      "required": [
+        "commit",
+        "dirtyFiles",
+        "capturedAtUTC"
+      ],
+      "properties": {
+        "commit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dirtyFiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "capturedAtUTC": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "snapshots": {
+      "type": "object",
+      "required": [
+        "projectHash",
+        "modulesHash",
+        "profileLockHash",
+        "policyLockHash",
+        "productLockHash",
+        "contractHash"
+      ],
+      "properties": {
+        "projectHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "modulesHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "profileLockHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "policyLockHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "productLockHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "contractHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "implementationSessionID": {
+      "type": "string",
+      "minLength": 1
+    },
+    "validationSessionID": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "lastDecision": {
+      "enum": [
+        "pass",
+        "request_changes",
+        "block",
+        null
+      ]
+    },
+    "updatedAtUTC": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

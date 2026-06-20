@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/project-discovery-result.schema.json",
+  "title": "FFAE Project Discovery Result",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "status",
+    "buildSystems",
+    "modules",
+    "unresolvedItems",
+    "dependencyEdges"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "request_changes",
+        "block"
+      ]
+    },
+    "buildSystems": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "swiftpm",
+          "xcode",
+          "cmake",
+          "msbuild"
+        ]
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "unresolvedItems": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dependencyEdges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "target",
+          "kind"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "target",
+              "import",
+              "include",
+              "link",
+              "resource"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

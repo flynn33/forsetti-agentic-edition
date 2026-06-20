@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/command-evidence.schema.json",
+  "title": "FFAE Command Evidence",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "commandID",
+    "taskID",
+    "productVersion",
+    "executableHash",
+    "workingDirectory",
+    "command",
+    "startedAtUTC",
+    "finishedAtUTC",
+    "exitCode",
+    "stdoutPath",
+    "stdoutHash",
+    "stderrPath",
+    "stderrHash",
+    "toolVersions"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "commandID": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taskID": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9._-]{2,127}$"
+    },
+    "productVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "executableHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "workingDirectory": {
+      "type": "string",
+      "minLength": 1
+    },
+    "command": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "startedAtUTC": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finishedAtUTC": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "exitCode": {
+      "type": "integer"
+    },
+    "stdoutPath": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stdoutHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "stderrPath": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stderrHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "toolVersions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "skipRationale": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

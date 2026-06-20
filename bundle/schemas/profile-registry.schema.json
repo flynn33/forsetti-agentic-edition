@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/profile-registry.schema.json",
+  "title": "FFAE Profile Registry",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "profiles"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "profileID",
+          "edition",
+          "frameworkVersion",
+          "profileRevision",
+          "sourceRepository",
+          "sourceRevision",
+          "sourcePolicyHash",
+          "profilePath",
+          "profileHash",
+          "supportStatus"
+        ],
+        "properties": {
+          "profileID": {
+            "type": "string",
+            "minLength": 1
+          },
+          "edition": {
+            "enum": [
+              "apple",
+              "windows"
+            ]
+          },
+          "frameworkVersion": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+          },
+          "profileRevision": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+          },
+          "sourceRepository": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourceRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sourcePolicyHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "profilePath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "profileHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "supportStatus": {
+            "enum": [
+              "supported",
+              "deprecated",
+              "unsupported"
+            ]
+          },
+          "supersededBy": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

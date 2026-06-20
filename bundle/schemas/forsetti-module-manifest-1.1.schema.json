@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://forsetti.dev/schemas/agentic-edition/module-manifest-1.1.schema.json",
+  "$id": "https://forsetti.dev/ffae/forsetti-module-manifest-1.1.schema.json",
   "title": "Forsetti Module Manifest 1.1",
   "type": "object",
   "required": [
@@ -25,22 +25,40 @@
     },
     "moduleID": {
       "type": "string",
-      "minLength": 1
+      "pattern": "^[A-Za-z0-9]+(?:[.-][A-Za-z0-9_-]+)+$"
     },
     "displayName": {
       "type": "string",
       "minLength": 1
     },
     "moduleVersion": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 1
+      "type": "object",
+      "required": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "properties": {
+        "major": {
+          "type": "integer",
+          "minimum": 0
         },
-        {
-          "$ref": "#/$defs/semanticVersionObject"
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "patch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prerelease": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
-      ]
+      },
+      "additionalProperties": false
     },
     "moduleType": {
       "enum": [
@@ -51,35 +69,75 @@
     },
     "supportedPlatforms": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "enum": [
           "iOS",
           "macOS",
           "Windows"
         ]
-      },
-      "minItems": 1,
-      "uniqueItems": true
+      }
     },
     "minForsettiVersion": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 1
+      "type": "object",
+      "required": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "properties": {
+        "major": {
+          "type": "integer",
+          "minimum": 0
         },
-        {
-          "$ref": "#/$defs/semanticVersionObject"
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "patch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prerelease": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
-      ]
+      },
+      "additionalProperties": false
     },
     "maxForsettiVersion": {
       "oneOf": [
         {
-          "type": "string",
-          "minLength": 1
-        },
-        {
-          "$ref": "#/$defs/semanticVersionObject"
+          "type": "object",
+          "required": [
+            "major",
+            "minor",
+            "patch"
+          ],
+          "properties": {
+            "major": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "minor": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "patch": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "prerelease": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
         },
         {
           "type": "null"
@@ -88,11 +146,11 @@
     },
     "capabilitiesRequested": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "uniqueItems": true
+      }
     },
     "iapProductID": {
       "type": [
@@ -105,10 +163,6 @@
       "minLength": 1
     },
     "defaultModuleRole": {
-      "type": [
-        "string",
-        "null"
-      ],
       "enum": [
         "ui",
         "shared_database",
@@ -144,42 +198,13 @@
           ]
         },
         "dataIsolation": {
-          "$ref": "#/$defs/dataIsolationRequirement"
+          "$ref": "#/$defs/dataIsolation"
         }
       },
       "additionalProperties": false
     }
   },
   "$defs": {
-    "semanticVersionObject": {
-      "type": "object",
-      "required": [
-        "major",
-        "minor",
-        "patch"
-      ],
-      "properties": {
-        "major": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "minor": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "patch": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "prerelease": {
-          "type": [
-            "string",
-            "null"
-          ]
-        }
-      },
-      "additionalProperties": false
-    },
     "ioRequirement": {
       "type": "object",
       "required": [
@@ -222,7 +247,10 @@
           "type": "boolean"
         },
         "description": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         }
       },
       "additionalProperties": false
@@ -244,47 +272,55 @@
         },
         "themeIDs": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string"
           }
         },
         "viewIDs": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string"
           }
         },
         "slotIDs": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string"
           }
         },
         "toolbarItemIDs": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string"
           }
         },
         "routeIDs": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string"
           }
         },
         "pointerIDs": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
             "type": "string"
           }
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
-    "dataIsolationRequirement": {
+    "dataIsolation": {
       "type": "object",
       "required": [
-        "mode"
+        "mode",
+        "ownedStoreIDs",
+        "requiredDefaultRoles"
       ],
       "properties": {
         "mode": {
@@ -295,19 +331,29 @@
         },
         "ownedStoreIDs": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           }
         },
         "requiredDefaultRoles": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
-            "type": "string"
+            "enum": [
+              "ui",
+              "shared_database",
+              "authentication",
+              "diagnostics",
+              "api",
+              "security"
+            ]
           }
         }
       },
       "additionalProperties": false
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/product-manifest.schema.json",
+  "title": "FFAE Product Manifest",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "product",
+    "version",
+    "bundleID",
+    "platform",
+    "architecture",
+    "files",
+    "createdAtUTC"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "product": {
+      "const": "Forsetti Agentic Edition"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "bundleID": {
+      "type": "string",
+      "minLength": 1
+    },
+    "platform": {
+      "enum": [
+        "apple-host",
+        "windows-host",
+        "source"
+      ]
+    },
+    "architecture": {
+      "type": "string",
+      "minLength": 1
+    },
+    "entryPoint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "policyBundleHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "sha256",
+          "required"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "executable": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "createdAtUTC": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

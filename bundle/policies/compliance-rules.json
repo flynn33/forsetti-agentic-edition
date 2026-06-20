@@ -1,0 +1,153 @@
+{
+  "schema_version": "2.0",
+  "registry_name": "forsetti_canonical_compliance_rules",
+  "canonical_source": "core/policies/compliance-rules.json",
+  "root_mirror": "policies/compliance-rules.json",
+  "mirror_policy": "The root mirror must remain byte-for-byte identical to this registry until the root policy hierarchy is formally amended.",
+  "rules": [
+    {
+      "rule_id": "FAE-C001",
+      "title": "Task Contract Required Before Execution",
+      "severity": "critical",
+      "decision": "block",
+      "responsible_roles": ["architect", "builder"],
+      "description": "Meaningful implementation work must not begin without a governing task contract that identifies the task, change class, approval class, authorized scope, required outputs, documentation impact, release impact, validation gates, and reviewer roles.",
+      "required_evidence": ["task contract path", "change class", "approval class", "in-scope files", "out-of-scope files", "required outputs"],
+      "validation": "Confirm a task contract exists before implementation and that it contains the required governance fields.",
+      "remediation": "Create or amend the task contract before continuing implementation.",
+      "related_policy_paths": ["AGENTS.md", "CHANGE_CONTROL_POLICY.md", "COMPLIANCE_POLICY.md"]
+    },
+    {
+      "rule_id": "FAE-C002",
+      "title": "Scope Boundary Enforcement",
+      "severity": "critical",
+      "decision": "block",
+      "responsible_roles": ["builder", "architect", "validator"],
+      "description": "Changed files must stay within the authorized scope defined by the task contract. If additional files are required, the contract must be amended before those files are modified.",
+      "required_evidence": ["changed file list", "contract in-scope file list", "scope amendment evidence when applicable"],
+      "validation": "Compare changed files against the governing contract scope.",
+      "remediation": "Remove unauthorized changes or amend the contract before proceeding.",
+      "related_policy_paths": ["AGENTS.md", "CHANGE_CONTROL_POLICY.md", "COMPLIANCE_POLICY.md"]
+    },
+    {
+      "rule_id": "FAE-C003",
+      "title": "Role Separation Enforcement",
+      "severity": "critical",
+      "decision": "block",
+      "responsible_roles": ["all"],
+      "description": "A role must not perform actions assigned to another role. Builders must not validate their own work. Validators must not implement fixes. Release Managers must not waive compliance gates. Role authority boundaries must match the repository role model.",
+      "required_evidence": ["acting role", "reviewer role", "review outcome", "role authority confirmation"],
+      "validation": "Confirm each action was performed by a role authorized for that action.",
+      "remediation": "Reassign the action to the correct role and obtain the required independent review.",
+      "related_policy_paths": ["AGENTS.md", "FORSETTI_CONSTITUTION.md", "COMPLIANCE_POLICY.md", "policies/agent-roles.json"]
+    },
+    {
+      "rule_id": "FAE-C004",
+      "title": "Protected Asset Governance Gate",
+      "severity": "critical",
+      "decision": "block",
+      "responsible_roles": ["governance_steward", "architect", "validator"],
+      "description": "Protected governance assets must not be modified without the required approval class and Governance Steward authorization when governance-class authority is required.",
+      "required_evidence": ["protected path list", "changed protected files", "approval class", "Governance Steward authorization when required"],
+      "validation": "Compare changed files against protected path policy and verify required approval evidence.",
+      "remediation": "Obtain the required authorization, amend the contract, or remove protected-path changes.",
+      "related_policy_paths": ["CHANGE_CONTROL_POLICY.md", "COMPLIANCE_POLICY.md", "core/policies/repo-boundaries.json"]
+    },
+    {
+      "rule_id": "FAE-C005",
+      "title": "Changelog Entry Required for Substantive Changes",
+      "severity": "high",
+      "decision": "request_changes",
+      "responsible_roles": ["builder", "release_manager", "validator"],
+      "description": "Every meaningful change must include a changelog entry with the required fields, accurate change class, accurate version impact, affected area, task reference, approval class, and migration guidance when the change is breaking.",
+      "required_evidence": ["changelog entry", "change class", "version impact", "task reference", "approval class", "migration guidance when required"],
+      "validation": "Verify the changelog entry exists and matches the task contract and actual changes.",
+      "remediation": "Add or correct the changelog entry before review completes.",
+      "related_policy_paths": ["RELEASE_POLICY.md", "CHANGE_CONTROL_POLICY.md", "core/policies/changelog-rules.json"]
+    },
+    {
+      "rule_id": "FAE-C006",
+      "title": "Breaking Change Disclosure Mandate",
+      "severity": "critical",
+      "decision": "block",
+      "responsible_roles": ["architect", "builder", "release_manager", "validator"],
+      "description": "A change that alters existing governance rules, required fields, default behavior, schemas, workflow enforcement, or consumer obligations must be explicitly classified as breaking-change with major version impact unless the Release Manager documents a higher-authority exception.",
+      "required_evidence": ["breaking-change assessment", "change class", "major version impact or documented exception", "migration guidance", "affected consumers"],
+      "validation": "Review the diff and contract for consumer-impacting changes and confirm breaking-change handling.",
+      "remediation": "Reclassify the change, add migration guidance, and obtain the required elevated review.",
+      "related_policy_paths": ["RELEASE_POLICY.md", "CHANGE_CONTROL_POLICY.md", "COMPLIANCE_POLICY.md"]
+    },
+    {
+      "rule_id": "FAE-C007",
+      "title": "Completion Summary Truthfulness",
+      "severity": "critical",
+      "decision": "block",
+      "responsible_roles": ["builder", "validator"],
+      "description": "Completion summaries must accurately describe files changed, validation results, known issues, documentation status, release impact, and scope compliance. Claims of done, tested, reviewed, or no issues must be supported by evidence.",
+      "required_evidence": ["completion summary", "changed file list", "validation output", "known issue disclosure", "documentation status", "release impact", "scope compliance"],
+      "validation": "Compare completion claims against the diff, validation output, and review evidence.",
+      "remediation": "Correct the completion summary and disclose partial completion, skipped checks, or unresolved issues.",
+      "related_policy_paths": ["AGENTS.md", "COMPLIANCE_POLICY.md"]
+    },
+    {
+      "rule_id": "FAE-C008",
+      "title": "Documentation Sync Compliance",
+      "severity": "high",
+      "decision": "request_changes",
+      "responsible_roles": ["builder", "documentation_manager", "validator"],
+      "description": "Changes that affect documented behavior, policy, process, public interfaces, release history, or canonical documentation must update the corresponding documentation surfaces or explicitly track the sync obligation under the documentation policy.",
+      "required_evidence": ["documentation impact declaration", "updated canonical docs", "updated derived wiki pages", "sync marker or follow-up tracking when permitted"],
+      "validation": "Check modified canonical sources against documentation sync rules and derived wiki pages.",
+      "remediation": "Update required documentation surfaces or create the required traceable follow-up before approval.",
+      "related_policy_paths": ["DOCUMENTATION_POLICY.md", "core/policies/docs-sync-rules.json", "COMPLIANCE_POLICY.md"]
+    },
+    {
+      "rule_id": "FAE-C009",
+      "title": "Version Classification Accuracy",
+      "severity": "high",
+      "decision": "request_changes",
+      "responsible_roles": ["architect", "release_manager", "validator"],
+      "description": "Version impact must match the actual effect of the change. Breaking changes require major impact unless a documented higher-authority exception applies. Governance-only impact must not be used to hide consumer-facing breaking changes.",
+      "required_evidence": ["version impact", "release manager review when applicable", "changelog entry", "breaking-change assessment"],
+      "validation": "Compare the version impact against the changed files, policy meaning, and release policy.",
+      "remediation": "Correct the version impact and changelog entry, then obtain release review when required.",
+      "related_policy_paths": ["RELEASE_POLICY.md", "core/policies/versioning-rules.json", "COMPLIANCE_POLICY.md"]
+    },
+    {
+      "rule_id": "FAE-C010",
+      "title": "Governance Change Isolation",
+      "severity": "critical",
+      "decision": "block",
+      "responsible_roles": ["architect", "builder", "governance_steward", "validator"],
+      "description": "Governance changes must be standalone. A governance or protected policy change must not be bundled with unrelated feature, bugfix, refactor, release, adapter, or implementation work.",
+      "required_evidence": ["change class", "changed file list", "governance scope statement", "review confirmation"],
+      "validation": "Inspect the changed files and task contract for unrelated non-governance work.",
+      "remediation": "Split unrelated changes into separate task contracts and branches.",
+      "related_policy_paths": ["CHANGE_CONTROL_POLICY.md", "COMPLIANCE_POLICY.md"]
+    },
+    {
+      "rule_id": "FAE-C011",
+      "title": "Evidence and Validation Integrity",
+      "severity": "critical",
+      "decision": "block",
+      "responsible_roles": ["builder", "validator", "release_manager", "documentation_manager"],
+      "description": "Validation evidence must be real, specific, current, and traceable to commands, tools, reports, or reviewer decisions that actually ran. Failed, skipped, partial, stale, or unavailable validation must be disclosed.",
+      "required_evidence": ["commands run", "validation outputs", "review decisions", "failure notes", "skipped check rationale", "evidence paths"],
+      "validation": "Verify evidence files and reported validation outcomes against actual command output and reviewer records.",
+      "remediation": "Run the missing validation, correct stale evidence, or disclose the limitation and remediation plan.",
+      "related_policy_paths": ["COMPLIANCE_POLICY.md", "AGENTS.md"]
+    },
+    {
+      "rule_id": "FAE-C012",
+      "title": "Accountability and Non-Attribution",
+      "severity": "high",
+      "decision": "request_changes",
+      "responsible_roles": ["builder", "validator", "governance_steward"],
+      "description": "Assisted work must never replace accountable human ownership or governed role accountability. Attribution credit to tools, models, vendors, automation, or agents is prohibited in source files, generated code comments, commit messages, changelog entries, release notes, README notices, contributor lists, authorship metadata, and documentation prose.",
+      "required_evidence": ["accountable human owner", "acting governed role", "task contract or remediation phase reference", "review evidence", "validation evidence", "approval evidence when required", "absence of prohibited attribution credit"],
+      "validation": "Confirm accountable ownership, contract or phase traceability, review evidence, validation evidence, required approval evidence, and absence of prohibited attribution credit.",
+      "remediation": "Remove prohibited attribution credit and add missing accountability, review, validation, or required approval evidence.",
+      "related_policy_paths": ["ACCOUNTABILITY_POLICY.md", "COMPLIANCE_POLICY.md", "AGENTS.md", "core/policies/accountability-rules.json"]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forsetti.dev/ffae/policy-lock.schema.json",
+  "title": "FFAE Policy Bundle Lock",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "lockedAtUTC",
+    "sha256",
+    "policyBundleID",
+    "policyBundleVersion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0"
+    },
+    "lockedAtUTC": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "policyBundleID": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policyBundleVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    }
+  },
+  "additionalProperties": false
+}

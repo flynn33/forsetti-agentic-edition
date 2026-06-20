@@ -1,0 +1,205 @@
+{
+  "schema_version": "1.0",
+  "label_families": {
+    "change": {
+      "description": "Classifies the type of change in a pull request. Exactly one change label must be applied per PR.",
+      "labels": [
+        {
+          "name": "change:feature",
+          "color": "#1D76DB",
+          "description": "New functionality added. Typically results in a minor version bump."
+        },
+        {
+          "name": "change:bugfix",
+          "color": "#D93F0B",
+          "description": "Correction of incorrect behavior. Typically results in a patch version bump."
+        },
+        {
+          "name": "change:refactor",
+          "color": "#0E8A16",
+          "description": "Internal restructuring with no behavior change. Typically no version bump."
+        },
+        {
+          "name": "change:docs",
+          "color": "#0075CA",
+          "description": "Documentation-only changes with no code impact. No version bump."
+        },
+        {
+          "name": "change:governance",
+          "color": "#B60205",
+          "description": "Changes to governance policies, constitutional documents, or compliance rules. Requires governance-class approval."
+        },
+        {
+          "name": "change:release",
+          "color": "#5319E7",
+          "description": "Release process, CI/CD, or workflow changes. No version bump unless artifact output changes."
+        },
+        {
+          "name": "change:metadata",
+          "color": "#BFD4F2",
+          "description": "Project metadata, labels, non-behavioral configuration. No version bump."
+        },
+        {
+          "name": "change:breaking-change",
+          "color": "#B60205",
+          "description": "Backward-incompatible change requiring major version bump and migration notes."
+        }
+      ]
+    },
+    "approval": {
+      "description": "Classifies the approval level required for a pull request. Exactly one approval label must be applied per PR.",
+      "labels": [
+        {
+          "name": "approval:standard",
+          "color": "#C2E0C6",
+          "description": "Standard review and approval process. Applies to routine features, fixes, and refactors."
+        },
+        {
+          "name": "approval:sensitive",
+          "color": "#FEF2C0",
+          "description": "Elevated review required. Applies to changes touching CI, CODEOWNERS, security, or broad cross-cutting concerns."
+        },
+        {
+          "name": "approval:governance-class",
+          "color": "#B60205",
+          "description": "Governance steward authorization required. Applies to policy, constitutional, and protected asset changes."
+        },
+        {
+          "name": "approval:emergency",
+          "color": "#D93F0B",
+          "description": "Expedited approval for critical production fixes. Does not override governance-class requirements."
+        },
+        {
+          "name": "approval:release-critical",
+          "color": "#5319E7",
+          "description": "Release-blocking change requiring release manager confirmation before merge."
+        }
+      ]
+    },
+    "status": {
+      "description": "Tracks the workflow status of a pull request through the governance pipeline.",
+      "labels": [
+        {
+          "name": "status:needs-contract",
+          "color": "#E4E669",
+          "description": "PR is missing a task contract. Architect must create one before work proceeds."
+        },
+        {
+          "name": "status:blocked",
+          "color": "#B60205",
+          "description": "PR is blocked by a compliance violation, missing approval, or unresolved escalation."
+        },
+        {
+          "name": "status:in-progress",
+          "color": "#1D76DB",
+          "description": "Builder is actively implementing within an approved task contract."
+        },
+        {
+          "name": "status:ready-for-review",
+          "color": "#0E8A16",
+          "description": "Implementation complete. Awaiting validator compliance review."
+        },
+        {
+          "name": "status:validated",
+          "color": "#0E8A16",
+          "description": "Validator has rendered a pass decision. Ready for merge or release manager review."
+        },
+        {
+          "name": "status:released",
+          "color": "#5319E7",
+          "description": "Change has been included in a release. Release manager has confirmed."
+        }
+      ]
+    },
+    "role": {
+      "description": "Indicates which agent role is currently responsible for the next action on this PR.",
+      "labels": [
+        {
+          "name": "role:architect",
+          "color": "#FBCA04",
+          "description": "Architect action required: contract creation, amendment, or reclassification."
+        },
+        {
+          "name": "role:builder",
+          "color": "#1D76DB",
+          "description": "Builder action required: implementation within contract scope."
+        },
+        {
+          "name": "role:validator",
+          "color": "#0E8A16",
+          "description": "Validator action required: compliance review and decision."
+        },
+        {
+          "name": "role:release-manager",
+          "color": "#5319E7",
+          "description": "Release manager action required: version confirmation or release authorization."
+        },
+        {
+          "name": "role:docs-manager",
+          "color": "#0075CA",
+          "description": "Documentation manager action required: sync verification or drift assessment."
+        },
+        {
+          "name": "role:governance-steward",
+          "color": "#B60205",
+          "description": "Governance steward action required: governance-class approval or constitutional review."
+        }
+      ]
+    },
+    "release": {
+      "description": "Indicates the version impact classification for release management.",
+      "labels": [
+        {
+          "name": "release:none",
+          "color": "#EDEDED",
+          "description": "No version bump required. Internal-only change."
+        },
+        {
+          "name": "release:patch",
+          "color": "#C2E0C6",
+          "description": "Patch version bump. Backward-compatible bug fix."
+        },
+        {
+          "name": "release:minor",
+          "color": "#1D76DB",
+          "description": "Minor version bump. Backward-compatible new functionality."
+        },
+        {
+          "name": "release:major",
+          "color": "#B60205",
+          "description": "Major version bump. Breaking change requiring migration."
+        },
+        {
+          "name": "release:governance-only",
+          "color": "#FEF2C0",
+          "description": "Governance-only change. No artifact version bump unless governance versioning is enabled."
+        }
+      ]
+    },
+    "docs": {
+      "description": "Tracks documentation synchronization status.",
+      "labels": [
+        {
+          "name": "docs:needs-update",
+          "color": "#D93F0B",
+          "description": "Documentation update required. Canonical source was modified but derived surfaces were not updated."
+        },
+        {
+          "name": "docs:needs-sync",
+          "color": "#FEF2C0",
+          "description": "Wiki or derived surface requires synchronization with canonical source."
+        },
+        {
+          "name": "docs:drift-detected",
+          "color": "#B60205",
+          "description": "Content divergence detected between canonical and derived documentation surfaces."
+        },
+        {
+          "name": "docs:compliant",
+          "color": "#0E8A16",
+          "description": "All documentation surfaces are synchronized and accurate."
+        }
+      ]
+    }
+  }
+}
