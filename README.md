@@ -330,3 +330,10 @@ This framework is maintained through its own governance process. Issues, proposa
 ---
 
 *This document is a canonical source. Derived wiki page: `wiki/Overview.md`.*
+
+## License
+
+Copyright 2026 James Daley
+
+This project is licensed under the Apache License, Version 2.0.
+See the [LICENSE](LICENSE) file for the full terms.
