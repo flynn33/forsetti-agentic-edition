@@ -199,14 +199,14 @@ This framework operates with a **strict default posture**.
 - Convenience does not override compliance.
 - Shortcuts that weaken traceability, documentation integrity, or validation discipline are prohibited.
 - "We'll fix it later" is not an acceptable justification for skipping required governance steps.
-- Agents and human contributors are held to the same governance standard.
+- Outside contributions are not accepted; owner and authorized agent work follow repository governance.
 
 ---
 
 ## Repository Structure
 
 ```
-├── Root governance policy, constitution, delivery, release, documentation, and contribution documents
+├── Root governance policy, constitution, delivery, release, documentation, and contribution-policy documents
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
 │   └── workflows/
@@ -268,8 +268,7 @@ Read `FORSETTI_CONSTITUTION.md`. This is the highest-authority document. It esta
 
 ### Step 2: Understand Your Operating Rules
 
-Read `AGENTS.md`. This document defines the role model, workflow sequence, operating constraints, and compliance requirements that apply to all agent contributors.
-
+Read `AGENTS.md` for owner and authorized agent operating rules. Outside contributions are not accepted.
 ### Step 3: Understand the Relevant Policy
 
 Read the policy document relevant to your current task:
@@ -298,28 +297,12 @@ Each step has requirements defined in the relevant policy document. Skipping ste
 
 ---
 
-## Quick Start for Human Contributors
+## Contributing
 
-### Reviewing Agent Work
+This project is open source under Apache License, Version 2.0. You are welcome to use, modify, and redistribute the code under that license.
 
-When reviewing PRs produced by coding agents, verify:
+Outside contributions to this repository are not accepted. Pull requests and collaboration requests will not be reviewed or merged. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-1. A task contract exists and the PR scope matches the contract
-2. The documentation impact section is completed and accurate
-3. Validation evidence is present (test results, lint output, guardrail checks)
-4. Changelog entry exists if required by the change class
-5. Wiki sync was performed or `docs:needs-sync` label was applied if canonical sources changed
-
-### Modifying Governance
-
-Governance documents are protected. Modifying them requires:
-
-1. A governance-class change classification
-2. Architect proposal with rationale
-3. Validator review for compliance impact
-4. CODEOWNERS approval (where configured)
-
-See `CHANGE_CONTROL_POLICY.md` for the full governance change process.
 
 ---
 
