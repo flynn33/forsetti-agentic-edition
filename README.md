@@ -308,7 +308,7 @@ Outside contributions to this repository are not accepted. Pull requests and col
 
 ## Governance Contact
 
-This framework is maintained through its own governance process. Issues, proposals, and questions should be filed as GitHub issues with the appropriate labels.
+This framework is maintained solely by its owner. Outside contributions, collaboration requests, and proposals intended for merge into this repository are not accepted. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
