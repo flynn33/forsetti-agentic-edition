@@ -1,0 +1,34 @@
+name: Docs Sync Agent
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'wiki/**'
+      - 'README.md'
+      - 'DOCUMENTATION_POLICY.md'
+      - '.github/workflows/docs-sync-agent.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs-sync-main
+  cancel-in-progress: false
+
+jobs:
+  sync-docs:
+    name: Sync README and Documentation
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Update README sections
+        shell: pwsh
+        run: ./adapters/github-actions/workflows/sync-documentation.ps1
