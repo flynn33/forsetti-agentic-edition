@@ -111,7 +111,7 @@ final class ValidationResultTests: XCTestCase {
             bundleRoot: repoRootURL().appendingPathComponent("bundle", isDirectory: true),
             edition: "apple",
             platform: "macOS",
-            frameworkVersion: "0.1.3",
+            frameworkVersion: "0.1.5",
             deploymentPattern: "developer_testing",
             dryRun: true
         ))
@@ -119,6 +119,67 @@ final class ValidationResultTests: XCTestCase {
         XCTAssertEqual(result.status, .pass)
         XCTAssertFalse(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent(".forsetti").path))
         XCTAssertFalse(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent("AGENTS.md").path))
+    }
+
+    func testInitDefaultsToCurrentAppleProfile() throws {
+        let repository = try makeFixtureRepository()
+        let result = try makeBootstrapService().initialize(options: BootstrapOptions(
+            repositoryRoot: repository.url,
+            bundleRoot: repoRootURL().appendingPathComponent("bundle", isDirectory: true),
+            edition: "apple",
+            platform: "macOS",
+            frameworkVersion: nil,
+            deploymentPattern: "developer_testing",
+            dryRun: false
+        ))
+
+        XCTAssertEqual(result.status, .pass)
+        let projectData = try Data(contentsOf: repository.url.appendingPathComponent(".forsetti/project.json"))
+        let project = try XCTUnwrap(JSONSerialization.jsonObject(with: projectData) as? [String: Any])
+        XCTAssertEqual(project["frameworkVersion"] as? String, "0.1.5")
+
+        let profileLockData = try Data(contentsOf: repository.url.appendingPathComponent(".forsetti/profile.lock.json"))
+        let profileLock = try XCTUnwrap(JSONSerialization.jsonObject(with: profileLockData) as? [String: Any])
+        XCTAssertEqual(profileLock["profileID"] as? String, "forsetti-apple-0.1.5")
+        XCTAssertEqual(profileLock["frameworkVersion"] as? String, "0.1.5")
+    }
+
+    func testInitCanSelectRetainedAppleCompatibilityProfile() throws {
+        let repository = try makeFixtureRepository()
+        let result = try makeBootstrapService().initialize(options: BootstrapOptions(
+            repositoryRoot: repository.url,
+            bundleRoot: repoRootURL().appendingPathComponent("bundle", isDirectory: true),
+            edition: "apple",
+            platform: "macOS",
+            frameworkVersion: "0.1.3",
+            deploymentPattern: "developer_testing",
+            dryRun: false
+        ))
+
+        XCTAssertEqual(result.status, .pass)
+        let projectData = try Data(contentsOf: repository.url.appendingPathComponent(".forsetti/project.json"))
+        let project = try XCTUnwrap(JSONSerialization.jsonObject(with: projectData) as? [String: Any])
+        XCTAssertEqual(project["frameworkVersion"] as? String, "0.1.3")
+
+        let profileLockData = try Data(contentsOf: repository.url.appendingPathComponent(".forsetti/profile.lock.json"))
+        let profileLock = try XCTUnwrap(JSONSerialization.jsonObject(with: profileLockData) as? [String: Any])
+        XCTAssertEqual(profileLock["profileID"] as? String, "forsetti-apple-0.1.3")
+    }
+
+    func testInitBlocksUnknownAppleFrameworkVersion() throws {
+        let repository = try makeFixtureRepository()
+        let result = try makeBootstrapService().initialize(options: BootstrapOptions(
+            repositoryRoot: repository.url,
+            bundleRoot: repoRootURL().appendingPathComponent("bundle", isDirectory: true),
+            edition: "apple",
+            platform: "macOS",
+            frameworkVersion: "9.9.9",
+            deploymentPattern: "developer_testing",
+            dryRun: true
+        ))
+
+        XCTAssertEqual(result.status, .block)
+        XCTAssertTrue(result.findings.contains { $0.conditionID == "init.profile.missing" })
     }
 
     func testInitDoctorAndRepeatedInitAreStable() throws {
@@ -130,7 +191,7 @@ final class ValidationResultTests: XCTestCase {
             bundleRoot: repoRootURL().appendingPathComponent("bundle", isDirectory: true),
             edition: "apple",
             platform: "macOS",
-            frameworkVersion: "0.1.3",
+            frameworkVersion: "0.1.5",
             deploymentPattern: "developer_testing",
             dryRun: false
         )
@@ -169,7 +230,7 @@ final class ValidationResultTests: XCTestCase {
             bundleRoot: repoRootURL().appendingPathComponent("bundle", isDirectory: true),
             edition: "apple",
             platform: "macOS",
-            frameworkVersion: "0.1.3",
+            frameworkVersion: "0.1.5",
             deploymentPattern: "developer_testing",
             dryRun: false
         )
@@ -183,7 +244,7 @@ final class ValidationResultTests: XCTestCase {
             bundleRoot: repoRootURL().appendingPathComponent("bundle", isDirectory: true),
             edition: "apple",
             platform: "macOS",
-            frameworkVersion: "0.1.3",
+            frameworkVersion: "0.1.5",
             deploymentPattern: "developer_testing",
             dryRun: false
         ))
@@ -407,23 +468,32 @@ final class ValidationResultTests: XCTestCase {
         moduleType: String
     ) throws {
         let targetRoot = repository.appendingPathComponent("Sources/\(targetName)", isDirectory: true)
+        let isUIBearing = moduleType == "app" || moduleType == "ui"
+        let capabilities = isUIBearing ? "[\"view_injection\"]" : "[]"
+        let uiRequirements = isUIBearing
+            ? "{\"viewIDs\":[\"\(moduleID).workspace\"],\"slotIDs\":[\"module.workspace\"]}"
+            : "null"
+        let defaultModuleRole = isUIBearing ? "\"ui\"" : "null"
         let manifest = """
         {
           "schemaVersion": "1.1",
           "manifestTemplateVersion": "1.1",
           "moduleID": "\(moduleID)",
           "displayName": "\(targetName)",
-          "moduleVersion": "1.0.0",
+          "moduleVersion": {"major": 1, "minor": 0, "patch": 0},
           "moduleType": "\(moduleType)",
           "supportedPlatforms": ["macOS"],
-          "minForsettiVersion": "1.0.0",
-          "capabilitiesRequested": [],
-          "entryPoint": "Sources/\(targetName)/\(targetName).swift",
+          "minForsettiVersion": {"major": 0, "minor": 1, "patch": 5},
+          "capabilitiesRequested": \(capabilities),
+          "entryPoint": "\(targetName)Module",
+          "defaultModuleRole": \(defaultModuleRole),
           "runtimeRequirements": {
             "io": [],
-            "ui": null,
+            "ui": \(uiRequirements),
             "dataIsolation": {
-              "scope": "module_private"
+              "mode": "private_to_module",
+              "ownedStoreIDs": [],
+              "requiredDefaultRoles": []
             }
           }
         }

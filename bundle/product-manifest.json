@@ -6,7 +6,7 @@
   "platform": "source",
   "architecture": "portable",
   "entryPoint": null,
-  "policyBundleHash": "2c543bb7562f25918bc2ca03fbc8eec7539ba5c232cf686acb2da26e91e4e95a",
+  "policyBundleHash": "cfe9a828b306570345deb4398f760ff7350439052173be06c9bc6dfce905a6f5",
   "files": [
     {
       "path": "VERSION",
@@ -16,6 +16,11 @@
     {
       "path": "editions/apple/forsetti-apple-0.1.3.profile.json",
       "sha256": "81af5e20dbee88900f490e37479e87a85e4f2c7b7fe093d2ab237bc22534293f",
+      "required": true
+    },
+    {
+      "path": "editions/apple/forsetti-apple-0.1.5.profile.json",
+      "sha256": "58249aa73f44be694e687a1106a1dd47c7f5352086f995b811e6a1ade7e613fd",
       "required": true
     },
     {
@@ -160,7 +165,7 @@
     },
     {
       "path": "schemas/forsetti-module-manifest-1.1.schema.json",
-      "sha256": "5c1654bbaf4e673d28066211d24488ccf7d46088677af77a83e7f0f16aadadc8",
+      "sha256": "2e6aa9e444c864da427ee6292e0a0b33737ebeb9dd486bbfb492629b55f1a512",
       "required": true
     },
     {

@@ -1,0 +1,71 @@
+{
+  "status": "pass",
+  "check": "static delimiter/string/comment structure only; not PowerShell execution",
+  "filesChecked": 16,
+  "files": [
+    {
+      "path": "adapters/github-actions/workflows/assign-version-release.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/check-accountability-guard.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/check-changelog-entry.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/check-pr-template.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/check-protected-paths.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/check-release-readiness.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/check-version-impact.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/github-context.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/invoke-local-validation.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/sync-documentation.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/sync-wiki-pages.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "adapters/github-actions/workflows/update-changelog-entry.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "core/validator/contract_rules.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "core/validator/forsetti_validate.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "core/validator/rules/forsetti_project_rules.ps1",
+      "status": "pass"
+    },
+    {
+      "path": "scripts/validate-repo.ps1",
+      "status": "pass"
+    }
+  ]
+}

@@ -208,7 +208,11 @@ public final class RepositoryBootstrapService {
         let agentsURL = options.repositoryRoot.appendingPathComponent("AGENTS.md")
         let agentsText = try existingAgentsText(url: agentsURL)
         let agentsUpdate = updateAgents(existingText: agentsText, section: instructionText)
-        let profileURL = profileURL(bundleRoot: options.bundleRoot, edition: resolved.edition)
+        let profileURL = profileURL(
+            bundleRoot: options.bundleRoot,
+            edition: resolved.edition,
+            frameworkVersion: resolved.frameworkVersion
+        )
         let profileData = try fileSystem.readFile(at: profileURL)
         let profileHash = sha256Hex(profileData)
         let manifestData = try fileSystem.readFile(at: options.bundleRoot.appendingPathComponent("product-manifest.json"))
@@ -339,7 +343,11 @@ public final class RepositoryBootstrapService {
             throw BootstrapResolutionError.ambiguousEdition
         }
         let platform = options.platform ?? defaultPlatform(for: edition)
-        let profileURL = profileURL(bundleRoot: options.bundleRoot, edition: edition)
+        let profileURL = profileURL(
+            bundleRoot: options.bundleRoot,
+            edition: edition,
+            frameworkVersion: options.frameworkVersion
+        )
         guard fileSystem.fileExists(at: profileURL) else {
             return ResolvedTarget(
                 edition: edition,
@@ -414,7 +422,12 @@ public final class RepositoryBootstrapService {
 
         if let project = try? jsonObject(at: forsettiRoot.appendingPathComponent("project.json")),
            let edition = project["edition"] as? String {
-            let profileURL = profileURL(bundleRoot: bundleRoot, edition: edition)
+            let frameworkVersion = project["frameworkVersion"] as? String
+            let profileURL = profileURL(
+                bundleRoot: bundleRoot,
+                edition: edition,
+                frameworkVersion: frameworkVersion
+            )
             let expectedProfileHash = (try? fileSystem.readFile(at: profileURL)).map(sha256Hex)
             let profileLock = try? jsonObject(at: forsettiRoot.appendingPathComponent("profile.lock.json"))
             if profileLock?["sha256"] as? String == expectedProfileHash {
@@ -588,13 +601,19 @@ public final class RepositoryBootstrapService {
         try loader.loadJSON(ProductManifest.self, from: bundleRoot.appendingPathComponent("product-manifest.json"))
     }
 
-    private func profileURL(bundleRoot: URL, edition: String) -> URL {
-        switch edition {
-        case "windows":
-            return bundleRoot.appendingPathComponent("editions/windows/forsetti-windows-0.2.0.profile.json")
-        default:
-            return bundleRoot.appendingPathComponent("editions/apple/forsetti-apple-0.1.3.profile.json")
-        }
+    private func profileURL(
+        bundleRoot: URL,
+        edition: String,
+        frameworkVersion: String? = nil
+    ) -> URL {
+        let selectedVersion = frameworkVersion ?? defaultFrameworkVersion(for: edition)
+        return bundleRoot.appendingPathComponent(
+            "editions/\(edition)/forsetti-\(edition)-\(selectedVersion).profile.json"
+        )
+    }
+
+    private func defaultFrameworkVersion(for edition: String) -> String {
+        edition == "windows" ? "0.2.0" : "0.1.5"
     }
 
     private func defaultPlatform(for edition: String) -> String {

@@ -77,6 +77,16 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ### Features
 
+**Title**: Align Apple governance with Forsetti Framework 0.1.5
+**Change Class**: feature
+**Version Impact**: minor
+**Summary**: Added a source-pinned Apple `0.1.5` edition profile and made it the active default across project-context templates, Apple repository bootstrap, validator checks, bundle inventory, tests, README, overlay, and wiki surfaces. Preserved Apple `0.1.3` as an explicitly selectable compatibility profile and added fail-closed handling for unknown Apple framework versions. Encoded the complete supplied Apple contract, including safe legacy manifest defaults, exact capability/service/UI mappings, registration and activation invariants, strict object-oriented and sealed-consumer rules, deployment patterns A through D, the `ForsettiCore` `Combine` restriction, 29 load-bearing source hashes, and upstream acceptance evidence. Corrected `crypto_utilities` to remain a capability rather than an I/O kind and kept `event_publishing` edition-specific to Windows because Apple `0.1.5` defines no such capability.
+**Affected Area**: Apple edition profiles, schemas, validator, Apple native bootstrap, bundle, tests, documentation
+**PR Reference**: No PR; Project Bifrost prerequisite alignment package
+**Task Reference**: FAE-GOV-2026-08-20-015
+**Approval Class**: governance-class
+**Affected Consumers**: Apple task-contract authors, project bootstrap users, local validator users, source-bundle consumers, and agents governing Forsetti-based Mac or iOS projects.
+
 **Title**: Add native product completion surfaces
 **Change Class**: feature
 **Version Impact**: minor

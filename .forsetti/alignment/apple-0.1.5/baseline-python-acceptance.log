@@ -1,0 +1,12 @@
+test_enforcement_rules_f001_through_f020_are_complete (tests.test_remediation_acceptance.RemediationAcceptanceTests.test_enforcement_rules_f001_through_f020_are_complete) ... ok
+test_forsetti_project_context_is_required_by_task_contract_schema (tests.test_remediation_acceptance.RemediationAcceptanceTests.test_forsetti_project_context_is_required_by_task_contract_schema) ... ok
+test_manifest_schema_encodes_template_1_1_runtime_requirements (tests.test_remediation_acceptance.RemediationAcceptanceTests.test_manifest_schema_encodes_template_1_1_runtime_requirements) ... ok
+test_policy_and_schema_mirrors_match (tests.test_remediation_acceptance.RemediationAcceptanceTests.test_policy_and_schema_mirrors_match) ... ok
+test_profiles_define_required_versions_and_manifest_model (tests.test_remediation_acceptance.RemediationAcceptanceTests.test_profiles_define_required_versions_and_manifest_model) ... ok
+test_project_context_schema_requires_forsetti_profile_context (tests.test_remediation_acceptance.RemediationAcceptanceTests.test_project_context_schema_requires_forsetti_profile_context) ... ok
+test_validator_declares_required_modes_and_parameters (tests.test_remediation_acceptance.RemediationAcceptanceTests.test_validator_declares_required_modes_and_parameters) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.002s
+
+OK

@@ -1,0 +1,70 @@
+Building for debugging...
+[0/21] Write sources
+[5/21] Write swift-version--1BA0962812E73E12.txt
+[7/24] Emitting module GovernanceContracts
+[8/24] Compiling GovernanceContracts ValidationModels.swift
+[9/24] Compiling GovernanceContracts Contracts.swift
+[10/25] Wrapping AST for GovernanceContracts for debugging
+[12/30] Compiling GovernanceCore ResultFactory.swift
+[13/31] Compiling GovernanceCore VersionService.swift
+[14/31] Emitting module GovernanceCore
+[15/31] Compiling GovernanceCore ProductManifest.swift
+[16/31] Compiling GovernanceCore CoreTypes.swift
+[17/31] Compiling GovernanceCore JSONResultCodec.swift
+[18/32] Wrapping AST for GovernanceCore for debugging
+[20/40] Compiling GovernanceApple FoundationJSONLoader.swift
+/mnt/data/bifrost-alignment-work/forsetti-agentic-edition-main/products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift:1:8: error: no such module 'CryptoKit'
+  1 | import CryptoKit
+    |        `- error: no such module 'CryptoKit'
+  2 | import Foundation
+  3 | import GovernanceContracts
+[21/40] Compiling GovernanceApple LocalFileSystem.swift
+/mnt/data/bifrost-alignment-work/forsetti-agentic-edition-main/products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift:1:8: error: no such module 'CryptoKit'
+  1 | import CryptoKit
+    |        `- error: no such module 'CryptoKit'
+  2 | import Foundation
+  3 | import GovernanceContracts
+[22/41] Compiling GovernanceApple SystemIdentifierGenerator.swift
+/mnt/data/bifrost-alignment-work/forsetti-agentic-edition-main/products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift:1:8: error: no such module 'CryptoKit'
+  1 | import CryptoKit
+    |        `- error: no such module 'CryptoKit'
+  2 | import Foundation
+  3 | import GovernanceContracts
+error: emit-module command failed with exit code 1 (use -v to see invocation)
+[23/41] Emitting module GovernanceApple
+/mnt/data/bifrost-alignment-work/forsetti-agentic-edition-main/products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift:1:8: error: no such module 'CryptoKit'
+  1 | import CryptoKit
+    |        `- error: no such module 'CryptoKit'
+  2 | import Foundation
+  3 | import GovernanceContracts
+[24/41] Compiling GovernanceApple LocalProcessRunner.swift
+/mnt/data/bifrost-alignment-work/forsetti-agentic-edition-main/products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift:1:8: error: no such module 'CryptoKit'
+  1 | import CryptoKit
+    |        `- error: no such module 'CryptoKit'
+  2 | import Foundation
+  3 | import GovernanceContracts
+[25/41] Compiling GovernanceApple ProjectDiscoveryService.swift
+/mnt/data/bifrost-alignment-work/forsetti-agentic-edition-main/products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift:1:8: error: no such module 'CryptoKit'
+  1 | import CryptoKit
+    |        `- error: no such module 'CryptoKit'
+  2 | import Foundation
+  3 | import GovernanceContracts
+[26/41] Compiling GovernanceApple RepositoryBootstrapService.swift
+/mnt/data/bifrost-alignment-work/forsetti-agentic-edition-main/products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift:1:8: error: no such module 'CryptoKit'
+  1 | import CryptoKit
+    |        `- error: no such module 'CryptoKit'
+  2 | import Foundation
+  3 | import GovernanceContracts
+[27/41] Compiling GovernanceApple SHA256BundleVerifier.swift
+/mnt/data/bifrost-alignment-work/forsetti-agentic-edition-main/products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift:1:8: error: no such module 'CryptoKit'
+  1 | import CryptoKit
+    |        `- error: no such module 'CryptoKit'
+  2 | import Foundation
+  3 | import GovernanceContracts
+[28/41] Compiling GovernanceApple SystemClock.swift
+/mnt/data/bifrost-alignment-work/forsetti-agentic-edition-main/products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift:1:8: error: no such module 'CryptoKit'
+  1 | import CryptoKit
+    |        `- error: no such module 'CryptoKit'
+  2 | import Foundation
+  3 | import GovernanceContracts
+error: fatalError

@@ -23,7 +23,18 @@
       ]
     },
     "frameworkVersion": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "supportStatus": {
+      "enum": [
+        "supported",
+        "deprecated",
+        "unsupported"
+      ]
+    },
+    "sourceContract": {
+      "$ref": "#/$defs/sourceContract"
     },
     "supportedPlatforms": {
       "type": "array",
@@ -35,6 +46,15 @@
     },
     "nativeLanguage": {
       "type": "string"
+    },
+    "swiftToolsVersion": {
+      "type": "string"
+    },
+    "minimumDeploymentTargets": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
     },
     "nativeTools": {
       "type": "array",
@@ -50,7 +70,143 @@
       },
       "uniqueItems": true
     },
+    "internalTargets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
     "manifest": {
+      "$ref": "#/$defs/manifestContract"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "ioCapabilityMappings": {
+      "$ref": "#/$defs/stringMap"
+    },
+    "serviceCapabilityMappings": {
+      "$ref": "#/$defs/stringMap"
+    },
+    "uiCapabilityMappings": {
+      "$ref": "#/$defs/stringMap"
+    },
+    "defaultModuleRoleRules": {
+      "type": "object"
+    },
+    "dependencyRules": {
+      "type": "object"
+    },
+    "runtimeInvariants": {
+      "type": "object"
+    },
+    "launchActivationStrategies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "xcodeTemplates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "verificationCommands": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "consumerVerificationCommands": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "frameworkIdentity": {
+      "$ref": "#/$defs/frameworkIdentity"
+    },
+    "implementationRules": {
+      "$ref": "#/$defs/implementationRules"
+    },
+    "deploymentPatterns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/deploymentPattern"
+      }
+    },
+    "upstreamValidationEvidence": {
+      "$ref": "#/$defs/upstreamValidationEvidence"
+    }
+  },
+  "$defs": {
+    "stringMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "sourceContract": {
+      "type": "object",
+      "required": [
+        "repository",
+        "versionFile",
+        "version",
+        "files"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "versionFile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "capturedAtUTC": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "manifestContract": {
       "type": "object",
       "required": [
         "currentSchemaVersion",
@@ -64,6 +220,33 @@
         },
         "currentTemplateVersion": {
           "type": "string"
+        },
+        "supportedVersions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "schemaVersion",
+              "templateVersion",
+              "status"
+            ],
+            "properties": {
+              "schemaVersion": {
+                "type": "string"
+              },
+              "templateVersion": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "current",
+                  "legacy",
+                  "unsupported"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
         },
         "moduleTypes": {
           "type": "array",
@@ -82,26 +265,347 @@
             "type": "string"
           },
           "uniqueItems": true
+        },
+        "optionalFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "semanticVersionEncoding": {
+          "enum": [
+            "object"
+          ]
+        },
+        "moduleIDPattern": {
+          "type": "string"
+        },
+        "reservedModuleIDPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "entryPointPattern": {
+          "type": "string"
+        },
+        "defaultModuleRoles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "ioKinds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "ioAccessModes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "dataIsolationModes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "uiRequirementFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "legacyDefaults": {
+          "$ref": "#/$defs/legacyManifestDefaults"
         }
       },
       "additionalProperties": true
     },
-    "capabilities": {
-      "type": "array",
-      "items": {
-        "type": "string"
+    "frameworkIdentity": {
+      "type": "object",
+      "required": [
+        "architectureStyle",
+        "platformStrategy",
+        "consumerRuntimeBoundary",
+        "extensionModel",
+        "technologyPlacementRule",
+        "allowsThirdPartyRuntimeDependencies"
+      ],
+      "properties": {
+        "architectureStyle": {
+          "type": "string",
+          "minLength": 1
+        },
+        "platformStrategy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "consumerRuntimeBoundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "extensionModel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "technologyPlacementRule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "allowsThirdPartyRuntimeDependencies": {
+          "type": "boolean"
+        }
       },
-      "uniqueItems": true
+      "additionalProperties": false
     },
-    "dependencyRules": {
-      "type": "object"
+    "implementationRules": {
+      "type": "object",
+      "required": [
+        "objectOrientedDesign",
+        "consumerIntegration",
+        "moduleBoundaries",
+        "runtimeSafety",
+        "errorAndConcurrency"
+      ],
+      "properties": {
+        "objectOrientedDesign": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "consumerIntegration": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "moduleBoundaries": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "runtimeSafety": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "errorAndConcurrency": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
     },
-    "verificationCommands": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "deploymentPattern": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "recommendation",
+        "requirements"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recommendation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requirements": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "legacyManifestDefaults": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "manifestTemplateVersionWhenAbsent",
+        "defaultModuleRole",
+        "runtimeRequirements"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0"
+        },
+        "manifestTemplateVersionWhenAbsent": {
+          "const": "1.0"
+        },
+        "defaultModuleRole": {
+          "type": "null"
+        },
+        "runtimeRequirements": {
+          "type": "object",
+          "required": [
+            "io",
+            "ui",
+            "dataIsolation"
+          ],
+          "properties": {
+            "io": {
+              "type": "array",
+              "maxItems": 0
+            },
+            "ui": {
+              "type": "null"
+            },
+            "dataIsolation": {
+              "type": "object",
+              "required": [
+                "mode",
+                "ownedStoreIDs",
+                "requiredDefaultRoles"
+              ],
+              "properties": {
+                "mode": {
+                  "const": "private_to_module"
+                },
+                "ownedStoreIDs": {
+                  "type": "array",
+                  "maxItems": 0
+                },
+                "requiredDefaultRoles": {
+                  "type": "array",
+                  "maxItems": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "upstreamValidationEvidence": {
+      "type": "object",
+      "required": [
+        "reportPath",
+        "reportSHA256",
+        "status",
+        "acceptanceGateCount",
+        "packageTestCount",
+        "commands"
+      ],
+      "properties": {
+        "reportPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reportSHA256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "status": {
+          "const": "pass"
+        },
+        "acceptanceGateCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "packageTestCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "commands": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "edition": {
+            "const": "apple"
+          },
+          "frameworkVersion": {
+            "const": "0.1.5"
+          }
+        },
+        "required": [
+          "edition",
+          "frameworkVersion"
+        ]
+      },
+      "then": {
+        "required": [
+          "supportStatus",
+          "sourceContract",
+          "swiftToolsVersion",
+          "minimumDeploymentTargets",
+          "internalTargets",
+          "ioCapabilityMappings",
+          "serviceCapabilityMappings",
+          "uiCapabilityMappings",
+          "defaultModuleRoleRules",
+          "runtimeInvariants",
+          "launchActivationStrategies",
+          "xcodeTemplates",
+          "consumerVerificationCommands",
+          "frameworkIdentity",
+          "implementationRules",
+          "deploymentPatterns",
+          "upstreamValidationEvidence"
+        ]
+      }
+    }
+  ],
   "additionalProperties": true
 }

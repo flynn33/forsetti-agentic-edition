@@ -1,0 +1,152 @@
+{
+  "taskID": "FAE-GOV-2026-08-20-015",
+  "generatedAtUTC": "2026-08-20T11:36:17.504255Z",
+  "environment": {
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+    "python": "3.13.5",
+    "swift": "Swift version 6.2.1 (swift-6.2.1-RELEASE)\nTarget: x86_64-unknown-linux-gnu",
+    "powershellHostAvailable": false,
+    "xcodeAvailable": false,
+    "swiftlintAvailable": false
+  },
+  "commands": [
+    {
+      "id": "baseline-python-acceptance",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v tests.test_remediation_acceptance",
+      "workingDirectory": "unmodified supplied Forsetti Agentic Edition baseline",
+      "exitCode": 0,
+      "result": "pass",
+      "summary": "7 tests passed",
+      "evidence": "baseline-python-acceptance.log"
+    },
+    {
+      "id": "aligned-python-acceptance",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v tests.test_remediation_acceptance",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 0,
+      "result": "pass",
+      "summary": "16 tests passed",
+      "evidence": "python-acceptance.log"
+    },
+    {
+      "id": "schema-source-hash-validation",
+      "command": "python3 validate_alignment_schemas.py",
+      "workingDirectory": "validation harness against aligned repository and supplied framework source",
+      "exitCode": 0,
+      "result": "pass",
+      "summary": "2 schemas checked; 3 profiles valid; 1 valid manifest accepted; 6 invalid manifests rejected; 29 source hashes matched",
+      "evidence": "schema-and-source-hash-validation.json"
+    },
+    {
+      "id": "source-semantic-validation",
+      "command": "python3 verify_profile_against_swift.py",
+      "workingDirectory": "validation harness against aligned repository and supplied framework source",
+      "exitCode": 0,
+      "result": "pass",
+      "summary": "Exact enum sets, I/O/service/UI mappings, package products/targets/deployment values, Combine restriction, and final-class policy matched source",
+      "evidence": "source-semantic-validation.json"
+    },
+    {
+      "id": "bundle-manifest-determinism",
+      "command": "python3 scripts/generate-product-manifest.py --bundle-root bundle --platform source --architecture portable (three independent outputs)",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 0,
+      "result": "pass",
+      "summary": "Three generated manifests and checked-in manifest were byte-identical; 47 files",
+      "evidence": [
+        "product-manifest-sha256.txt",
+        "product-manifest-summary.json"
+      ]
+    },
+    {
+      "id": "windows-cmake-configure",
+      "command": "cmake -S products/windows -B /tmp/fae-windows-build-final -G Ninja -DCMAKE_BUILD_TYPE=Release",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 0,
+      "result": "pass",
+      "evidence": "windows-cmake-configure.log"
+    },
+    {
+      "id": "windows-cmake-build",
+      "command": "cmake --build /tmp/fae-windows-build-final",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 0,
+      "result": "pass",
+      "evidence": "windows-cmake-build.log"
+    },
+    {
+      "id": "windows-ctest",
+      "command": "ctest --test-dir /tmp/fae-windows-build-final --output-on-failure",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 0,
+      "result": "pass",
+      "summary": "1/1 tests passed",
+      "evidence": "windows-ctest.log"
+    },
+    {
+      "id": "native-bundle-verification",
+      "command": "forsetti-governance bundle verify --bundle-root bundle",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 0,
+      "result": "pass",
+      "summary": "Product bundle verified",
+      "evidence": "windows-bundle-verify.log"
+    },
+    {
+      "id": "swift-parse",
+      "command": "swiftc -parse products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift products/apple/Tests/GovernanceCoreTests/ValidationResultTests.swift",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 0,
+      "result": "pass",
+      "summary": "Both changed Swift files parsed successfully",
+      "evidence": "swift-parse.log"
+    },
+    {
+      "id": "swift-package-tests-linux",
+      "command": "swift test --package-path products/apple --scratch-path /tmp/fae-apple-swift-build-final --parallel --enable-code-coverage",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 1,
+      "result": "environment_unavailable",
+      "summary": "Compilation reached GovernanceApple, then stopped because CryptoKit is unavailable for x86_64 Linux; this does not establish a macOS build failure",
+      "evidence": [
+        "swift-version.txt",
+        "swift-test-linux.log"
+      ]
+    },
+    {
+      "id": "bash-wrapper-syntax",
+      "command": "bash -n scripts/validate-repo.sh",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 0,
+      "result": "pass",
+      "summary": "Shell wrapper syntax valid"
+    },
+    {
+      "id": "powershell-validator-wrapper",
+      "command": "./scripts/validate-repo.sh -Mode all",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 1,
+      "result": "environment_unavailable_fail_closed",
+      "summary": "No pwsh or powershell host installed; wrapper stopped with the required explicit error",
+      "evidence": "validate-repo-wrapper.log"
+    },
+    {
+      "id": "powershell-static-structure",
+      "command": "repository static delimiter/string/comment structure scan for *.ps1",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 0,
+      "result": "pass_limited",
+      "summary": "16 PowerShell files passed static structure checks; this is not represented as PowerShell execution",
+      "evidence": "powershell-static-structure.json"
+    },
+    {
+      "id": "git-diff-check",
+      "command": "git diff --check",
+      "workingDirectory": "aligned Forsetti Agentic Edition",
+      "exitCode": 0,
+      "result": "pass",
+      "summary": "No whitespace errors",
+      "evidence": "git-diff-check.log"
+    }
+  ]
+}

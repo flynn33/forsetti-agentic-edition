@@ -1,0 +1,538 @@
+{
+  "edition": "apple",
+  "frameworkVersion": "0.1.5",
+  "supportStatus": "supported",
+  "sourceContract": {
+    "repository": "Forsetti-Framework-Mac-iOS",
+    "versionFile": "version.txt",
+    "version": "0.1.5",
+    "capturedAtUTC": "2026-08-20T00:00:00Z",
+    "files": [
+      {
+        "path": "version.txt",
+        "sha256": "800cf1c0392b24de7c0a1c6ea6778ecb433dec71c49a150bce96a98477527b2f"
+      },
+      {
+        "path": "Package.swift",
+        "sha256": "fe1a7e792e0721b197b235f2af6b38a6605ca6055ea2889e27fe5141444d4048"
+      },
+      {
+        "path": "framework-policy.json",
+        "sha256": "4c6e5a8085cafc7e29d57452e20bc10f3b05b6cf3f4f0e8590a2ef086bd3d0fe"
+      },
+      {
+        "path": "implementation-policy.json",
+        "sha256": "497142ae586513aaed91c440f0b6c3f236436d9c3478de175c228b223e8b3ba4"
+      },
+      {
+        "path": "REPOSITORY_RULES.md",
+        "sha256": "93a86c612168fdaa117d6a46609cc2e22cc431a1fb3050b9d787b5b74a2454e3"
+      },
+      {
+        "path": "MODULE_BOUNDARY_RULES.md",
+        "sha256": "6a4c04b03efdf3b3ccb709a6612a55730aa87a0359c32793ba4768bb719d5fa7"
+      },
+      {
+        "path": "developer-guide.md",
+        "sha256": "6ea23a441cc8d910c276c11dbb023aab2e29eb609a1e42f5f583b8001e395133"
+      },
+      {
+        "path": "xcode-template-guide.md",
+        "sha256": "d8dd9fccd323bb0acedf8076a65679516bc5e1a95f3764c60ec2dc5fc3dd68ea"
+      },
+      {
+        "path": ".forsetti/alignment/final-report.json",
+        "sha256": "3f41614d90e9dea55618a3acf90fec750d5361a62d997020864e2fe623952ede"
+      },
+      {
+        "path": "Sources/ForsettiCore/Model/SemVer.swift",
+        "sha256": "5d74b0a0dbf877c98128bf5f45906cf9f5e3f52e2767275ab4b3467f162a0843"
+      },
+      {
+        "path": "Sources/ForsettiCore/Model/ModuleModels.swift",
+        "sha256": "0df75b0b1f34d10847420d8f20b7e6edc66c14026bbc0c0003f08fbbe30da80d"
+      },
+      {
+        "path": "Sources/ForsettiCore/Protocols/ForsettiProtocols.swift",
+        "sha256": "d8411b2693b6076a007b55cdd6c0c8937b936c6b8e9179d8fe8cf60065cad2d2"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/CompatibilityChecker.swift",
+        "sha256": "31957a5645fe2f15a1311264ac95455a7654e99c97cf40886c63ebaf343fb206"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ForsettiContext.swift",
+        "sha256": "ae971699b7fc4da43b9749dc2ae302064795aaadb8c1c2fe306eccaf7f52f457"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ForsettiRuntime.swift",
+        "sha256": "ff8a60932b83ff6b2d4e00d056cdc22f81301ba35732655a71cdc1a8e137f565"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ManifestLoader.swift",
+        "sha256": "ecb45b44864f4d8eb1793438540c0f99813978e49e2430daf3dd904603e440b9"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ModuleManager.swift",
+        "sha256": "f0a063058343b14a0726d1909baca8893c136cb2dc02587dc1570c1ab95ede0c"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ModuleManager+UIValidation.swift",
+        "sha256": "09338f3c943954971ce3c6839e0ae69882ad59c63e0b64d3444e7a4cae5381ad"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ModuleRegistrationStore.swift",
+        "sha256": "c58fecfcfaa057716d6f0bce212b5d3001fa462400ec8c3c34381497a4f5dc85"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ModuleRegistry.swift",
+        "sha256": "68926805f8a23c027956b390a1da08fed097229d318d0081cd4c16f5a20dbc0d"
+      },
+      {
+        "path": "Sources/ForsettiCore/Services/ForsettiServices.swift",
+        "sha256": "29104723672f6c9e4f68e402b0601a4cd6959d27678238d3203cb48d68e4f2db"
+      },
+      {
+        "path": "Sources/ForsettiCore/UI/UISurfaceManager.swift",
+        "sha256": "d75be686940f9031c860f9eb8757c17c971343a948ebe74db2dd245f82fb04cf"
+      },
+      {
+        "path": "Sources/ForsettiHostTemplate/Controller/ForsettiHostController.swift",
+        "sha256": "20e03f98598567aeba10e15b66e31a72e40e59c63c8d3ce3b30a09ba8984a8e7"
+      },
+      {
+        "path": "Sources/ForsettiHostTemplate/Controller/ForsettiHostTemplateBootstrap.swift",
+        "sha256": "11a3d86fe5cc0109283b0f3d48c2b0380b028f6e863fa3ba9cc1f76faf31b08b"
+      },
+      {
+        "path": "Tests/ForsettiArchitectureTests/ArchitectureEnforcementTests.swift",
+        "sha256": "533d05b0a0fc9c5cd913962cda9da24e197aa10a179ec44c111dd371472c9688"
+      },
+      {
+        "path": "XcodeTemplates/Project Templates/Forsetti/Forsetti App.xctemplate/AppModuleManifest.json",
+        "sha256": "c26225a4c6f69a5e9134ecfd0326893f67b1f9a2cf54a7e893d9014fd9f2a769"
+      },
+      {
+        "path": "XcodeTemplates/Project Templates/Forsetti/Forsetti App.xctemplate/ForsettiBootstrap.swift",
+        "sha256": "9d1e6d07a66fd1b7a46123480ace0b0fc73f43239f008c7ad5a30046db42f94a"
+      },
+      {
+        "path": "XcodeTemplates/Project Templates/Forsetti/Forsetti Service Module.xctemplate/ServiceModuleManifest.json",
+        "sha256": "ed4a28a351092a6d40753d2f5e4f4984e3bc02f5e70a23d812229bbda84dae2e"
+      },
+      {
+        "path": "XcodeTemplates/Project Templates/Forsetti/Forsetti UI Module.xctemplate/UIModuleManifest.json",
+        "sha256": "559712e2f6fbc9fd425c8f95b7a65c04c0a6b31d15a08011107f4ab74ceaf00f"
+      }
+    ]
+  },
+  "supportedPlatforms": [
+    "iOS",
+    "macOS"
+  ],
+  "nativeLanguage": "Swift",
+  "swiftToolsVersion": "5.10",
+  "minimumDeploymentTargets": {
+    "iOS": "17.0",
+    "macOS": "14.0"
+  },
+  "nativeTools": [
+    "Xcode",
+    "Swift Package Manager",
+    "SwiftLint",
+    "XCTest"
+  ],
+  "publicProducts": [
+    "ForsettiCore",
+    "ForsettiPlatform",
+    "ForsettiHostTemplate"
+  ],
+  "internalTargets": [
+    "ForsettiModulesExample"
+  ],
+  "manifest": {
+    "currentSchemaVersion": "1.1",
+    "currentTemplateVersion": "1.1",
+    "supportedVersions": [
+      {
+        "schemaVersion": "1.0",
+        "templateVersion": "1.0",
+        "status": "legacy"
+      },
+      {
+        "schemaVersion": "1.1",
+        "templateVersion": "1.1",
+        "status": "current"
+      }
+    ],
+    "moduleTypes": [
+      "service",
+      "ui",
+      "app"
+    ],
+    "requiredFields": [
+      "schemaVersion",
+      "manifestTemplateVersion",
+      "moduleID",
+      "displayName",
+      "moduleVersion",
+      "moduleType",
+      "supportedPlatforms",
+      "minForsettiVersion",
+      "capabilitiesRequested",
+      "entryPoint",
+      "runtimeRequirements"
+    ],
+    "optionalFields": [
+      "maxForsettiVersion",
+      "iapProductID",
+      "defaultModuleRole"
+    ],
+    "semanticVersionEncoding": "object",
+    "moduleIDPattern": "^[A-Za-z][A-Za-z0-9]*(\\.[A-Za-z][A-Za-z0-9-]*)+$",
+    "reservedModuleIDPrefixes": [
+      "forsetti."
+    ],
+    "entryPointPattern": "^[A-Za-z_][A-Za-z0-9_.]*$",
+    "defaultModuleRoles": [
+      "ui",
+      "shared_database",
+      "authentication",
+      "diagnostics",
+      "api",
+      "security"
+    ],
+    "ioKinds": [
+      "networking",
+      "storage",
+      "secure_storage",
+      "file_export",
+      "telemetry",
+      "shared_database",
+      "authentication",
+      "diagnostics",
+      "api",
+      "security"
+    ],
+    "ioAccessModes": [
+      "read",
+      "write",
+      "read_write",
+      "execute",
+      "emit",
+      "consume"
+    ],
+    "dataIsolationModes": [
+      "private_to_module",
+      "framework_mediated_shared"
+    ],
+    "uiRequirementFields": [
+      "controlSchemeID",
+      "layoutID",
+      "themeIDs",
+      "viewIDs",
+      "slotIDs",
+      "toolbarItemIDs",
+      "routeIDs",
+      "pointerIDs"
+    ],
+    "legacyDefaults": {
+      "schemaVersion": "1.0",
+      "manifestTemplateVersionWhenAbsent": "1.0",
+      "defaultModuleRole": null,
+      "runtimeRequirements": {
+        "io": [],
+        "ui": null,
+        "dataIsolation": {
+          "mode": "private_to_module",
+          "ownedStoreIDs": [],
+          "requiredDefaultRoles": []
+        }
+      }
+    }
+  },
+  "capabilities": [
+    "networking",
+    "storage",
+    "secure_storage",
+    "file_export",
+    "crypto_utilities",
+    "telemetry",
+    "routing_overlay",
+    "ui_theme_mask",
+    "toolbar_items",
+    "view_injection",
+    "shared_database",
+    "authentication",
+    "diagnostics",
+    "api",
+    "security"
+  ],
+  "ioCapabilityMappings": {
+    "networking": "networking",
+    "storage": "storage",
+    "secure_storage": "secure_storage",
+    "file_export": "file_export",
+    "telemetry": "telemetry",
+    "shared_database": "shared_database",
+    "authentication": "authentication",
+    "diagnostics": "diagnostics",
+    "api": "api",
+    "security": "security"
+  },
+  "serviceCapabilityMappings": {
+    "NetworkingService": "networking",
+    "StorageService": "storage",
+    "SecureStorageService": "secure_storage",
+    "FileExportService": "file_export",
+    "TelemetryService": "telemetry",
+    "SharedDatabaseService": "shared_database",
+    "AuthenticationService": "authentication",
+    "DiagnosticsService": "diagnostics",
+    "APIService": "api",
+    "SecurityService": "security"
+  },
+  "uiCapabilityMappings": {
+    "themeIDs": "ui_theme_mask",
+    "viewIDs": "view_injection",
+    "slotIDs": "view_injection",
+    "toolbarItemIDs": "toolbar_items",
+    "routeIDs": "routing_overlay",
+    "pointerIDs": "routing_overlay"
+  },
+  "defaultModuleRoleRules": {
+    "ui": {
+      "allowedModuleTypes": [
+        "ui",
+        "app"
+      ],
+      "requiredCapability": null
+    },
+    "shared_database": {
+      "allowedModuleTypes": [
+        "service"
+      ],
+      "requiredCapability": "shared_database"
+    },
+    "authentication": {
+      "allowedModuleTypes": [
+        "service"
+      ],
+      "requiredCapability": "authentication"
+    },
+    "diagnostics": {
+      "allowedModuleTypes": [
+        "service"
+      ],
+      "requiredCapability": "diagnostics"
+    },
+    "api": {
+      "allowedModuleTypes": [
+        "service"
+      ],
+      "requiredCapability": "api"
+    },
+    "security": {
+      "allowedModuleTypes": [
+        "service"
+      ],
+      "requiredCapability": "security"
+    }
+  },
+  "dependencyRules": {
+    "ForsettiCore": [
+      "depends_on:nothing_in_repository",
+      "must_not_import:ForsettiPlatform",
+      "must_not_import:ForsettiModulesExample",
+      "must_not_import:ForsettiHostTemplate",
+      "must_not_import:SwiftUI",
+      "must_not_import:UIKit",
+      "must_not_import:AppKit",
+      "must_not_import:StoreKit",
+      "must_not_import:Combine"
+    ],
+    "ForsettiPlatform": [
+      "depends_on:ForsettiCore",
+      "must_not_import:ForsettiModulesExample",
+      "must_not_import:ForsettiHostTemplate",
+      "must_not_import:SwiftUI",
+      "must_not_import:UIKit",
+      "must_not_import:AppKit"
+    ],
+    "ForsettiModulesExample": [
+      "depends_on:ForsettiCore",
+      "must_not_import:ForsettiPlatform",
+      "must_not_import:ForsettiHostTemplate",
+      "must_not_import:SwiftUI",
+      "must_not_import:UIKit",
+      "must_not_import:AppKit",
+      "must_not_import:StoreKit"
+    ],
+    "ForsettiHostTemplate": [
+      "depends_on:ForsettiCore",
+      "depends_on:ForsettiPlatform",
+      "must_not_import:ForsettiModulesExample"
+    ],
+    "ConsumerModules": [
+      "may_depend_on:public_products_only",
+      "must_not_reference_other_modules_directly"
+    ]
+  },
+  "runtimeInvariants": {
+    "registrationAndIdentity": [
+      "Manifest discovery creates a registration record before activation.",
+      "Activation requires a registration record matching the current manifest hash and manifest identity.",
+      "Resolved descriptor and implementation identity must match moduleID, moduleType, moduleVersion, entryPoint, schema/template, capabilities, default role, and runtime requirements."
+    ],
+    "activation": [
+      "UI and app module activation requires ForsettiUIModule or ForsettiAppModule compatibility before lifecycle start.",
+      "Only one UI or app module may be active at a time; activating another deactivates the previously active UI or app module.",
+      "Service modules may remain concurrently active.",
+      "Runtime boot refreshes entitlements before restoring persisted activation state.",
+      "Runtime shutdown deactivates loaded modules without clearing persisted activation state.",
+      "Restored modules pass through the normal registration, compatibility, entitlement, capability, and runtime requirement gates."
+    ],
+    "runtimeRequirements": [
+      "Each I/O kind requires its mapped capability.",
+      "A required I/O provider must be available before activation.",
+      "framework_mediated_shared data isolation requires an available shared_database provider.",
+      "A default module role must be valid for the module type and must declare its mapped capability when one is required.",
+      "A service module cannot conform to ForsettiUIModule or provide UI contributions."
+    ],
+    "serviceAccess": [
+      "Service resolution is capability-scoped to the requesting module.",
+      "Unknown service protocol types are denied.",
+      "Mapped service protocol types are denied unless the module was granted the mapped capability."
+    ],
+    "moduleContext": [
+      "A module receives a scoped context bound to its manifest moduleID.",
+      "Event publishing, messaging, and logging use the bound source module identity rather than caller-supplied identity."
+    ],
+    "manifestLoading": [
+      "Strict manifest-directory loading fails fast on invalid manifest JSON or validation errors.",
+      "Recursive fallback discovery ignores unrelated JSON that is not manifest-shaped.",
+      "Duplicate moduleID values fail discovery."
+    ],
+    "uiContributions": [
+      "Toolbar item contributions require toolbar_items.",
+      "View injection contributions require view_injection.",
+      "Overlay schema, routes, and pointers require routing_overlay.",
+      "Theme mask contributions require ui_theme_mask.",
+      "Actual contribution identifiers must be declared in runtimeRequirements.ui.",
+      "Publishing an event from a toolbar action does not require a separate event_publishing capability in the Apple contract."
+    ]
+  },
+  "launchActivationStrategies": [
+    "restoreOnly",
+    "activateAllEligibleForDevelopment",
+    "activate(moduleIDs:)"
+  ],
+  "xcodeTemplates": [
+    "Forsetti App",
+    "Forsetti UI Module",
+    "Forsetti Service Module",
+    "Forsetti Manifest"
+  ],
+  "verificationCommands": [
+    "./Scripts/verify-forsetti-guardrails.sh",
+    "xcodebuild -scheme ForsettiFramework-Package -destination 'generic/platform=iOS Simulator' build"
+  ],
+  "consumerVerificationCommands": [
+    "swift test --parallel --enable-code-coverage",
+    "swiftlint lint --strict --config .swiftlint.yml"
+  ],
+  "frameworkIdentity": {
+    "architectureStyle": "modularity-first_object-oriented",
+    "platformStrategy": "Apple-native",
+    "consumerRuntimeBoundary": "sealed_public_contracts_only",
+    "extensionModel": "public_Forsetti_contracts_or_upstream_framework_enhancement",
+    "technologyPlacementRule": "Apple-native frameworks are permitted in the module or layer that owns the responsibility; target-level import restrictions are not global technology bans.",
+    "allowsThirdPartyRuntimeDependencies": false
+  },
+  "implementationRules": {
+    "objectOrientedDesign": [
+      "Prefer protocols for public contracts and behavior boundaries.",
+      "Use constructor dependency injection for collaborators.",
+      "Production classes must be final unless subclassing is a deliberate documented public design point.",
+      "Keep objects single-purpose and cohesive with tight access control.",
+      "Prefer composition over inheritance across module boundaries.",
+      "Avoid global mutable state, implicit singleton coupling, and service-locator shortcuts when a narrower interface is practical."
+    ],
+    "consumerIntegration": [
+      "Treat Forsetti as a sealed runtime dependency and use public package products only.",
+      "Do not modify, copy, fork, or patch Forsetti internals for application-specific behavior.",
+      "Implement extension needs through public modules, services, runtime composition, and public bootstrap APIs.",
+      "Request an upstream framework enhancement when the required public extension point does not exist."
+    ],
+    "moduleBoundaries": [
+      "Each module or target owns one clear responsibility and modules do not directly depend on other module implementations.",
+      "In a multi-module single application, exactly one dedicated UI module owns application UI while service modules remain separate.",
+      "A single-module application uses one ForsettiAppModule that owns its UI and runs with Forsetti behind the application surface.",
+      "SwiftUI, Metal, and other Apple-native frameworks are valid in the correct app-owned module or architectural layer.",
+      "Keep dependency direction one-way and prohibit direct or indirect cycles."
+    ],
+    "runtimeSafety": [
+      "Manifest capabilities and runtime requirements are enforced rather than advisory.",
+      "Module identity, manifest identity, registration records, and manifest hashes must agree before activation.",
+      "Production rendering must wait for runtime boot, compatibility, entitlement, and app-module activation.",
+      "Persisted activation restoration must pass through normal registration, compatibility, entitlement, capability, and runtime-requirement gates.",
+      "Treat manifest changes as architecture changes and keep manifest, descriptor, entry point, and registry identity aligned."
+    ],
+    "errorAndConcurrency": [
+      "Do not swallow errors silently.",
+      "Do not degrade Sendable or concurrency correctness.",
+      "Do not introduce force unwraps without a documented invariant and no practical alternative."
+    ]
+  },
+  "deploymentPatterns": [
+    {
+      "id": "A",
+      "name": "single_app_module",
+      "recommendation": "recommended_starting_point",
+      "requirements": [
+        "Use one app-owned ForsettiAppModule as the complete application UI and behavior boundary.",
+        "Use the production-oriented Forsetti App template and app-owned registry/manifest files."
+      ]
+    },
+    {
+      "id": "B",
+      "name": "multi_module_single_app",
+      "recommendation": "supported",
+      "requirements": [
+        "Use exactly one active UI module plus one or more independently bounded service modules.",
+        "Register unique module IDs and entry points and declare every required capability/provider."
+      ]
+    },
+    {
+      "id": "C",
+      "name": "developer_testing",
+      "recommendation": "development_only",
+      "requirements": [
+        "Keep framework controls visible while testing multiple modules.",
+        "Use the development deployment mode rather than presenting it as production application identity."
+      ]
+    },
+    {
+      "id": "D",
+      "name": "dashboard_or_multi_app_host",
+      "recommendation": "intentional_specialized_pattern",
+      "requirements": [
+        "Keep explicit framework controls and navigation surfaces only where the product requires them.",
+        "Add dashboard-specific modules and routing overlays intentionally through public contracts."
+      ]
+    }
+  ],
+  "upstreamValidationEvidence": {
+    "reportPath": ".forsetti/alignment/final-report.json",
+    "reportSHA256": "3f41614d90e9dea55618a3acf90fec750d5361a62d997020864e2fe623952ede",
+    "status": "pass",
+    "acceptanceGateCount": 13,
+    "packageTestCount": 81,
+    "commands": [
+      "swift test --parallel --enable-code-coverage",
+      "swiftlint lint --strict --config .swiftlint.yml",
+      "xcodebuild -scheme ForsettiFramework-Package -destination 'generic/platform=iOS Simulator' build",
+      "./Scripts/verify-forsetti-guardrails.sh"
+    ]
+  }
+}

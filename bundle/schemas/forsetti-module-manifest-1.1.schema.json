@@ -25,40 +25,18 @@
     },
     "moduleID": {
       "type": "string",
-      "pattern": "^[A-Za-z0-9]+(?:[.-][A-Za-z0-9_-]+)+$"
+      "pattern": "^[A-Za-z][A-Za-z0-9]*(\\.[A-Za-z][A-Za-z0-9-]*)+$",
+      "not": {
+        "pattern": "^forsetti\\."
+      }
     },
     "displayName": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "moduleVersion": {
-      "type": "object",
-      "required": [
-        "major",
-        "minor",
-        "patch"
-      ],
-      "properties": {
-        "major": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "minor": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "patch": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "prerelease": {
-          "type": [
-            "string",
-            "null"
-          ]
-        }
-      },
-      "additionalProperties": false
+      "$ref": "#/$defs/semanticVersionObject"
     },
     "moduleType": {
       "enum": [
@@ -80,64 +58,12 @@
       }
     },
     "minForsettiVersion": {
-      "type": "object",
-      "required": [
-        "major",
-        "minor",
-        "patch"
-      ],
-      "properties": {
-        "major": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "minor": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "patch": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "prerelease": {
-          "type": [
-            "string",
-            "null"
-          ]
-        }
-      },
-      "additionalProperties": false
+      "$ref": "#/$defs/semanticVersionObject"
     },
     "maxForsettiVersion": {
       "oneOf": [
         {
-          "type": "object",
-          "required": [
-            "major",
-            "minor",
-            "patch"
-          ],
-          "properties": {
-            "major": {
-              "type": "integer",
-              "minimum": 0
-            },
-            "minor": {
-              "type": "integer",
-              "minimum": 0
-            },
-            "patch": {
-              "type": "integer",
-              "minimum": 0
-            },
-            "prerelease": {
-              "type": [
-                "string",
-                "null"
-              ]
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/$defs/semanticVersionObject"
         },
         {
           "type": "null"
@@ -160,7 +86,7 @@
     },
     "entryPoint": {
       "type": "string",
-      "minLength": 1
+      "pattern": "^[A-Za-z_][A-Za-z0-9_.]*$"
     },
     "defaultModuleRole": {
       "enum": [
@@ -198,13 +124,42 @@
           ]
         },
         "dataIsolation": {
-          "$ref": "#/$defs/dataIsolation"
+          "$ref": "#/$defs/dataIsolationRequirement"
         }
       },
       "additionalProperties": false
     }
   },
   "$defs": {
+    "semanticVersionObject": {
+      "type": "object",
+      "required": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "properties": {
+        "major": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "patch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prerelease": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
     "ioRequirement": {
       "type": "object",
       "required": [
@@ -216,7 +171,8 @@
       "properties": {
         "requirementID": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         },
         "kind": {
           "enum": [
@@ -224,7 +180,6 @@
             "storage",
             "secure_storage",
             "file_export",
-            "crypto_utilities",
             "telemetry",
             "shared_database",
             "authentication",
@@ -274,53 +229,63 @@
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "viewIDs": {
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "slotIDs": {
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "toolbarItemIDs": {
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "routeIDs": {
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "pointerIDs": {
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
           }
         }
       },
       "additionalProperties": false
     },
-    "dataIsolation": {
+    "dataIsolationRequirement": {
       "type": "object",
       "required": [
-        "mode",
-        "ownedStoreIDs",
-        "requiredDefaultRoles"
+        "mode"
       ],
       "properties": {
         "mode": {
@@ -334,7 +299,8 @@
           "uniqueItems": true,
           "items": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "requiredDefaultRoles": {
@@ -355,5 +321,30 @@
       "additionalProperties": false
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "moduleType": {
+            "const": "service"
+          }
+        },
+        "required": [
+          "moduleType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "runtimeRequirements": {
+            "properties": {
+              "ui": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
   "additionalProperties": false
 }

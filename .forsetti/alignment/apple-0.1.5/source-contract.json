@@ -1,0 +1,160 @@
+{
+  "taskID": "FAE-GOV-2026-08-20-015",
+  "generatedAtUTC": "2026-08-20T11:36:17.504066Z",
+  "status": "pass",
+  "target": {
+    "edition": "apple",
+    "frameworkVersion": "0.1.5",
+    "profile": "editions/apple/forsetti-apple-0.1.5.profile.json",
+    "manifestSchemaVersion": "1.1"
+  },
+  "sourceArchives": [
+    {
+      "role": "authoritative_runtime_contract",
+      "path": "/mnt/data/Forsetti-Framework-Mac-iOS-main.zip",
+      "sizeBytes": 302941,
+      "sha256": "cfc79a7a41d1a37aaf18522dff43cf80985d7772aed28c39cd0e68f21f89fb09",
+      "declaredFrameworkVersion": "0.1.5"
+    },
+    {
+      "role": "agentic_edition_baseline",
+      "path": "/mnt/data/forsetti-agentic-edition-main.zip",
+      "sizeBytes": 718195,
+      "sha256": "d95fdca0bd070c274455f205ff06e835de41e5e077718eb836a27dd9e69fb29b",
+      "baselineGitCommit": "3506d98db73a99c92698f5d2f6f987a2bb937bfd"
+    },
+    {
+      "role": "project_intent_baseline",
+      "path": "/mnt/data/Summarize System Intentions.txt",
+      "sizeBytes": 16612,
+      "sha256": "44d22a0878a0236852789710fba13183b22bb66d5802554b8a336e5bb3780767"
+    }
+  ],
+  "profileSourceContract": {
+    "repository": "Forsetti-Framework-Mac-iOS",
+    "versionFile": "version.txt",
+    "version": "0.1.5",
+    "capturedAtUTC": "2026-08-20T00:00:00Z",
+    "files": [
+      {
+        "path": "version.txt",
+        "sha256": "800cf1c0392b24de7c0a1c6ea6778ecb433dec71c49a150bce96a98477527b2f"
+      },
+      {
+        "path": "Package.swift",
+        "sha256": "fe1a7e792e0721b197b235f2af6b38a6605ca6055ea2889e27fe5141444d4048"
+      },
+      {
+        "path": "framework-policy.json",
+        "sha256": "4c6e5a8085cafc7e29d57452e20bc10f3b05b6cf3f4f0e8590a2ef086bd3d0fe"
+      },
+      {
+        "path": "implementation-policy.json",
+        "sha256": "497142ae586513aaed91c440f0b6c3f236436d9c3478de175c228b223e8b3ba4"
+      },
+      {
+        "path": "REPOSITORY_RULES.md",
+        "sha256": "93a86c612168fdaa117d6a46609cc2e22cc431a1fb3050b9d787b5b74a2454e3"
+      },
+      {
+        "path": "MODULE_BOUNDARY_RULES.md",
+        "sha256": "6a4c04b03efdf3b3ccb709a6612a55730aa87a0359c32793ba4768bb719d5fa7"
+      },
+      {
+        "path": "developer-guide.md",
+        "sha256": "6ea23a441cc8d910c276c11dbb023aab2e29eb609a1e42f5f583b8001e395133"
+      },
+      {
+        "path": "xcode-template-guide.md",
+        "sha256": "d8dd9fccd323bb0acedf8076a65679516bc5e1a95f3764c60ec2dc5fc3dd68ea"
+      },
+      {
+        "path": ".forsetti/alignment/final-report.json",
+        "sha256": "3f41614d90e9dea55618a3acf90fec750d5361a62d997020864e2fe623952ede"
+      },
+      {
+        "path": "Sources/ForsettiCore/Model/SemVer.swift",
+        "sha256": "5d74b0a0dbf877c98128bf5f45906cf9f5e3f52e2767275ab4b3467f162a0843"
+      },
+      {
+        "path": "Sources/ForsettiCore/Model/ModuleModels.swift",
+        "sha256": "0df75b0b1f34d10847420d8f20b7e6edc66c14026bbc0c0003f08fbbe30da80d"
+      },
+      {
+        "path": "Sources/ForsettiCore/Protocols/ForsettiProtocols.swift",
+        "sha256": "d8411b2693b6076a007b55cdd6c0c8937b936c6b8e9179d8fe8cf60065cad2d2"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/CompatibilityChecker.swift",
+        "sha256": "31957a5645fe2f15a1311264ac95455a7654e99c97cf40886c63ebaf343fb206"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ForsettiContext.swift",
+        "sha256": "ae971699b7fc4da43b9749dc2ae302064795aaadb8c1c2fe306eccaf7f52f457"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ForsettiRuntime.swift",
+        "sha256": "ff8a60932b83ff6b2d4e00d056cdc22f81301ba35732655a71cdc1a8e137f565"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ManifestLoader.swift",
+        "sha256": "ecb45b44864f4d8eb1793438540c0f99813978e49e2430daf3dd904603e440b9"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ModuleManager.swift",
+        "sha256": "f0a063058343b14a0726d1909baca8893c136cb2dc02587dc1570c1ab95ede0c"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ModuleManager+UIValidation.swift",
+        "sha256": "09338f3c943954971ce3c6839e0ae69882ad59c63e0b64d3444e7a4cae5381ad"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ModuleRegistrationStore.swift",
+        "sha256": "c58fecfcfaa057716d6f0bce212b5d3001fa462400ec8c3c34381497a4f5dc85"
+      },
+      {
+        "path": "Sources/ForsettiCore/Runtime/ModuleRegistry.swift",
+        "sha256": "68926805f8a23c027956b390a1da08fed097229d318d0081cd4c16f5a20dbc0d"
+      },
+      {
+        "path": "Sources/ForsettiCore/Services/ForsettiServices.swift",
+        "sha256": "29104723672f6c9e4f68e402b0601a4cd6959d27678238d3203cb48d68e4f2db"
+      },
+      {
+        "path": "Sources/ForsettiCore/UI/UISurfaceManager.swift",
+        "sha256": "d75be686940f9031c860f9eb8757c17c971343a948ebe74db2dd245f82fb04cf"
+      },
+      {
+        "path": "Sources/ForsettiHostTemplate/Controller/ForsettiHostController.swift",
+        "sha256": "20e03f98598567aeba10e15b66e31a72e40e59c63c8d3ce3b30a09ba8984a8e7"
+      },
+      {
+        "path": "Sources/ForsettiHostTemplate/Controller/ForsettiHostTemplateBootstrap.swift",
+        "sha256": "11a3d86fe5cc0109283b0f3d48c2b0380b028f6e863fa3ba9cc1f76faf31b08b"
+      },
+      {
+        "path": "Tests/ForsettiArchitectureTests/ArchitectureEnforcementTests.swift",
+        "sha256": "533d05b0a0fc9c5cd913962cda9da24e197aa10a179ec44c111dd371472c9688"
+      },
+      {
+        "path": "XcodeTemplates/Project Templates/Forsetti/Forsetti App.xctemplate/AppModuleManifest.json",
+        "sha256": "c26225a4c6f69a5e9134ecfd0326893f67b1f9a2cf54a7e893d9014fd9f2a769"
+      },
+      {
+        "path": "XcodeTemplates/Project Templates/Forsetti/Forsetti App.xctemplate/ForsettiBootstrap.swift",
+        "sha256": "9d1e6d07a66fd1b7a46123480ace0b0fc73f43239f008c7ad5a30046db42f94a"
+      },
+      {
+        "path": "XcodeTemplates/Project Templates/Forsetti/Forsetti Service Module.xctemplate/ServiceModuleManifest.json",
+        "sha256": "ed4a28a351092a6d40753d2f5e4f4984e3bc02f5e70a23d812229bbda84dae2e"
+      },
+      {
+        "path": "XcodeTemplates/Project Templates/Forsetti/Forsetti UI Module.xctemplate/UIModuleManifest.json",
+        "sha256": "559712e2f6fbc9fd425c8f95b7a65c04c0a6b31d15a08011107f4ab74ceaf00f"
+      }
+    ]
+  },
+  "verifiedSourceFileCount": 29,
+  "sourceHashMismatches": 0,
+  "note": "The 29 load-bearing hashes were recomputed from the supplied extracted Forsetti Framework 0.1.5 source and matched the active Apple profile exactly."
+}

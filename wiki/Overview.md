@@ -2,7 +2,7 @@
 
 [![Architecture](https://img.shields.io/badge/architecture-core%20%2B%20bundle%20%2B%20native%20products-0ea5e9)](Overview)
 [![Boundary](https://img.shields.io/badge/boundary-governance--only-16a34a)](Compliance)
-[![Bundle](https://img.shields.io/badge/source%20bundle-46%20required%20files-b91c1c)](Overview)
+[![Bundle](https://img.shields.io/badge/source%20bundle-47%20required%20files-b91c1c)](Overview)
 
 > **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
 > **Product model**: portable governance core, trusted source bundle, edition profiles, native host products, optional adapters, platform overlays, and derived documentation surfaces.
@@ -22,7 +22,7 @@ flowchart TB
 
     subgraph Profiles["Binding Profiles"]
         Shared["Shared sealed-runtime invariants"]
-        AppleProfile["Apple profile<br/>0.1.3"]
+        AppleProfile["Apple profile<br/>0.1.5 current"]
         WindowsProfile["Windows profile<br/>0.2.0"]
     end
 
@@ -84,8 +84,8 @@ flowchart TB
 | Layer | Path | Current Contents | Authority |
 |---|---|---|---|
 | Portable core | `core/` | policy registries, schemas, task contract template, validator, authority model | Canonical where marked by policy hierarchy |
-| Edition profiles | `editions/` | Apple `0.1.3`, Windows `0.2.0`, shared invariants | Binding for target work |
-| Source bundle | `bundle/` | 46 required hashed files, schemas, policies, profiles, target instructions | Verifiable installation payload |
+| Edition profiles | `editions/` | Apple `0.1.5` current + `0.1.3` compatibility, Windows `0.2.0`, shared invariants | Binding for target work |
+| Source bundle | `bundle/` | 47 required hashed files, schemas, policies, profiles, target instructions | Verifiable installation payload |
 | Native Apple product | `products/apple/` | Swift package, executable, core/contracts/apple libraries, tests | Native command surface |
 | Native Windows product | `products/windows/` | CMake project, C++20 executable, core library, tests | Native command surface |
 | GitHub adapter | `adapters/github-actions/` | PowerShell workflow scripts and shared GitHub context helpers | Optional hosted adapter |
@@ -103,7 +103,7 @@ flowchart LR
     Generator["scripts/generate-product-manifest.py"] --> Manifest["bundle/product-manifest.json"]
     Manifest --> Hashes["SHA-256 file hashes"]
     Manifest --> PolicyHash["policyBundleHash"]
-    Manifest --> BundleFiles["46 required bundle files"]
+    Manifest --> BundleFiles["47 required bundle files"]
     BundleFiles --> AppleVerify["Apple bundle verify"]
     BundleFiles --> WindowsVerify["Windows bundle verify"]
     AppleVerify --> Decision{"integrity result"}
@@ -120,8 +120,8 @@ flowchart LR
 | `bundleID` | `ffae-1.0.0-source` |
 | `platform` | `source` |
 | `architecture` | `portable` |
-| `files` | `46` required entries |
-| `policyBundleHash` | `2c543bb7562f25918bc2ca03fbc8eec7539ba5c232cf686acb2da26e91e4e95a` |
+| `files` | `47` required entries |
+| `policyBundleHash` | `cfe9a828b306570345deb4398f760ff7350439052173be06c9bc6dfce905a6f5` |
 
 ---
 
@@ -141,7 +141,8 @@ flowchart LR
 
 | Profile | Framework Version | Platforms | Manifest Version | Public Products | Verification Commands |
 |---|---:|---|---:|---|---|
-| Apple | `0.1.3` | iOS, macOS | `1.1` | `ForsettiCore`, `ForsettiPlatform`, `ForsettiHostTemplate` | guardrail script, Xcode build |
+| Apple (current/default) | `0.1.5` | iOS, macOS | `1.1` current; `1.0` safe legacy | `ForsettiCore`, `ForsettiPlatform`, `ForsettiHostTemplate` | guardrail script, Xcode build, consumer Swift test and strict SwiftLint |
+| Apple (compatibility) | `0.1.3` | iOS, macOS | `1.1` | `ForsettiCore`, `ForsettiPlatform`, `ForsettiHostTemplate` | profile-defined legacy commands |
 | Windows | `0.2.0` | Windows | `1.1` | `ForsettiCore`, `ForsettiPlatform`, `ForsettiHostTemplate` | CMake configure/build, CTest, PowerShell guardrail script |
 
 ---

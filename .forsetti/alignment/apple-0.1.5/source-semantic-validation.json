@@ -1,0 +1,151 @@
+{
+  "status": "pass",
+  "checks": {
+    "capabilities": {
+      "status": "pass",
+      "actual": [
+        "api",
+        "authentication",
+        "crypto_utilities",
+        "diagnostics",
+        "file_export",
+        "networking",
+        "routing_overlay",
+        "secure_storage",
+        "security",
+        "shared_database",
+        "storage",
+        "telemetry",
+        "toolbar_items",
+        "ui_theme_mask",
+        "view_injection"
+      ],
+      "expected": [
+        "api",
+        "authentication",
+        "crypto_utilities",
+        "diagnostics",
+        "file_export",
+        "networking",
+        "routing_overlay",
+        "secure_storage",
+        "security",
+        "shared_database",
+        "storage",
+        "telemetry",
+        "toolbar_items",
+        "ui_theme_mask",
+        "view_injection"
+      ]
+    },
+    "ioKinds": {
+      "status": "pass",
+      "actual": [
+        "api",
+        "authentication",
+        "diagnostics",
+        "file_export",
+        "networking",
+        "secure_storage",
+        "security",
+        "shared_database",
+        "storage",
+        "telemetry"
+      ],
+      "expected": [
+        "api",
+        "authentication",
+        "diagnostics",
+        "file_export",
+        "networking",
+        "secure_storage",
+        "security",
+        "shared_database",
+        "storage",
+        "telemetry"
+      ]
+    },
+    "ioAccessModes": {
+      "status": "pass",
+      "actual": [
+        "consume",
+        "emit",
+        "execute",
+        "read",
+        "read_write",
+        "write"
+      ],
+      "expected": [
+        "consume",
+        "emit",
+        "execute",
+        "read",
+        "read_write",
+        "write"
+      ]
+    },
+    "defaultModuleRoles": {
+      "status": "pass",
+      "actual": [
+        "api",
+        "authentication",
+        "diagnostics",
+        "security",
+        "shared_database",
+        "ui"
+      ],
+      "expected": [
+        "api",
+        "authentication",
+        "diagnostics",
+        "security",
+        "shared_database",
+        "ui"
+      ]
+    },
+    "dataIsolationModes": {
+      "status": "pass",
+      "actual": [
+        "framework_mediated_shared",
+        "private_to_module"
+      ],
+      "expected": [
+        "framework_mediated_shared",
+        "private_to_module"
+      ]
+    },
+    "ioCapabilityMappings": {
+      "status": "pass",
+      "count": 10
+    },
+    "serviceCapabilityMappings": {
+      "status": "pass",
+      "count": 10
+    },
+    "uiCapabilityMappings": {
+      "status": "pass",
+      "count": 6
+    },
+    "packageContract": {
+      "status": "pass",
+      "swiftToolsVersion": "5.10",
+      "products": [
+        "ForsettiCore",
+        "ForsettiPlatform",
+        "ForsettiHostTemplate"
+      ],
+      "internalTargets": [
+        "ForsettiModulesExample"
+      ],
+      "minimumDeploymentTargets": {
+        "iOS": "17.0",
+        "macOS": "14.0"
+      }
+    },
+    "architectureEnforcement": {
+      "status": "pass",
+      "coreCombineProhibition": true,
+      "finalClassPolicy": true
+    }
+  }
+}

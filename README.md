@@ -89,11 +89,31 @@ Overlays provide usable guidance profiles: `overlays/generic/` for host-neutral 
 
 GitHub Actions support belongs in `adapters/github-actions/` as an optional adapter surface. It does not define canonical compliance rules. Workflow files under `.github/workflows/` are thin hosted wrappers that preserve GitHub check names and delegate implementation to adapter-owned scripts under `adapters/github-actions/workflows/`.
 
-`bundle/product-manifest.json` currently declares product version `1.0.0`, schema version `2.0`, source platform `source`, portable architecture, and 46 required hashed bundle entries. `scripts/generate-product-manifest.py` regenerates that manifest deterministically from the bundle tree.
+`bundle/product-manifest.json` currently declares product version `1.0.0`, schema version `2.0`, source platform `source`, portable architecture, and 47 required hashed bundle entries. `scripts/generate-product-manifest.py` regenerates that manifest deterministically from the bundle tree.
 
 The Apple native product in `products/apple/` builds the `forsetti-governance` Swift executable and the `GovernanceContracts`, `GovernanceCore`, and `GovernanceApple` libraries. Its implemented commands are `version`, `bundle verify`, `init`, `doctor`, and `discover`.
 
 The Windows native product in `products/windows/` builds the `forsetti-governance` C++20 executable and `forsetti_governance_core` library. Its implemented commands are `version` and `bundle verify`; Apple-only bootstrap and discovery parity is not claimed by this repository state.
+
+---
+
+## Current Apple Framework Alignment
+
+The active Apple governance profile is `editions/apple/forsetti-apple-0.1.5.profile.json`. It is source-pinned to the supplied Forsetti Framework for Mac and iOS `0.1.5` contract and is the default selected by project-context templates and the Apple native bootstrap surface. The prior `0.1.3` profile remains available only when a governed project explicitly selects that version. Unknown Apple framework versions fail closed rather than falling back silently.
+
+The current Apple profile binds:
+
+- Swift tools `5.10`, iOS `17.0`, and macOS `14.0`;
+- public products `ForsettiCore`, `ForsettiPlatform`, and `ForsettiHostTemplate`;
+- internal verification target `ForsettiModulesExample`, which is not a public consumer product;
+- manifest schema/template `1.1`, object-encoded semantic versions, reverse-DNS module identifiers, Swift type-path entry points, and explicit runtime requirements;
+- exact capability, I/O provider, service, UI contribution, default-role, activation, dependency, and verification contracts;
+- manifest `1.0` safe legacy defaults alongside the current `1.1` contract;
+- the sealed public-contract boundary, strict object-oriented implementation rules, and deployment patterns A through D;
+- the enforced `Combine` prohibition in `ForsettiCore`; and
+- source-contract SHA-256 hashes for 29 load-bearing framework files, including the supplied upstream validation report.
+
+`crypto_utilities` is an Apple capability but not an I/O provider kind. Apple `0.1.5` also defines no independent `event_publishing` capability; framework-bound event publication derives source identity from the scoped module context. Windows retains its existing edition-specific `event_publishing` mapping.
 
 ---
 
@@ -141,7 +161,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_va
   -Mode contract `
   -ContractPath .\contracts\TASK-CONTRACT.md `
   -ProjectContextPath .\project-context.json `
-  -EditionProfilePath .\editions\apple\forsetti-apple-0.1.3.profile.json `
+  -EditionProfilePath .\editions\apple\forsetti-apple-0.1.5.profile.json `
   -ChangedFilesPath .\changed-files.txt `
   -Strict
 ```

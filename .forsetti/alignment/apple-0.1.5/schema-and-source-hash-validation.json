@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "schemasChecked": 2,
+  "profilesValidated": [
+    "editions/apple/forsetti-apple-0.1.5.profile.json",
+    "editions/apple/forsetti-apple-0.1.3.profile.json",
+    "editions/windows/forsetti-windows-0.2.0.profile.json"
+  ],
+  "validManifestAccepted": true,
+  "invalidManifestCasesRejected": {
+    "string_semver": "'1.0.0' is not of type 'object'",
+    "reserved_module_id": "'forsetti.sample' should not be valid under {'pattern': '^forsetti\\\\.'}",
+    "crypto_as_io_kind": "'crypto_utilities' is not one of ['networking', 'storage', 'secure_storage', 'file_export', 'telemetry', 'shared_database', 'authentication', 'diagnostics', 'api', 'security']",
+    "service_with_ui": "{'controlSchemeID': None, 'layoutID': None, 'themeIDs': [], 'viewIDs': ['sample.root'], 'slotIDs': [], 'toolbarItemIDs': [], 'routeIDs': [], 'pointerIDs': []} is not of type 'null'",
+    "duplicate_capability": "['view_injection', 'view_injection'] has non-unique elements",
+    "invalid_entry_point": "'1Invalid' does not match '^[A-Za-z_][A-Za-z0-9_.]*$'"
+  },
+  "sourceContractFilesVerified": 29,
+  "sourceContractHashMismatches": 0
+}

@@ -1,8 +1,8 @@
 # Forsetti Agentic Edition
 
 [![Version](https://img.shields.io/badge/product-v1.0.0-2563eb)](Releases)
-[![Bundle](https://img.shields.io/badge/bundle-schema%202.0%20%7C%2046%20files-0f766e)](Overview)
-[![Profiles](https://img.shields.io/badge/profiles-Apple%200.1.3%20%7C%20Windows%200.2.0-7c3aed)](Overview)
+[![Bundle](https://img.shields.io/badge/bundle-schema%202.0%20%7C%2047%20files-0f766e)](Overview)
+[![Profiles](https://img.shields.io/badge/profiles-Apple%200.1.5%20%7C%20Windows%200.2.0-7c3aed)](Overview)
 [![Rules](https://img.shields.io/badge/rules-12%20compliance%20%7C%2020%20Forsetti-b91c1c)](Compliance)
 [![Surface](https://img.shields.io/badge/wiki-derived%20public%20surface-334155)](Documentation)
 
@@ -19,11 +19,11 @@ Forsetti Agentic Edition is a governance-only enforcement product for Forsetti-c
 |---|---:|---|
 | Product version | `1.0.0` | `VERSION`, `bundle/VERSION`, native `version` commands |
 | Bundle manifest schema | `2.0` | `bundle/product-manifest.json` |
-| Required bundle files | `46` | `bundle/product-manifest.json` |
+| Required bundle files | `47` | `bundle/product-manifest.json` |
 | Compliance rules | `12` | `core/policies/compliance-rules.json` |
 | Forsetti enforcement rules | `20` | `core/policies/forsetti-enforcement-rules.json` |
 | Documentation sync pairs | `30` | `core/policies/docs-sync-rules.json` |
-| Apple profile | `0.1.3`, iOS/macOS | `editions/apple/forsetti-apple-0.1.3.profile.json` |
+| Apple profile | `0.1.5` current; `0.1.3` compatibility, iOS/macOS | `editions/apple/forsetti-apple-0.1.5.profile.json` |
 | Windows profile | `0.2.0`, Windows | `editions/windows/forsetti-windows-0.2.0.profile.json` |
 
 ---
@@ -140,7 +140,7 @@ flowchart TB
 ## Operator Fast Path
 
 1. Read [Overview](Overview) to understand the product boundary.
-2. Select the target edition profile: Apple `0.1.3` or Windows `0.2.0`.
+2. Select the target edition profile: Apple `0.1.5` for current work, explicit Apple `0.1.3` only for compatibility, or Windows `0.2.0`.
 3. Verify the source bundle before native product operations.
 4. Bind all work to a task contract and Forsetti project context.
 5. Run the applicable validator modes or native command checks.

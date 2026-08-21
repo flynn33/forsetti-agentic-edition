@@ -36,8 +36,8 @@ The enforceable JSON template lives at `core/contracts/task-contract-template.js
 **Repository Mode:** consumer_app_repo
 **Forsetti Edition:** apple
 **Target Platform:** iOS
-**Framework Version:** 0.1.3
-**Edition Profile:** editions/apple/forsetti-apple-0.1.3.profile.json
+**Framework Version:** 0.1.5
+**Edition Profile:** editions/apple/forsetti-apple-0.1.5.profile.json
 **Manifest Schema Version:** 1.1
 **Manifest Template Version:** 1.1
 **Deployment Pattern:** single_app_module

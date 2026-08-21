@@ -68,7 +68,7 @@ Validate a target Forsetti module manifest against the Apple profile:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\core\validator\forsetti_validate.ps1 `
   -RepoRoot . `
   -Mode manifest `
-  -EditionProfilePath .\editions\apple\forsetti-apple-0.1.3.profile.json `
+  -EditionProfilePath .\editions\apple\forsetti-apple-0.1.5.profile.json `
   -ManifestPath .\path\to\ModuleManifest.json `
   -Strict
 ```

@@ -1,0 +1,216 @@
+{
+  "taskID": "FAE-GOV-2026-08-20-015",
+  "title": "Forsetti Agentic Edition Apple 0.1.5 Alignment",
+  "generatedAtUTC": "2026-08-20T11:37:43.897963Z",
+  "implementationStatus": "complete",
+  "evidenceStatus": "pass_with_explicit_environmental_limitations",
+  "formalValidatorDecision": "not_rendered_by_builder",
+  "releaseAction": "not_performed",
+  "releaseImpact": "minor",
+  "target": {
+    "edition": "apple",
+    "frameworkVersion": "0.1.5",
+    "activeProfile": "editions/apple/forsetti-apple-0.1.5.profile.json",
+    "compatibilityProfile": "editions/apple/forsetti-apple-0.1.3.profile.json",
+    "manifestSchemaVersion": "1.1"
+  },
+  "resultSummary": [
+    "Apple 0.1.5 is the active and default Apple governance profile.",
+    "Apple 0.1.3 remains explicitly selectable for compatibility.",
+    "Unknown Apple framework versions fail closed.",
+    "The active profile is source-pinned to 29 load-bearing Forsetti 0.1.5 files.",
+    "Manifest, capability, service, UI, runtime, OOP, dependency, deployment, template, and verification contracts were realigned.",
+    "crypto_utilities is correctly retained as a capability but excluded from Apple I/O provider kinds.",
+    "event_publishing remains Windows-specific and is not imposed on Apple 0.1.5.",
+    "No ASH, Aeostara, or Bifrost runtime integration was introduced in this prerequisite."
+  ],
+  "validation": {
+    "pythonAcceptance": {
+      "status": "pass",
+      "testsPassed": 16,
+      "testsFailed": 0
+    },
+    "repositoryJSON": {
+      "status": "pass",
+      "duplicateKeysRejected": true
+    },
+    "schemas": {
+      "status": "pass",
+      "schemasChecked": 2,
+      "profilesValidated": 3,
+      "invalidManifestCasesRejected": 6
+    },
+    "sourceContract": {
+      "status": "pass",
+      "filesVerified": 29,
+      "hashMismatches": 0
+    },
+    "sourceSemantics": {
+      "status": "pass",
+      "checks": [
+        "architectureEnforcement",
+        "capabilities",
+        "dataIsolationModes",
+        "defaultModuleRoles",
+        "ioAccessModes",
+        "ioCapabilityMappings",
+        "ioKinds",
+        "packageContract",
+        "serviceCapabilityMappings",
+        "uiCapabilityMappings"
+      ]
+    },
+    "bundle": {
+      "status": "pass",
+      "fileCount": 47,
+      "policyBundleHash": "cfe9a828b306570345deb4398f760ff7350439052173be06c9bc6dfce905a6f5",
+      "deterministicOutputs": 3,
+      "nativeVerification": "pass"
+    },
+    "windowsRegression": {
+      "status": "pass",
+      "configure": "pass",
+      "build": "pass",
+      "testsPassed": 1,
+      "testsFailed": 0
+    },
+    "swiftChangedFilesParse": {
+      "status": "pass",
+      "filesParsed": 2
+    },
+    "swiftPackageLinuxAttempt": {
+      "status": "environment_unavailable",
+      "reason": "CryptoKit is unavailable on x86_64 Linux"
+    },
+    "powershellExecution": {
+      "status": "environment_unavailable_fail_closed",
+      "reason": "No pwsh or powershell host installed"
+    },
+    "powershellStaticStructure": {
+      "status": "pass_limited",
+      "filesChecked": 16
+    },
+    "gitDiffCheck": {
+      "status": "pass"
+    },
+    "upstreamForsettiMacOSEvidence": {
+      "status": "pass",
+      "acceptanceGatesPassed": 13,
+      "packageTestsPassed": 81,
+      "swiftlintViolations": 0,
+      "xcodeBuild": "pass",
+      "guardrails": "pass",
+      "provenance": "supplied Forsetti Framework 0.1.5 .forsetti/alignment/final-report.json; not rerun in the Linux Agentic Edition environment"
+    }
+  },
+  "knownIssues": [],
+  "environmentalLimitations": [
+    "The PowerShell validator could not be executed because neither PowerShell 7 nor Windows PowerShell is installed. The shell wrapper failed closed and 16 PowerShell files passed a limited static structure check; this is not claimed as semantic PowerShell validation.",
+    "The Apple Swift package test command could not complete on x86_64 Linux because the existing Apple-native product imports CryptoKit. The two changed Swift files passed swiftc parsing.",
+    "Xcode, Apple SDK builds, and SwiftLint were not available in this environment. The supplied Forsetti Framework 0.1.5 source includes its own passing macOS evidence for 13 gates, 81 tests, strict SwiftLint, Xcode build, and guardrails.",
+    "A formal role-separated Validator/Release Manager decision is not claimed by the Builder. No release tag or version bump was requested or performed."
+  ],
+  "documentationStatus": {
+    "status": "complete",
+    "updated": [
+      "README.md",
+      "editions/README.md",
+      "overlays/forsetti-apple/README.md",
+      "core/validator/README.md",
+      "wiki/Home.md",
+      "wiki/Overview.md",
+      "changelog/CHANGELOG.md"
+    ]
+  },
+  "scopeCompliance": {
+    "taskID": "FAE-GOV-2026-08-20-015",
+    "generatedAtUTC": "2026-08-20T11:37:43.897288Z",
+    "status": "pass",
+    "changedFileCount": 47,
+    "outsideContractScope": [],
+    "missingRequiredOutputs": [],
+    "outOfScopeSystemsModified": false,
+    "notes": [
+      "All changed paths are authorized by the task contract.",
+      "No Forsetti Framework runtime source was modified.",
+      "No ASH Pattern System, Aeostara, or Bifrost runtime implementation was introduced."
+    ]
+  },
+  "filesChanged": [
+    ".forsetti/alignment/apple-0.1.5/baseline-python-acceptance.log",
+    ".forsetti/alignment/apple-0.1.5/changed-file-status.txt",
+    ".forsetti/alignment/apple-0.1.5/changed-files.txt",
+    ".forsetti/alignment/apple-0.1.5/commands.json",
+    ".forsetti/alignment/apple-0.1.5/git-diff-check.log",
+    ".forsetti/alignment/apple-0.1.5/powershell-static-structure.json",
+    ".forsetti/alignment/apple-0.1.5/product-manifest-sha256.txt",
+    ".forsetti/alignment/apple-0.1.5/product-manifest-summary.json",
+    ".forsetti/alignment/apple-0.1.5/python-acceptance.log",
+    ".forsetti/alignment/apple-0.1.5/schema-and-source-hash-validation.json",
+    ".forsetti/alignment/apple-0.1.5/scope-validation.json",
+    ".forsetti/alignment/apple-0.1.5/source-contract.json",
+    ".forsetti/alignment/apple-0.1.5/source-semantic-validation.json",
+    ".forsetti/alignment/apple-0.1.5/swift-parse.log",
+    ".forsetti/alignment/apple-0.1.5/swift-test-linux.log",
+    ".forsetti/alignment/apple-0.1.5/swift-version.txt",
+    ".forsetti/alignment/apple-0.1.5/upstream-framework-final-report.json",
+    ".forsetti/alignment/apple-0.1.5/validate-repo-wrapper.log",
+    ".forsetti/alignment/apple-0.1.5/validation-report.json",
+    ".forsetti/alignment/apple-0.1.5/validation-report.md",
+    ".forsetti/alignment/apple-0.1.5/windows-bundle-verify.log",
+    ".forsetti/alignment/apple-0.1.5/windows-cmake-build.log",
+    ".forsetti/alignment/apple-0.1.5/windows-cmake-configure.log",
+    ".forsetti/alignment/apple-0.1.5/windows-ctest.log",
+    "README.md",
+    "bundle/editions/apple/forsetti-apple-0.1.5.profile.json",
+    "bundle/product-manifest.json",
+    "bundle/schemas/forsetti-module-manifest-1.1.schema.json",
+    "changelog/CHANGELOG.md",
+    "contracts/FAE-GOV-2026-08-20-015-apple-0.1.5-alignment.md",
+    "contracts/task-contract-template.md",
+    "core/contracts/forsetti-project-context-template.json",
+    "core/contracts/task-contract-template.json",
+    "core/schemas/edition-profile.schema.json",
+    "core/schemas/module-manifest-1.1.schema.json",
+    "core/validator/README.md",
+    "core/validator/forsetti_validate.ps1",
+    "core/validator/rules/forsetti_project_rules.ps1",
+    "editions/README.md",
+    "editions/apple/forsetti-apple-0.1.5.profile.json",
+    "overlays/forsetti-apple/README.md",
+    "products/apple/Sources/GovernanceApple/RepositoryBootstrapService.swift",
+    "products/apple/Tests/GovernanceCoreTests/ValidationResultTests.swift",
+    "schemas/module-manifest-1.1.schema.json",
+    "tests/test_remediation_acceptance.py",
+    "wiki/Home.md",
+    "wiki/Overview.md"
+  ],
+  "evidenceFiles": [
+    "baseline-python-acceptance.log",
+    "changed-file-status.txt",
+    "changed-files.txt",
+    "commands.json",
+    "git-diff-check.log",
+    "powershell-static-structure.json",
+    "product-manifest-sha256.txt",
+    "product-manifest-summary.json",
+    "python-acceptance.log",
+    "schema-and-source-hash-validation.json",
+    "scope-validation.json",
+    "source-contract.json",
+    "source-semantic-validation.json",
+    "swift-parse.log",
+    "swift-test-linux.log",
+    "swift-version.txt",
+    "upstream-framework-final-report.json",
+    "validate-repo-wrapper.log",
+    "validation-report.json",
+    "validation-report.md",
+    "windows-bundle-verify.log",
+    "windows-cmake-build.log",
+    "windows-cmake-configure.log",
+    "windows-ctest.log"
+  ],
+  "sourceContractReference": "source-contract.json",
+  "commandEvidenceReference": "commands.json"
+}

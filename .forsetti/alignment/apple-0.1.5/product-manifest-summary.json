@@ -1,0 +1,11 @@
+{
+  "status": "pass",
+  "schemaVersion": "2.0",
+  "version": "1.0.0",
+  "platform": "source",
+  "architecture": "portable",
+  "policyBundleHash": "cfe9a828b306570345deb4398f760ff7350439052173be06c9bc6dfce905a6f5",
+  "fileCount": 47,
+  "currentAppleProfileIncluded": true,
+  "compatibilityAppleProfileIncluded": true
+}
