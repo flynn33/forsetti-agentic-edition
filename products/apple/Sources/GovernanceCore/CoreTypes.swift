@@ -2,7 +2,7 @@ import Foundation
 import GovernanceContracts
 
 public enum ProductVersion {
-    public static let current = "1.0.0"
+    public static let current = "1.1.0"
 }
 
 public enum ExitCode: Int32 {

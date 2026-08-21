@@ -1,7 +1,7 @@
 ## Forsetti Agentic Edition
 
-[![v1.0.0](https://img.shields.io/badge/v1.0.0-governance-blue)](Home)
-[![Bundle](https://img.shields.io/badge/bundle-46%20files-0f766e)](Overview)
+[![v1.1.0](https://img.shields.io/badge/v1.1.0-governance-blue)](Home)
+[![Bundle](https://img.shields.io/badge/bundle-47%20files-0f766e)](Overview)
 
 ### Product Map
 

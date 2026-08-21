@@ -167,7 +167,7 @@ ValidationResult SimpleBundleVerifier::verify(const std::filesystem::path& bundl
             "2.0",
             ValidationStatus::Block,
             "bundle verify",
-            "1.0.0",
+            "1.1.0",
             "bundle-verification",
             {ValidationFinding{
                 "FAE-F020",
@@ -302,7 +302,7 @@ ValidationResult SimpleBundleVerifier::verify(const std::filesystem::path& bundl
         "2.0",
         blocked ? ValidationStatus::Block : ValidationStatus::Pass,
         "bundle verify",
-        "1.0.0",
+        "1.1.0",
         "bundle-verification",
         findings};
 }

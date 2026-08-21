@@ -72,7 +72,7 @@ flowchart LR
 | `FAE-F###` | Forsetti-specific enforcement rule identifier. |
 | `DOCSYNC-###` | Documentation synchronization policy rule identifier. |
 | `CHANGELOG-*` | Changelog policy rule family. |
-| `ffae-1.0.0-source` | Current source bundle ID. |
+| `ffae-1.1.0-source` | Current source bundle ID. |
 | `product-manifest.schema.json` | Bundle manifest schema for product file inventory. |
 | `forsetti-governance` | Native executable name for Apple and Windows command surfaces. |
 

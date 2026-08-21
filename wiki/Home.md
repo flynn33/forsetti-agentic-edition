@@ -1,6 +1,6 @@
 # Forsetti Agentic Edition
 
-[![Version](https://img.shields.io/badge/product-v1.0.0-2563eb)](Releases)
+[![Version](https://img.shields.io/badge/product-v1.1.0-2563eb)](Releases)
 [![Bundle](https://img.shields.io/badge/bundle-schema%202.0%20%7C%2047%20files-0f766e)](Overview)
 [![Profiles](https://img.shields.io/badge/profiles-Apple%200.1.5%20%7C%20Windows%200.2.0-7c3aed)](Overview)
 [![Rules](https://img.shields.io/badge/rules-12%20compliance%20%7C%2020%20Forsetti-b91c1c)](Compliance)
@@ -17,7 +17,7 @@ Forsetti Agentic Edition is a governance-only enforcement product for Forsetti-c
 
 | Current Product Fact | Value | Evidence Surface |
 |---|---:|---|
-| Product version | `1.0.0` | `VERSION`, `bundle/VERSION`, native `version` commands |
+| Product version | `1.1.0` | `VERSION`, `bundle/VERSION`, native `version` commands |
 | Bundle manifest schema | `2.0` | `bundle/product-manifest.json` |
 | Required bundle files | `47` | `bundle/product-manifest.json` |
 | Compliance rules | `12` | `core/policies/compliance-rules.json` |

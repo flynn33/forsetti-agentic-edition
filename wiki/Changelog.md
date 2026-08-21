@@ -2,7 +2,7 @@
 
 [![Ledger](https://img.shields.io/badge/changelog-governance%20ledger-111827)](Changelog)
 [![Unreleased](https://img.shields.io/badge/current-unreleased%20queue-f59e0b)](Changelog)
-[![Version](https://img.shields.io/badge/release-v1.0.0-blue)](Releases)
+[![Version](https://img.shields.io/badge/release-v1.1.0-blue)](Releases)
 
 > **Canonical source**: [`changelog/CHANGELOG.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/changelog/CHANGELOG.md)
 > **Purpose**: visual index for release history, unreleased impact, and traceability. The canonical changelog remains the authoritative ledger.
@@ -29,6 +29,7 @@ flowchart LR
 
 | Area | Change | Impact | Traceability |
 |---|---|---:|---|
+| Release | Record product version 1.1.0 and synchronize documentation | `none` | FAE-GOV-2026-08-20-015 |
 | Release | Final validation acceptance audit | `none` | PR #10 |
 | Documentation | Repository documentation product-state alignment | `patch` | PR #15 |
 | Documentation | Live wiki visual system refresh | `patch` | PR #12 |
@@ -55,7 +56,7 @@ flowchart LR
 %%{init: {"theme":"base","themeVariables":{"pie1":"#2563eb","pie2":"#0f766e","pie3":"#f59e0b","pie4":"#dc2626","pie5":"#7c3aed","pieTitleTextSize":"18px"}}}%%
 pie showData
     title Unreleased Impact Mix
-    "none" : 1
+    "none" : 2
     "patch" : 4
     "minor" : 3
     "major" : 5
@@ -106,6 +107,7 @@ flowchart TB
 
 | Version | Date | Theme | Included Surfaces |
 |---|---|---|---|
+| `v1.1.0` | 2026-08-21 | Apple 0.1.5 governance alignment | Apple `0.1.5` edition profile, validator and schema updates, Apple bootstrap default, source bundle inventory, tests, README, overlay, and wiki |
 | `v1.0.0` | 2026-03-16 | Foundation release | constitution, policies, role instructions, contract templates, standards, policy manifests, schemas, workflows, issue templates, pull request template, CODEOWNERS, labels, wiki seed pages, and validation scripts |
 
 ---

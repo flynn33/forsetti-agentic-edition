@@ -1,11 +1,11 @@
 # Releases
 
 [![Release](https://img.shields.io/badge/release-integrity%20gate-0f766e)](Releases)
-[![Version](https://img.shields.io/badge/current-v1.0.0-blue)](Changelog)
+[![Version](https://img.shields.io/badge/current-v1.1.0-blue)](Changelog)
 [![Impact](https://img.shields.io/badge/impact-none%20patch%20minor%20major%20governance--only-7c3aed)](Releases)
 
 > **Canonical source**: [`RELEASE_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/RELEASE_POLICY.md)
-> **Current version**: `v1.0.0`
+> **Current version**: `v1.1.0`
 
 ---
 
@@ -13,12 +13,12 @@
 
 | Surface | Current State | Release Meaning |
 |---|---|---|
-| Repository version | `1.0.0` | No version bump has been applied after product-completion work. |
-| Bundle version | `1.0.0` | Source bundle and repository version are aligned. |
-| Bundle manifest | schema `2.0`, 46 required files | Product payload is hash-verifiable. |
+| Repository version | `1.1.0` | Minor bump for Apple `0.1.5` governance alignment. |
+| Bundle version | `1.1.0` | Source bundle and repository version are aligned. |
+| Bundle manifest | schema `2.0`, 47 required files | Product payload is hash-verifiable. |
 | Apple product | Swift executable | Implements full current native command shell. |
 | Windows product | C++20 executable | Implements version and bundle verification. |
-| Release status | Unreleased queue contains major/minor/patch/governance entries | Future release classification must use highest included impact. |
+| Release status | `v1.1.0` records Apple `0.1.5` alignment; Unreleased still contains earlier major/minor/patch/governance entries | Future remaining-queue release classification must use highest included impact. |
 
 ---
 
@@ -60,7 +60,7 @@ flowchart LR
 %%{init: {"theme":"base","themeVariables":{"pie1":"#2563eb","pie2":"#0f766e","pie3":"#f59e0b","pie4":"#dc2626","pie5":"#7c3aed","pieTitleTextSize":"18px"}}}%%
 pie showData
     title Current Unreleased Impact Mix
-    "none" : 1
+    "none" : 2
     "patch" : 4
     "minor" : 3
     "major" : 5
@@ -109,6 +109,7 @@ gitGraph
     commit id: "docs alignment"
     checkout main
     merge docs id: "PR 15"
+    commit id: "v1.1.0 apple 0.1.5"
 ```
 
 ---

@@ -38,7 +38,7 @@ struct ValidationResult final {
     std::string schemaVersion = "2.0";
     ValidationStatus status = ValidationStatus::Pass;
     std::string mode;
-    std::string productVersion = "1.0.0";
+    std::string productVersion = "1.1.0";
     std::string invocationID;
     std::vector<ValidationFinding> findings;
 };

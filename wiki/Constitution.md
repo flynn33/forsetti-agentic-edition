@@ -1,7 +1,7 @@
 # Constitution
 
 [![Authority](https://img.shields.io/badge/authority-supreme%20governance-111827)](Constitution)
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](Releases)
+[![Version](https://img.shields.io/badge/version-v1.1.0-blue)](Releases)
 [![Doctrine](https://img.shields.io/badge/doctrine-contract%20scope%20evidence-0f766e)](Compliance)
 
 > **Canonical source**: [`FORSETTI_CONSTITUTION.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/FORSETTI_CONSTITUTION.md)

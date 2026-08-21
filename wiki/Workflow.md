@@ -89,7 +89,7 @@ flowchart LR
 
 | Workflow | Inputs | Validation Behavior | Outputs |
 |---|---|---|---|
-| `version` | optional `--format json` | emits structured product version result | product `1.0.0` |
+| `version` | optional `--format json` | emits structured product version result | product `1.1.0` |
 | `bundle verify` | `--bundle-root` | checks manifest presence, schema, safe paths, duplicates, required files, hashes, optional product lock | pass or integrity failure |
 | Apple `init` | repository root, bundle root, optional edition/platform/framework/deployment, `--dry-run` | verifies bundle, requires git repo, resolves profile, installs governed layout atomically | `.forsetti` files and instruction section |
 | Apple `doctor` | repository root, bundle root | verifies bundle, install files, instruction section, profile/policy/product locks, native tools, task state | pass/request/block findings |

@@ -116,8 +116,8 @@ flowchart LR
 |---|---|
 | `schemaVersion` | `2.0` |
 | `product` | `Forsetti Agentic Edition` |
-| `version` | `1.0.0` |
-| `bundleID` | `ffae-1.0.0-source` |
+| `version` | `1.1.0` |
+| `bundleID` | `ffae-1.1.0-source` |
 | `platform` | `source` |
 | `architecture` | `portable` |
 | `files` | `47` required entries |

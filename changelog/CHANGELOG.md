@@ -36,6 +36,15 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ### Release
 
+**Title**: Record product version 1.1.0 and synchronize documentation
+**Change Class**: release
+**Version Impact**: none
+**Summary**: Bumped repository, bundle, and native product version identifiers from `1.0.0` to `1.1.0` so they match the Apple `0.1.5` alignment already classified as a minor feature. Updated README, changelog, wiki pages, and regenerated `bundle/product-manifest.json` so documentation, bundle ID `ffae-1.1.0-source`, and the `version` command report the same product version.
+**Affected Area**: VERSION, bundle, native products, README, changelog, wiki
+**PR Reference**: No PR; local version and documentation alignment
+**Task Reference**: FAE-GOV-2026-08-20-015
+**Approval Class**: release-critical
+
 **Title**: Record final validation acceptance audit
 **Change Class**: release
 **Version Impact**: none
@@ -76,16 +85,6 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Phase 06A Reference**: PR #6, merge commit `0c0a2cf6fa4b99de1bd839332991ec26ba6c354e`, evidence under `.forsetti/remediation-v3/phase-06a-*`
 
 ### Features
-
-**Title**: Align Apple governance with Forsetti Framework 0.1.5
-**Change Class**: feature
-**Version Impact**: minor
-**Summary**: Added a source-pinned Apple `0.1.5` edition profile and made it the active default across project-context templates, Apple repository bootstrap, validator checks, bundle inventory, tests, README, overlay, and wiki surfaces. Preserved Apple `0.1.3` as an explicitly selectable compatibility profile and added fail-closed handling for unknown Apple framework versions. Encoded the complete supplied Apple contract, including safe legacy manifest defaults, exact capability/service/UI mappings, registration and activation invariants, strict object-oriented and sealed-consumer rules, deployment patterns A through D, the `ForsettiCore` `Combine` restriction, 29 load-bearing source hashes, and upstream acceptance evidence. Corrected `crypto_utilities` to remain a capability rather than an I/O kind and kept `event_publishing` edition-specific to Windows because Apple `0.1.5` defines no such capability.
-**Affected Area**: Apple edition profiles, schemas, validator, Apple native bootstrap, bundle, tests, documentation
-**PR Reference**: No PR; Project Bifrost prerequisite alignment package
-**Task Reference**: FAE-GOV-2026-08-20-015
-**Approval Class**: governance-class
-**Affected Consumers**: Apple task-contract authors, project bootstrap users, local validator users, source-bundle consumers, and agents governing Forsetti-based Mac or iOS projects.
 
 **Title**: Add native product completion surfaces
 **Change Class**: feature
@@ -209,6 +208,20 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **PR Reference**: No PR; repository commit `62cf174`
 **Task Reference**: FAE-BUG-2026-05-08-001
 **Approval Class**: standard
+
+## [1.1.0] — 2026-08-21
+
+### Features
+
+**Title**: Align Apple governance with Forsetti Framework 0.1.5
+**Change Class**: feature
+**Version Impact**: minor
+**Summary**: Added a source-pinned Apple `0.1.5` edition profile and made it the active default across project-context templates, Apple repository bootstrap, validator checks, bundle inventory, tests, README, overlay, and wiki surfaces. Preserved Apple `0.1.3` as an explicitly selectable compatibility profile and added fail-closed handling for unknown Apple framework versions. Encoded the complete supplied Apple contract, including safe legacy manifest defaults, exact capability/service/UI mappings, registration and activation invariants, strict object-oriented and sealed-consumer rules, deployment patterns A through D, the `ForsettiCore` `Combine` restriction, 29 load-bearing source hashes, and upstream acceptance evidence. Corrected `crypto_utilities` to remain a capability rather than an I/O kind and kept `event_publishing` edition-specific to Windows because Apple `0.1.5` defines no such capability.
+**Affected Area**: Apple edition profiles, schemas, validator, Apple native bootstrap, bundle, tests, documentation
+**PR Reference**: No PR; repository commit `8b3f2b9`
+**Task Reference**: FAE-GOV-2026-08-20-015
+**Approval Class**: governance-class
+**Affected Consumers**: Apple task-contract authors, project bootstrap users, local validator users, source-bundle consumers, and agents governing Forsetti-based Mac or iOS projects.
 
 ## [1.0.0] — 2026-03-16
 

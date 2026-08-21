@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
             "2.0",
             ValidationStatus::Pass,
             "version",
-            "1.0.0",
+            "1.1.0",
             "version",
             {ValidationFinding{
                 "FAE-C011",
@@ -56,12 +56,12 @@ int main(int argc, char** argv) {
                 ValidationStatus::Pass,
                 "Product version reported.",
                 "",
-                {"1.0.0"},
+                {"1.1.0"},
                 ""}}};
         if (json) {
             std::cout << toJson(result) << "\n";
         } else {
-            std::cout << "forsetti-governance 1.0.0\n";
+            std::cout << "forsetti-governance 1.1.0\n";
         }
         return toInt(ExitCode::Pass);
     }
@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
         "2.0",
         ValidationStatus::Block,
         "unsupported",
-        "1.0.0",
+        "1.1.0",
         "unsupported",
         {ValidationFinding{
             "FAE-C011",
