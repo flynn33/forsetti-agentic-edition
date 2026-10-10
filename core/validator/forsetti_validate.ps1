@@ -3,7 +3,9 @@
 [CmdletBinding()]
 param(
     [string]$RepoRoot = (Get-Location).Path,
-    [ValidateSet("all", "repo", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts", "contract", "contracts", "project-context", "edition-profile", "manifest", "dependencies", "capabilities", "module-isolation", "evidence")]
+    [string]$SDKRoot,
+    [string]$BundleRoot,
+    [ValidateSet("all", "repo", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts", "contract", "contracts", "project-context", "edition-profile", "manifest", "dependencies", "capabilities", "module-isolation", "evidence", "consumer")]
     [string]$Mode = "all",
     [string]$ContractPath,
     [string]$ProjectContextPath,
@@ -51,7 +53,7 @@ function Get-RepoPath {
     try {
         $full = [System.IO.Path]::GetFullPath($Path)
         $root = $script:RepoRoot.TrimEnd('\', '/')
-        if ($full.StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)) {
+        if ($full.StartsWith($root + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
             return $full.Substring($root.Length).TrimStart('\', '/').Replace('\', '/')
         }
     } catch {
@@ -63,16 +65,27 @@ function Get-RepoPath {
 function Add-Finding {
     param(
         [string]$RuleId,
-        [ValidateSet("info", "low", "medium", "high", "critical")]
+        [ValidateSet("info", "low", "medium", "high", "critical", "error", "warning")]
         [string]$Severity,
         [ValidateSet("pass", "request_changes", "block")]
         [string]$Decision,
         [string]$Message,
         [AllowNull()]$Evidence,
-        [AllowNull()][string]$Remediation,
+        [Alias("RemediationHint")][AllowNull()][string]$Remediation,
         [AllowNull()][string]$Category,
-        [AllowNull()][string]$Path
+        [AllowNull()][string]$Path,
+        [string]$FindingId,
+        [ValidateSet("pass", "warn", "fail")][string]$Status,
+        [string]$PolicyRuleId,
+        [string]$ConditionId,
+        [string]$GateId
     )
+
+    # The approved contract helper retains its original finding interface.
+    if ($Severity -eq 'error') { $Severity = 'critical' }
+    if ($Severity -eq 'warning') { $Severity = 'medium' }
+    if ($Status) { $Decision = @{ pass = 'pass'; warn = 'request_changes'; fail = 'block' }[$Status] }
+    if (-not $RuleId) { $RuleId = 'FAE-C011' }
 
     $evidenceArray = @()
     if ($null -ne $Evidence) {
@@ -101,12 +114,49 @@ function Add-Finding {
         remediation_hint = if ([string]::IsNullOrWhiteSpace($Remediation)) { $null } else { $Remediation }
         category         = if ([string]::IsNullOrWhiteSpace($Category)) { $null } else { $Category }
         path             = if ([string]::IsNullOrWhiteSpace($Path)) { $null } else { $Path }
+        finding_id       = if ($FindingId) { $FindingId } else { $null }
+        policy_rule_id   = if ($PolicyRuleId) { $PolicyRuleId } else { $null }
+        condition_id     = if ($ConditionId) { $ConditionId } else { $null }
+        gate_id          = if ($GateId) { $GateId } else { $null }
     })
 }
 
 function Read-JsonObject {
     param([string]$Path)
-    return Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
+    if (-not $script:ExternalResources -and $PSVersionTable.PSVersion -lt [version]'7.4') {
+        return Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
+    }
+    return Read-ForsettiSDKJson -Path $Path
+}
+
+function Resolve-ProfilePath {
+    param([string]$Path)
+    if ([System.IO.Path]::IsPathRooted($Path)) { return [System.IO.Path]::GetFullPath($Path) }
+    $relative = $Path.Replace('\', '/')
+    while ($relative.StartsWith('./')) { $relative = $relative.Substring(2) }
+    return Resolve-ForsettiTrustedPath -Root $script:ResourceRoot -RelativePath $relative
+}
+
+function Read-TrustedProfile {
+    param([string]$Path)
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        Add-Finding -RuleId 'FAE-F002' -Severity 'critical' -Decision 'block' -Category 'edition-profile' -Path $Path -Message 'Selected edition profile is missing.' -Evidence $Path -Remediation 'Select a supplied, pinned edition/version profile.'
+        return $null
+    }
+    $profile = Read-JsonObject -Path $Path
+    $relative = 'editions/' + [string]$profile.edition + '/forsetti-' + [string]$profile.edition + '-' + [string]$profile.frameworkVersion + '.profile.json'
+    $supported = @('editions/apple/forsetti-apple-0.1.5.profile.json', 'editions/apple/forsetti-apple-0.1.3.profile.json', 'editions/windows/forsetti-windows-0.2.0.profile.json')
+    if ($relative -notin $supported) {
+        Add-Finding -RuleId 'FAE-F002' -Severity 'critical' -Decision 'block' -Category 'edition-profile' -Path $Path -Message 'Unknown edition/framework version has no source-backed profile.' -Evidence $relative -Remediation 'Select a supplied supported profile; new versions require explicit alignment.'
+        return $null
+    }
+    $trusted = Resolve-ForsettiTrustedPath -Root $script:ResourceRoot -RelativePath $relative
+    if (-not (Test-Path -LiteralPath $trusted -PathType Leaf) -or (Get-ForsettiSHA256 -Path $trusted) -ne (Get-ForsettiSHA256 -Path $Path)) {
+        Add-Finding -RuleId 'FAE-F002' -Severity 'critical' -Decision 'block' -Category 'edition-profile' -Path $Path -Message 'Selected profile differs from the immutable supplied profile.' -Evidence $relative -Remediation 'Use the trusted edition profile without modifications.'
+        return $null
+    }
+    $null = Test-EditionProfileObject -Profile $profile -SourcePath $Path
+    return $profile
 }
 
 function Get-JsonFiles {
@@ -278,18 +328,82 @@ function Test-CoreBoundary {
     if (-not (Test-Path -LiteralPath $coreRoot)) {
         return
     }
-    $forbidden = "(Invoke-WebRequest|Invoke-RestMethod|\bgh\b|\bdocker\b|\bwsl\b|https?://github.com|adapters/github-actions/workflows)"
+    $forbiddenCommands = @('Invoke-WebRequest', 'Invoke-RestMethod', 'gh', 'docker', 'wsl')
+    function Test-ForbiddenExecutableLiteral($Expression) {
+        if ($null -eq $Expression) { return $false }
+        try { $literal = [string]$Expression.SafeGetValue() } catch { return $false }
+        $name = [System.IO.Path]::GetFileNameWithoutExtension($literal.Replace('\', '/'))
+        return $literal -in $forbiddenCommands -or $name -in $forbiddenCommands -or $literal -match 'adapters[/\\]github-actions[/\\]workflows'
+    }
+    function Test-PowerShellHostLiteral($Expression) {
+        if ($null -eq $Expression) { return $false }
+        try { $literal = [string]$Expression.SafeGetValue() } catch { return $false }
+        return [System.IO.Path]::GetFileNameWithoutExtension($literal.Replace('\', '/')) -in @('pwsh', 'powershell')
+    }
+    function Test-HostedAdapterArguments([object[]]$Expressions) {
+        # Inspect literal dependency paths in actual host/process invocations;
+        # declarations and policy strings are not command arguments.
+        foreach ($expression in @($Expressions)) {
+            if ($expression -is [System.Management.Automation.Language.CommandParameterAst]) { $expression = $expression.Argument }
+            if ($null -eq $expression) { continue }
+            try { $values = @($expression.SafeGetValue()) } catch { continue }
+            foreach ($value in $values) {
+                if ([string]$value -match 'adapters[/\\]github-actions[/\\]workflows') { return $true }
+            }
+        }
+        return $false
+    }
     $hits = @()
-    foreach ($file in Get-ChildItem -LiteralPath $coreRoot -File -Recurse) {
-        $text = Get-Content -LiteralPath $file.FullName -Raw
-        if ($text -match $forbidden) {
-            $hits += (Get-RepoPath $file.FullName)
+    foreach ($file in Get-ChildItem -LiteralPath $coreRoot -File -Recurse | Where-Object { $_.Extension -in @('.ps1', '.psm1', '.psd1') }) {
+        $tokens = $null
+        $parseErrors = $null
+        $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$parseErrors)
+        foreach ($parseError in @($parseErrors)) {
+            $hits += ((Get-RepoPath $file.FullName) + ':' + $parseError.Extent.StartLineNumber + ' cannot inspect invalid script: ' + $parseError.Message)
+        }
+        foreach ($command in $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.CommandAst] }, $true)) {
+            $commandName = $command.GetCommandName()
+            $basename = if ($commandName) { [System.IO.Path]::GetFileNameWithoutExtension($commandName.Replace('\', '/')) } else { $null }
+            $invokesHostedAdapter = $command.CommandElements[0].Extent.Text -match 'adapters[/\\]github-actions[/\\]workflows'
+            if ($basename -in @('pwsh', 'powershell') -and $command.CommandElements.Count -gt 1) {
+                $invokesHostedAdapter = $invokesHostedAdapter -or (Test-HostedAdapterArguments -Expressions $command.CommandElements[1..($command.CommandElements.Count - 1)])
+            }
+            $launchesForbiddenExecutable = $false
+            if ($commandName -in @('Start-Process', 'saps', 'start') -or $basename -eq 'Start-Process') {
+                try {
+                    $binding = [System.Management.Automation.Language.StaticParameterBinder]::BindCommand($command)
+                    if ($binding.BoundParameters.ContainsKey('FilePath')) {
+                        $launchesForbiddenExecutable = Test-ForbiddenExecutableLiteral -Expression $binding.BoundParameters['FilePath'].Value
+                        if ((Test-PowerShellHostLiteral -Expression $binding.BoundParameters['FilePath'].Value) -and $binding.BoundParameters.ContainsKey('ArgumentList')) {
+                            $invokesHostedAdapter = $invokesHostedAdapter -or (Test-HostedAdapterArguments -Expressions @($binding.BoundParameters['ArgumentList'].Value))
+                        }
+                    }
+                } catch {
+                    $hits += ((Get-RepoPath $file.FullName) + ':' + $command.Extent.StartLineNumber + ' cannot inspect process launcher: ' + $_.Exception.Message)
+                }
+            }
+            if ($commandName -in $forbiddenCommands -or $basename -in $forbiddenCommands -or $invokesHostedAdapter -or $launchesForbiddenExecutable) {
+                $hits += ((Get-RepoPath $file.FullName) + ':' + $command.Extent.StartLineNumber + ' ' + $command.Extent.Text)
+            }
+        }
+        foreach ($invocation in $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.InvokeMemberExpressionAst] }, $true)) {
+            if ($invocation.Static -and $invocation.Expression -is [System.Management.Automation.Language.TypeExpressionAst] -and
+                $invocation.Expression.TypeName.FullName -in @('System.Diagnostics.Process', 'Diagnostics.Process') -and
+                $invocation.Member.Value -eq 'Start' -and @($invocation.Arguments).Count -gt 0) {
+                $forbiddenProcess = Test-ForbiddenExecutableLiteral -Expression $invocation.Arguments[0]
+                if ((Test-PowerShellHostLiteral -Expression $invocation.Arguments[0]) -and @($invocation.Arguments).Count -gt 1) {
+                    $forbiddenProcess = $forbiddenProcess -or (Test-HostedAdapterArguments -Expressions @($invocation.Arguments[1]))
+                }
+                if ($forbiddenProcess) {
+                    $hits += ((Get-RepoPath $file.FullName) + ':' + $invocation.Extent.StartLineNumber + ' ' + $invocation.Extent.Text)
+                }
+            }
         }
     }
     if ($hits.Count -gt 0) {
-        Add-Finding -RuleId "FAE-C011" -Severity "high" -Decision "request_changes" -Category "repo" -Message "Core contains hosted or local-tool dependency language." -Evidence ($hits -join ", ") -Remediation "Keep core governance host-neutral and move hosted/tool logic to adapters or standards."
+        Add-Finding -RuleId "FAE-C011" -Severity "high" -Decision "request_changes" -Category "repo" -Message "Core invokes a hosted or local-tool dependency." -Evidence $hits -Remediation "Keep core governance host-neutral and move hosted/tool logic to adapters or standards."
     } else {
-        Add-Finding -RuleId "FAE-C011" -Severity "info" -Decision "pass" -Category "repo" -Message "Core remains free of hosted workflow and local-tool dependencies." -Evidence "Scanned core files." -Remediation $null
+        Add-Finding -RuleId "FAE-C011" -Severity "info" -Decision "pass" -Category "repo" -Message "Core script invocations do not reference forbidden hosted workflow or local-tool dependencies." -Evidence "Inspected PowerShell command ASTs; policy data and prohibition text are not executable dependencies." -Remediation $null
     }
 }
 
@@ -308,10 +422,10 @@ function Test-Repo {
 function Get-DefaultProfilePath {
     param([object]$Context)
     if ($Context -and $Context.edition_profile) {
-        return Resolve-InputPath -Path ([string]$Context.edition_profile)
+        return Resolve-ProfilePath -Path ([string]$Context.edition_profile)
     }
     if (-not [string]::IsNullOrWhiteSpace($EditionProfilePath)) {
-        return Resolve-InputPath -Path $EditionProfilePath
+        return Resolve-ProfilePath -Path $EditionProfilePath
     }
     return $null
 }
@@ -426,6 +540,15 @@ function Test-ForsettiStringMap {
 function Test-ProjectContextObject {
     param([object]$Context, [string]$SourcePath)
 
+    if ($script:ExternalResources) {
+        $schemaContext = $Context | ConvertTo-Json -Depth 30 | ConvertFrom-Json
+        $schemaContext.PSObject.Properties.Remove('$schema')
+        if (-not (Test-Json -Json ($schemaContext | ConvertTo-Json -Depth 30) -SchemaFile (Join-Path $script:SDKRoot 'core/schemas/forsetti-project-context.schema.json') -ErrorAction SilentlyContinue)) {
+            Add-Finding -RuleId 'FAE-F001' -Severity 'critical' -Decision 'block' -Category 'project-context' -Path (Get-RepoPath $SourcePath) -Message 'Project context does not satisfy the trusted canonical schema.' -Evidence $SourcePath -Remediation 'Use the approved project context fields and types.'
+            return $false
+        }
+    }
+
     $required = @(
         'repository_mode',
         'forsetti_edition',
@@ -496,7 +619,7 @@ function Test-ProjectContextObject {
 
 function Test-ProjectContext {
     if ([string]::IsNullOrWhiteSpace($ProjectContextPath)) {
-        if ($Mode -eq 'project-context') {
+        if ($Mode -in @('project-context', 'consumer')) {
             Add-Finding -RuleId 'FAE-F001' -Severity 'critical' -Decision 'block' -Category 'project-context' -Message 'Project context mode requires -ProjectContextPath.' -Evidence '-ProjectContextPath' -Remediation 'Provide a Forsetti project context JSON file.'
         }
         return $null
@@ -707,14 +830,12 @@ function Test-EditionProfileObject {
 
 function Test-EditionProfile {
     if (-not [string]::IsNullOrWhiteSpace($EditionProfilePath)) {
-        $path = Resolve-InputPath -Path $EditionProfilePath
+        $path = Resolve-ProfilePath -Path $EditionProfilePath
         if (-not (Test-Path -LiteralPath $path)) {
             Add-Finding -RuleId 'FAE-F002' -Severity 'critical' -Decision 'block' -Category 'edition-profile' -Path (Get-RepoPath $path) -Message 'Edition profile file is missing.' -Evidence $EditionProfilePath -Remediation 'Provide the selected edition profile.'
             return $null
         }
-        $profile = Read-JsonObject -Path $path
-        $null = Test-EditionProfileObject -Profile $profile -SourcePath $path
-        return $profile
+        return Read-TrustedProfile -Path $path
     }
 
     if ($Mode -eq 'edition-profile' -or $Mode -eq 'all') {
@@ -724,9 +845,9 @@ function Test-EditionProfile {
             'editions/windows/forsetti-windows-0.2.0.profile.json'
         )
         foreach ($relative in $profilePaths) {
-            $path = Join-Path $script:RepoRoot $relative
+            $path = Resolve-ProfilePath -Path $relative
             if (Test-Path -LiteralPath $path) {
-                $null = Test-EditionProfileObject -Profile (Read-JsonObject -Path $path) -SourcePath $path
+                $null = Read-TrustedProfile -Path $path
             } elseif ($Mode -eq 'edition-profile') {
                 Add-Finding -RuleId 'FAE-F002' -Severity 'critical' -Decision 'block' -Category 'edition-profile' -Path $relative -Message 'Required edition profile is missing.' -Evidence $relative -Remediation 'Create the required edition profile.'
             }
@@ -739,7 +860,7 @@ function Test-Manifest {
     param([AllowNull()]$Profile)
 
     if ([string]::IsNullOrWhiteSpace($ManifestPath)) {
-        if ($Mode -eq 'manifest') {
+        if ($Mode -in @('manifest', 'consumer')) {
             Add-Finding -RuleId 'FAE-F004' -Severity 'critical' -Decision 'block' -Category 'manifest' -Message 'Manifest mode requires -ManifestPath.' -Evidence '-ManifestPath' -Remediation 'Provide a Forsetti module manifest JSON file.'
         }
         return $null
@@ -949,6 +1070,7 @@ function Test-Manifest {
 }
 
 function Get-ChangedFileList {
+    if ($null -ne $script:CheckedChangedFiles) { return @($script:CheckedChangedFiles) }
     $files = @()
     if (@($ChangedFile).Count -gt 0) {
         $files += @($ChangedFile)
@@ -957,9 +1079,11 @@ function Get-ChangedFileList {
         $path = Resolve-InputPath -Path $ChangedFilesPath
         if (Test-Path -LiteralPath $path) {
             $files += @(Get-Content -LiteralPath $path | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+        } else {
+            Add-Finding -RuleId 'FAE-F020' -Severity 'critical' -Decision 'block' -Category 'evidence' -Message 'Changed-file evidence list is missing.' -Evidence $ChangedFilesPath -Remediation 'Provide an existing changed-file evidence list.'
         }
     }
-    if ($files.Count -eq 0) {
+    if ($files.Count -eq 0 -and [string]::IsNullOrWhiteSpace($ChangedFilesPath) -and @($ChangedFile).Count -eq 0) {
         try {
             $gitFiles = & git -C $script:RepoRoot status --short 2>$null | ForEach-Object {
                 if ($_ -match '^\s*\S+\s+(.+)$') { $Matches[1].Trim() }
@@ -969,7 +1093,22 @@ function Get-ChangedFileList {
             $files = @()
         }
     }
-    return @($files | ForEach-Object { $_.Replace('\', '/') } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique)
+    $checked = @()
+    foreach ($item in @($files | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique)) {
+        $relative = ([string]$item).Trim().Replace('\', '/')
+        try {
+            $path = Resolve-ForsettiTrustedPath -Root $script:RepoRoot -RelativePath $relative
+            if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+                $deleted = @(& git -C $script:RepoRoot -c core.quotepath=false status --porcelain=v1 -- $relative 2>$null)
+                if (@($deleted | Where-Object { $_ -match '^.D ' -or $_ -match '^D. ' }).Count -eq 0) { throw "Changed file is missing and has no Git deletion evidence: $relative" }
+            }
+            $checked += $relative
+        } catch {
+            Add-Finding -RuleId 'FAE-F020' -Severity 'critical' -Decision 'block' -Category 'evidence' -Message 'Changed-file evidence path is unsafe or cannot be inspected.' -Evidence $_.Exception.Message -Remediation 'Use actual target-relative changed file paths or tracked Git deletion evidence.'
+        }
+    }
+    $script:CheckedChangedFiles = @($checked)
+    return @($checked)
 }
 
 function Get-ReadableChangedFiles {
@@ -996,6 +1135,13 @@ function Test-Dependencies {
     foreach ($file in $files) {
         $relative = Get-RepoPath $file
         $text = Get-Content -LiteralPath $file -Raw
+
+        if ($script:ExternalResources -and $relative -match '(^|/)(Sources|src|include)/(ForsettiCore|ForsettiPlatform|ForsettiHostTemplate|ForsettiModulesExample)(/|$)') {
+            $violations += ($relative + ' copies framework implementation into a consumer repository')
+        }
+        if ($script:ExternalResources -and ($text -match 'import\s+ForsettiModulesExample\b' -or $text -match '#include\s+[<"].*Forsetti.*[/\\](Internal|Private)[/\\]')) {
+            $violations += ($relative + ' references a non-public framework product or header')
+        }
 
         if ($Profile -and $Profile.edition -eq "apple") {
             if ($relative -match 'Sources/ForsettiCore/' -and $text -match 'import\s+(ForsettiPlatform|ForsettiModulesExample|ForsettiHostTemplate|SwiftUI|UIKit|AppKit|StoreKit|Combine)') {
@@ -1040,10 +1186,6 @@ function Test-Capabilities {
         return
     }
 
-    $mapPath = Join-Path $script:RepoRoot "core/validator/rules/forsetti_project_rules.ps1"
-    if (Test-Path -LiteralPath $mapPath) {
-        . $mapPath
-    }
     $selectedEdition = if ($Profile) { [string]$Profile.edition } else { $null }
     $capabilityMap = Get-ForsettiCapabilityUseMap -Edition $selectedEdition
     $used = New-Object System.Collections.Generic.HashSet[string]
@@ -1093,7 +1235,7 @@ function Test-ModuleIsolation {
 
 function Test-Contract {
     if ([string]::IsNullOrWhiteSpace($ContractPath)) {
-        if ($Mode -in @("contract", "contracts")) {
+        if ($Mode -in @("contract", "contracts", "consumer")) {
             Add-Finding -RuleId "FAE-C001" -Severity "critical" -Decision "block" -Category "contract" -Message "Contract mode requires -ContractPath." -Evidence "-ContractPath" -Remediation "Provide a governing task contract before execution."
         }
         return
@@ -1105,10 +1247,29 @@ function Test-Contract {
     }
     if ($path.EndsWith(".json", [System.StringComparison]::OrdinalIgnoreCase)) {
         $contract = Read-JsonObject -Path $path
+        if ($script:ExternalResources) {
+            $schema = Read-JsonObject -Path (Join-Path $script:SDKRoot 'core/schemas/task-contract.schema.json')
+            # Resolve the one external schema reference from the trusted local bundle.
+            $schema.properties.forsetti_project_context = Read-JsonObject -Path (Join-Path $script:SDKRoot 'core/schemas/forsetti-project-context.schema.json')
+            $schema.properties.forsetti_project_context.PSObject.Properties.Remove('$id')
+            $schemaContract = $contract | ConvertTo-Json -Depth 50 | ConvertFrom-Json
+            if ($schemaContract.forsetti_project_context) { $schemaContract.forsetti_project_context.PSObject.Properties.Remove('$schema') }
+            if (-not (Test-Json -Json ($schemaContract | ConvertTo-Json -Depth 50) -Schema ($schema | ConvertTo-Json -Depth 50) -ErrorAction SilentlyContinue)) {
+                Add-Finding -RuleId 'FAE-C001' -Severity 'critical' -Decision 'block' -Category 'contract' -Path (Get-RepoPath $path) -Message 'Task contract does not satisfy the trusted canonical schema.' -Evidence $ContractPath -Remediation 'Complete the approved task contract without changing the policy schema.'
+            }
+        }
         if (-not $contract.PSObject.Properties["forsetti_project_context"]) {
             Add-Finding -RuleId "FAE-F001" -Severity "critical" -Decision "block" -Category "contract" -Path (Get-RepoPath $path) -Message "Task contract is missing Forsetti project context." -Evidence "forsetti_project_context" -Remediation "Add the required Forsetti project context before Builder execution."
         } else {
             $null = Test-ProjectContextObject -Context $contract.forsetti_project_context -SourcePath $path
+            if ($ProjectContextPath) {
+                $context = Read-JsonObject -Path (Resolve-InputPath -Path $ProjectContextPath)
+                foreach ($field in Get-ForsettiRequiredProjectContextFields) {
+                    if (($contract.forsetti_project_context.$field | ConvertTo-Json -Depth 20 -Compress) -cne ($context.$field | ConvertTo-Json -Depth 20 -Compress)) {
+                        Add-Finding -RuleId 'FAE-F001' -Severity 'critical' -Decision 'block' -Category 'contract' -Path (Get-RepoPath $path) -Message 'Contract project context differs from the selected target context.' -Evidence $field -Remediation 'Amend the authorized contract or context explicitly before execution.'
+                    }
+                }
+            }
         }
     } else {
         $text = Get-Content -LiteralPath $path -Raw
@@ -1116,12 +1277,16 @@ function Test-Contract {
             Add-Finding -RuleId "FAE-F001" -Severity "critical" -Decision "block" -Category "contract" -Path (Get-RepoPath $path) -Message "Markdown task contract is missing Forsetti project context section." -Evidence "## Forsetti Project Context" -Remediation "Add the required context section before Builder execution."
         }
     }
+    if ($script:ExternalResources -or $Mode -eq 'consumer') {
+        $checkedFiles = @(Get-ChangedFileList)
+        Test-TaskContractRules -RepoRoot $script:RepoRoot -ContractPath $ContractPath -ChangedFile $checkedFiles -PendingOutputPath $OutputJson -RequireContract -PolicyRoot $script:PolicyRoot
+    }
     Add-Finding -RuleId "FAE-C001" -Severity "info" -Decision "pass" -Category "contract" -Path (Get-RepoPath $path) -Message "Task contract was inspected." -Evidence (Get-RepoPath $path) -Remediation $null
 }
 
 function Test-Evidence {
     $files = Get-ChangedFileList
-    if ($Mode -eq "evidence" -and $files.Count -eq 0 -and [string]::IsNullOrWhiteSpace($ChangedFilesPath)) {
+    if ($Mode -in @('evidence', 'consumer') -and $files.Count -eq 0) {
         Add-Finding -RuleId "FAE-F020" -Severity "critical" -Decision "block" -Category "evidence" -Message "Evidence mode requires changed-file evidence." -Evidence "-ChangedFilesPath or -ChangedFiles" -Remediation "Provide changed-file evidence and selected profile validation evidence."
         return
     }
@@ -1136,18 +1301,15 @@ function Invoke-SelectedChecks {
     if ($Mode -in @("all", "repo", "files", "structure", "json", "policies", "policy", "docs", "schemas", "schema", "scripts")) {
         Test-Repo
     }
-    if ($Mode -in @("all", "contract", "contracts")) {
+    if ($Mode -in @("all", "contract", "contracts", "consumer")) {
         Test-Contract
     }
-    if ($Mode -in @("all", "project-context")) {
+    if ($Mode -in @("all", "project-context", "consumer") -or -not [string]::IsNullOrWhiteSpace($ProjectContextPath)) {
         $context = Test-ProjectContext
     }
     if (-not $profile -and $context) {
         $profilePath = Get-DefaultProfilePath -Context $context
-        if ($profilePath -and (Test-Path -LiteralPath $profilePath)) {
-            $profile = Read-JsonObject -Path $profilePath
-            $null = Test-EditionProfileObject -Profile $profile -SourcePath $profilePath
-        }
+        if ($profilePath) { $profile = Read-TrustedProfile -Path $profilePath }
     }
     if ($Mode -in @("all", "edition-profile") -and -not $profile) {
         $profile = Test-EditionProfile
@@ -1158,19 +1320,19 @@ function Invoke-SelectedChecks {
         $contextSource = if ([string]::IsNullOrWhiteSpace($ProjectContextPath)) { $null } else { Resolve-InputPath -Path $ProjectContextPath }
         Test-ProjectContextProfileAlignment -Context $context -Profile $profile -SourcePath $contextSource
     }
-    if ($Mode -in @("manifest", "all") -or -not [string]::IsNullOrWhiteSpace($ManifestPath)) {
+    if ($Mode -in @("manifest", "all") -or ($Mode -eq 'consumer' -and $context.module_type -ne 'not_applicable') -or -not [string]::IsNullOrWhiteSpace($ManifestPath)) {
         $manifest = Test-Manifest -Profile $profile
     }
-    if ($Mode -in @("dependencies", "all")) {
+    if ($Mode -in @("dependencies", "all", "consumer")) {
         Test-Dependencies -Profile $profile
     }
-    if ($Mode -in @("capabilities", "all")) {
+    if ($Mode -in @("capabilities", "all", "consumer")) {
         Test-Capabilities -Manifest $manifest -Profile $profile
     }
-    if ($Mode -in @("module-isolation", "all")) {
+    if ($Mode -in @("module-isolation", "all", "consumer")) {
         Test-ModuleIsolation
     }
-    if ($Mode -in @("evidence", "all")) {
+    if ($Mode -in @("evidence", "all", "consumer")) {
         Test-Evidence
     }
 }
@@ -1196,11 +1358,13 @@ function New-ValidatorResult {
         }
         invocation     = [pscustomobject][ordered]@{
             repo_root            = $script:RepoRoot
+            sdk_root             = $script:SDKRoot
+            bundle_root          = $script:BundleRoot
             mode                 = $Mode
             strict               = [bool]$Strict
             contract_path        = if ($ContractPath) { Get-RepoPath (Resolve-InputPath -Path $ContractPath) } else { $null }
             project_context_path = if ($ProjectContextPath) { Get-RepoPath (Resolve-InputPath -Path $ProjectContextPath) } else { $null }
-            edition_profile_path = if ($EditionProfilePath) { Get-RepoPath (Resolve-InputPath -Path $EditionProfilePath) } else { $null }
+            edition_profile_path = if ($EditionProfilePath) { Resolve-ProfilePath -Path $EditionProfilePath } else { $null }
             manifest_path        = if ($ManifestPath) { Get-RepoPath (Resolve-InputPath -Path $ManifestPath) } else { $null }
             changed_files_path   = if ($ChangedFilesPath) { Get-RepoPath (Resolve-InputPath -Path $ChangedFilesPath) } else { $null }
             timestamp_utc        = (Get-Date).ToUniversalTime().ToString("o")
@@ -1231,11 +1395,35 @@ function Write-HumanResult {
 }
 
 $script:RepoRoot = Resolve-ValidationRoot -Path $RepoRoot
-Invoke-SelectedChecks
+$script:SDKRoot = if ($SDKRoot) { Resolve-ValidationRoot -Path $SDKRoot } else { [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..')) }
+$script:BundleRoot = if ($BundleRoot) { Resolve-ValidationRoot -Path $BundleRoot } else { Join-Path $script:SDKRoot 'bundle' }
+$script:ExternalResources = $PSBoundParameters.ContainsKey('SDKRoot') -or $PSBoundParameters.ContainsKey('BundleRoot') -or (Test-Path -LiteralPath (Join-Path $script:SDKRoot 'sdk-manifest.json'))
+$script:ResourceRoot = if ($script:ExternalResources) { $script:BundleRoot } else { $script:SDKRoot }
+$script:PolicyRoot = if ($script:ExternalResources) { Join-Path $script:BundleRoot 'policies' } else { Join-Path $script:SDKRoot 'core/policies' }
+. (Join-Path $PSScriptRoot 'sdk_integrity.ps1')
+. (Join-Path $PSScriptRoot 'contract_rules.ps1')
+. (Join-Path $PSScriptRoot 'rules/forsetti_project_rules.ps1')
+try {
+    if ($script:ExternalResources -and $PSVersionTable.PSVersion -lt [version]'7.4') { throw 'External SDK validation requires PowerShell 7.4 or newer.' }
+    if (Test-Path -LiteralPath (Join-Path $script:SDKRoot 'sdk-manifest.json')) {
+        $trustedSDK = Test-ForsettiSDKIntegrity -SDKRoot $script:SDKRoot
+        if ([System.IO.Path]::GetFullPath($trustedSDK.BundleRoot) -ne [System.IO.Path]::GetFullPath($script:BundleRoot)) { throw 'BundleRoot must be the installed SDK trusted bundle.' }
+    } elseif ($script:ExternalResources) { $null = Test-ForsettiBundleIntegrity -BundleRoot $script:BundleRoot }
+    Invoke-SelectedChecks
+} catch {
+    Add-Finding -RuleId 'FAE-C011' -Severity 'critical' -Decision 'block' -Category 'integrity' -Message 'Validation input or trusted resource verification failed.' -Evidence $_.Exception.Message -Remediation 'Restore verified toolkit resources and valid inputs; do not regenerate hashes after tampering.'
+}
 $result = New-ValidatorResult
 
 if (-not [string]::IsNullOrWhiteSpace($OutputJson)) {
     $jsonPath = Resolve-InputPath -Path $OutputJson
+    if (Test-Path -LiteralPath (Join-Path $script:SDKRoot 'sdk-manifest.json')) {
+        $physicalOutput = Resolve-ForsettiPhysicalPath -Path $jsonPath
+        $physicalToolkit = (Resolve-ForsettiPhysicalPath -Path $script:SDKRoot).TrimEnd([char[]]'\/')
+        if ($physicalOutput.StartsWith($physicalToolkit + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
+            throw 'Validator output must not alter the immutable SDK installation.'
+        }
+    }
     $jsonDir = Split-Path -Parent $jsonPath
     if (-not [string]::IsNullOrWhiteSpace($jsonDir) -and -not (Test-Path -LiteralPath $jsonDir)) {
         New-Item -ItemType Directory -Path $jsonDir -Force | Out-Null

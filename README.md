@@ -344,3 +344,7 @@ Copyright 2026 James Daley
 
 This project is licensed under the Apache License, Version 2.0.
 See the [LICENSE](LICENSE) file for the full terms.
+
+## Agentic product consumption
+
+The complete canonical `CONSUMPTION_POLICY.md` defines the supported external governance toolkit boundary, project-owned metadata, managed instructions/locks, optional adapters, and excluded maintainer/runtime material. Governance policy data is product data; it does not authorize copying the development repository or installing a runtime framework. Canonical target instructions and external validator resource resolution use the authorized contract and independent-review workflow.

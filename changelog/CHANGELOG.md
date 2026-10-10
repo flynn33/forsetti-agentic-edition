@@ -6,6 +6,18 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ## [Unreleased]
 
+### Governance
+
+**Title**: Establish external Agentic SDK consumption and truthful onboarding
+**Change Class**: governance
+**Version Impact**: governance-only
+**Summary**: Added the complete Agentic consumption policy distinguishing trusted external governance product data, project-owned metadata, managed locks/instructions, optional adapters, and excluded maintainer/runtime content. Corrected onboarding that required unimplemented native task commands and Windows `doctor`; target validation resolves trusted SDK/bundle resources separately from the consumer root while retaining existing enforcement and maintainer modes. The maintainer core-boundary check now inspects PowerShell command syntax so policy data and its own prohibited-command strings do not produce false positives; actual forbidden command invocations remain rejected.
+**Affected Area**: consumption policy, target instructions, validator resources, bundle inventory, README, wiki
+**PR Reference**: Owner-authorized SDK implementation and release preparation
+**Task Reference**: FAE-GOV-2026-10-10-016
+**Approval Class**: governance-class
+
+
 ### Breaking Changes
 
 **Title**: Breaking: Canonicalize accountability policy surfaces

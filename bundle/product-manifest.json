@@ -6,7 +6,7 @@
   "platform": "source",
   "architecture": "portable",
   "entryPoint": null,
-  "policyBundleHash": "cfe9a828b306570345deb4398f760ff7350439052173be06c9bc6dfce905a6f5",
+  "policyBundleHash": "3368ccfed131e5b7e51ea675625e11ab807a334357874d07474765c170a21d02",
   "files": [
     {
       "path": "VERSION",
@@ -35,7 +35,7 @@
     },
     {
       "path": "instructions/target-agents-section.md",
-      "sha256": "91ec96492e413bcdc783b260a1eccb87f0a685f534e5bf76c443f9931e5fccc5",
+      "sha256": "a43d0a7764cb4f7cde4135aa294d82bc80b0a159a69de71bc1c11ae50594ecb8",
       "required": true
     },
     {
@@ -149,6 +149,11 @@
       "required": true
     },
     {
+      "path": "schemas/edition-profile.schema.json",
+      "sha256": "729c40a25e5431762a42bca9e3466f8488d3acbbaa83d46ccd9e858154b1948d",
+      "required": true
+    },
+    {
       "path": "schemas/evidence-bundle.schema.json",
       "sha256": "e0a14051329e2b76d781d6a945477dfd30e68bf1131c78b2f4f8d42036542a1a",
       "required": true
@@ -166,6 +171,16 @@
     {
       "path": "schemas/forsetti-module-manifest-1.1.schema.json",
       "sha256": "2e6aa9e444c864da427ee6292e0a0b33737ebeb9dd486bbfb492629b55f1a512",
+      "required": true
+    },
+    {
+      "path": "schemas/forsetti-project-context.schema.json",
+      "sha256": "ecacc24f5fa89eff0010a18927e93da1894973d89f340b371c83e16713f93be6",
+      "required": true
+    },
+    {
+      "path": "schemas/module-manifest-1.1.schema.json",
+      "sha256": "0d768364790214335ca3b1b585cfd3be2af5e81313b771463f367a61bd0ed90d",
       "required": true
     },
     {
@@ -226,6 +241,11 @@
     {
       "path": "schemas/task-contract-v2.schema.json",
       "sha256": "5e12305322cb95a864e75eb1863491bef5abfc5097ea84c5683c037ed8902f57",
+      "required": true
+    },
+    {
+      "path": "schemas/task-contract.schema.json",
+      "sha256": "3f724d88dd1757c2612b98a61135ce50a2f66c6541c986dbc8b5ff287feab619",
       "required": true
     },
     {

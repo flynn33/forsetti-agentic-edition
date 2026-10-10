@@ -474,10 +474,11 @@ function Test-ForsettiApprovalSufficient {
 }
 
 function Get-ForsettiProtectedPathRules {
-    param([string]$RepoRoot)
+    param([string]$RepoRoot, [string]$PolicyRoot)
 
     $rules = New-Object System.Collections.Generic.List[object]
-    $policyPath = Join-Path $RepoRoot "core/policies/repo-boundaries.json"
+    if (-not $PolicyRoot) { $PolicyRoot = Join-Path $RepoRoot 'core/policies' }
+    $policyPath = Join-Path $PolicyRoot 'repo-boundaries.json'
     if (-not (Test-Path -LiteralPath $policyPath)) {
         Add-Finding `
             -FindingId "FFAE-APPROVAL-001" `
@@ -521,10 +522,11 @@ function Get-ForsettiProtectedPathRules {
 }
 
 function Get-ForsettiRoleLimitedPathRules {
-    param([string]$RepoRoot)
+    param([string]$RepoRoot, [string]$PolicyRoot)
 
     $rules = New-Object System.Collections.Generic.List[object]
-    $policyPath = Join-Path $RepoRoot "core/policies/repo-boundaries.json"
+    if (-not $PolicyRoot) { $PolicyRoot = Join-Path $RepoRoot 'core/policies' }
+    $policyPath = Join-Path $PolicyRoot 'repo-boundaries.json'
     if (-not (Test-Path -LiteralPath $policyPath)) {
         Add-Finding `
             -FindingId "FFAE-ROLE-001" `
@@ -753,10 +755,11 @@ function Test-ForsettiProtectedApprovals {
     param(
         [string]$RepoRoot,
         [object]$Contract,
-        [string[]]$ChangedFiles
+        [string[]]$ChangedFiles,
+        [string]$PolicyRoot
     )
 
-    $rules = Get-ForsettiProtectedPathRules -RepoRoot $RepoRoot
+    $rules = Get-ForsettiProtectedPathRules -RepoRoot $RepoRoot -PolicyRoot $PolicyRoot
     if ($null -eq $rules) {
         return
     }
@@ -827,10 +830,11 @@ function Test-ForsettiRoleLimitedPaths {
     param(
         [string]$RepoRoot,
         [object]$Contract,
-        [string[]]$ChangedFiles
+        [string[]]$ChangedFiles,
+        [string]$PolicyRoot
     )
 
-    $rules = Get-ForsettiRoleLimitedPathRules -RepoRoot $RepoRoot
+    $rules = Get-ForsettiRoleLimitedPathRules -RepoRoot $RepoRoot -PolicyRoot $PolicyRoot
     if ($null -eq $rules) {
         return
     }
@@ -929,11 +933,13 @@ function Test-ForsettiRequiredOutputs {
 function Test-ForsettiDocsSyncForChangedFiles {
     param(
         [string]$RepoRoot,
-        [string[]]$ChangedFiles
+        [string[]]$ChangedFiles,
+        [string]$PolicyRoot
     )
 
     $warnings = 0
-    $policyPath = Join-Path $RepoRoot "core/policies/docs-sync-rules.json"
+    if (-not $PolicyRoot) { $PolicyRoot = Join-Path $RepoRoot 'core/policies' }
+    $policyPath = Join-Path $PolicyRoot 'docs-sync-rules.json'
     if (-not (Test-Path -LiteralPath $policyPath)) {
         Add-Finding `
             -FindingId "FFAE-DOCS-005" `
@@ -1263,12 +1269,13 @@ function Test-ForsettiDocumentationObligations {
     param(
         [string]$RepoRoot,
         [object]$Contract,
-        [string[]]$ChangedFiles
+        [string[]]$ChangedFiles,
+        [string]$PolicyRoot
     )
 
     $warnings = 0
     $docImpact = $Contract.documentation_impact
-    $warnings += Test-ForsettiDocsSyncForChangedFiles -RepoRoot $RepoRoot -ChangedFiles $ChangedFiles
+    $warnings += Test-ForsettiDocsSyncForChangedFiles -RepoRoot $RepoRoot -ChangedFiles $ChangedFiles -PolicyRoot $PolicyRoot
 
     if ($docImpact.readme_update -and ($ChangedFiles -notcontains "README.md")) {
         $warnings++
@@ -1424,7 +1431,8 @@ function Test-TaskContractRules {
         [AllowNull()][string[]]$ChangedFile,
         [AllowNull()][string]$ChangedFilesPath,
         [AllowNull()][string]$PendingOutputPath,
-        [switch]$RequireContract
+        [switch]$RequireContract,
+        [string]$PolicyRoot
     )
 
     if ([string]::IsNullOrWhiteSpace($ContractPath)) {
@@ -1452,8 +1460,8 @@ function Test-TaskContractRules {
     $script:ContractChangedFilesCount = @($changedFiles).Count
     Test-ForsettiContractShape -Contract $contract
     Test-ForsettiContractScope -Contract $contract -ChangedFiles $changedFiles
-    Test-ForsettiProtectedApprovals -RepoRoot $RepoRoot -Contract $contract -ChangedFiles $changedFiles
-    Test-ForsettiRoleLimitedPaths -RepoRoot $RepoRoot -Contract $contract -ChangedFiles $changedFiles
+    Test-ForsettiProtectedApprovals -RepoRoot $RepoRoot -Contract $contract -ChangedFiles $changedFiles -PolicyRoot $PolicyRoot
+    Test-ForsettiRoleLimitedPaths -RepoRoot $RepoRoot -Contract $contract -ChangedFiles $changedFiles -PolicyRoot $PolicyRoot
     Test-ForsettiRequiredOutputs -RepoRoot $RepoRoot -Contract $contract -PendingOutputPath $PendingOutputPath
-    Test-ForsettiDocumentationObligations -RepoRoot $RepoRoot -Contract $contract -ChangedFiles $changedFiles
+    Test-ForsettiDocumentationObligations -RepoRoot $RepoRoot -Contract $contract -ChangedFiles $changedFiles -PolicyRoot $PolicyRoot
 }
