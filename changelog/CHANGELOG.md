@@ -6,6 +6,18 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 
 ## [Unreleased]
 
+### Features
+
+**Title**: Add an explicitly allowlisted external governance developer kit
+**Change Class**: feature
+**Version Impact**: minor
+**Summary**: Added deterministic SDK assembly and a reviewed source-to-destination map for complete doctrine, roles/standards, templates, trusted bundle data, validator/helper closure, and consumer documentation. Added bounded PowerShell integrity, initialization, explicit-upgrade, and target-validation tools; delivery variants are portable and macOS arm64, with Windows native delivery omitted without actual Windows host evidence.
+**Affected Area**: sdk, packaging, native bootstrap/integrity, installation, consumer validation, documentation, tests
+**PR Reference**: Owner-authorized SDK implementation and release preparation
+**Task Reference**: FAE-TASK-2026-10-10-017
+**Approval Class**: sensitive
+
+
 ### Governance
 
 **Title**: Establish external Agentic SDK consumption and truthful onboarding

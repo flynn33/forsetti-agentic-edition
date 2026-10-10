@@ -1,10 +1,12 @@
 # Overview
 
+> **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
+> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+
 [![Architecture](https://img.shields.io/badge/architecture-core%20%2B%20bundle%20%2B%20native%20products-0ea5e9)](Overview)
 [![Boundary](https://img.shields.io/badge/boundary-governance--only-16a34a)](Compliance)
-[![Bundle](https://img.shields.io/badge/source%20bundle-47%20required%20files-b91c1c)](Overview)
+[![Bundle](https://img.shields.io/badge/source%20bundle-hashed%20inventory-b91c1c)](Overview)
 
-> **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
 > **Product model**: portable governance core, trusted source bundle, edition profiles, native host products, optional adapters, platform overlays, and derived documentation surfaces.
 
 ---
@@ -85,11 +87,12 @@ flowchart TB
 |---|---|---|---|
 | Portable core | `core/` | policy registries, schemas, task contract template, validator, authority model | Canonical where marked by policy hierarchy |
 | Edition profiles | `editions/` | Apple `0.1.5` current + `0.1.3` compatibility, Windows `0.2.0`, shared invariants | Binding for target work |
-| Source bundle | `bundle/` | 47 required hashed files, schemas, policies, profiles, target instructions | Verifiable installation payload |
+| Source bundle | `bundle/` | explicit required hashed files, schemas, policies, profiles, target instructions | Verifiable installation payload |
 | Native Apple product | `products/apple/` | Swift package, executable, core/contracts/apple libraries, tests | Native command surface |
 | Native Windows product | `products/windows/` | CMake project, C++20 executable, core library, tests | Native command surface |
 | GitHub adapter | `adapters/github-actions/` | PowerShell workflow scripts and shared GitHub context helpers | Optional hosted adapter |
 | Root scripts | `scripts/` | product manifest generator and validation wrappers | Local utility entry points |
+| Consumer SDK | `sdk/` | complete consumption policy, explicit payload map, portable/macOS arm64 delivery, PowerShell setup/integrity/target wrappers, consumer documentation | External developer toolkit, not application runtime |
 | Evidence | `.forsetti/product-completion/` | Phase 00 through Phase 05 reports | Product completion record |
 | Wiki mirror | `wiki/` | reviewed repository copy of public wiki pages | Derived documentation |
 
@@ -103,7 +106,7 @@ flowchart LR
     Generator["scripts/generate-product-manifest.py"] --> Manifest["bundle/product-manifest.json"]
     Manifest --> Hashes["SHA-256 file hashes"]
     Manifest --> PolicyHash["policyBundleHash"]
-    Manifest --> BundleFiles["47 required bundle files"]
+    Manifest --> BundleFiles["approved required bundle files"]
     BundleFiles --> AppleVerify["Apple bundle verify"]
     BundleFiles --> WindowsVerify["Windows bundle verify"]
     AppleVerify --> Decision{"integrity result"}
@@ -120,12 +123,14 @@ flowchart LR
 | `bundleID` | `ffae-1.1.0-source` |
 | `platform` | `source` |
 | `architecture` | `portable` |
-| `files` | `47` required entries |
-| `policyBundleHash` | `cfe9a828b306570345deb4398f760ff7350439052173be06c9bc6dfce905a6f5` |
+| `files` | exact required entries in the generated manifest |
+| `policyBundleHash` | value from the regenerated trusted manifest |
 
 ---
 
 ## Native Product Command Matrix
+
+This table describes implemented source commands. SDK native delivery is macOS arm64 only until an actual Windows host build and command matrix is verified. Native `task` commands are unsupported on both routers. The [SDK command matrix](https://github.com/flynn33/forsetti-agentic-edition/blob/main/sdk/Documentation/Command-Matrix.md) records exact onboarding paths and limitations.
 
 | Command | Apple Swift CLI | Windows C++ CLI | Purpose |
 |---|---:|---:|---|
@@ -163,6 +168,8 @@ flowchart LR
 
 ## Boundary Ledger
 
+The canonical [consumption policy](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CONSUMPTION_POLICY.md) classifies governance policies/schemas/profiles/templates as product data in the external SDK. Generated project context, module inventory, locks, instructions, and project-authorized contracts/evidence belong to the target. SDK source/history and runtime frameworks do not cross that boundary. [Source References](https://github.com/flynn33/forsetti-agentic-edition/blob/main/sdk/Documentation/Source-References.md) maps complete doctrine/role/standard/template dependencies to preserved SDK paths.
+
 | FFAE Governs | FFAE Does Not Implement |
 |---|---|
 | contract-first execution | downstream app runtime |
@@ -177,7 +184,3 @@ flowchart LR
 ---
 
 **Navigation**: [Home](Home) | [Workflow](Workflow) | [Compliance](Compliance) | [Agent Roles](Agent-Roles) | [Documentation](Documentation) | [Releases](Releases) | [Changelog](Changelog) | [Constitution](Constitution) | [Glossary](Glossary)
-
-## Agentic product consumption
-
-The complete canonical [CONSUMPTION_POLICY.md](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CONSUMPTION_POLICY.md) defines the supported external governance toolkit boundary, project-owned metadata, managed instructions/locks, optional adapters, and excluded maintainer/runtime material. Governance policy data is product data; it does not authorize copying the development repository or installing a runtime framework. Canonical target instructions and external validator resource resolution use the authorized contract and independent-review workflow.

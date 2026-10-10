@@ -81,6 +81,17 @@ public final class RepositoryBootstrapService {
             )
         }
 
+        let bundleParent = options.bundleRoot.deletingLastPathComponent()
+        let containsSDKManifest = fileSystem.fileExists(at: bundleParent.appendingPathComponent("sdk-manifest.json"))
+        if rootsOverlap(options.repositoryRoot, options.bundleRoot) ||
+            (containsSDKManifest && rootsOverlap(options.repositoryRoot, bundleParent)) {
+            return resultFactory.makeResult(status: .block, mode: "init", findings: [blockingFinding(
+                conditionID: "init.installation.overlap", message: "The trusted bundle and its SDK installation must remain outside the governed repository.",
+                path: options.repositoryRoot.path, evidence: [options.repositoryRoot.path, options.bundleRoot.path],
+                remediation: "Use separate external SDK/bundle and target repository directories."
+            )])
+        }
+
         let resolved: ResolvedTarget
         do {
             resolved = try resolveTarget(options: options)
@@ -102,7 +113,15 @@ public final class RepositoryBootstrapService {
         if let mismatch = resolved.versionMismatchFinding {
             return resultFactory.makeResult(status: .block, mode: "init", findings: [mismatch])
         }
-        let plan = try buildInstallPlan(options: options, resolved: resolved, manifest: manifest)
+        let plan: InstallPlan
+        do {
+            plan = try buildInstallPlan(options: options, resolved: resolved, manifest: manifest)
+        } catch BootstrapResolutionError.installationConflict(let path) {
+            return resultFactory.makeResult(status: .block, mode: "init", findings: [blockingFinding(
+                conditionID: "init.installation.conflict", message: "Existing metadata differs or an installation path is unsafe.",
+                path: path, evidence: [path], remediation: "Preserve the existing files and use the SDK's explicit upgrade workflow or resolve the conflict before retrying."
+            )])
+        }
         if let agentsConflict = plan.agentsConflict {
             return resultFactory.makeResult(status: .block, mode: "init", findings: [agentsConflict])
         }
@@ -200,6 +219,13 @@ public final class RepositoryBootstrapService {
         manifest: ProductManifest
     ) throws -> InstallPlan {
         let forsettiRoot = options.repositoryRoot.appendingPathComponent(".forsetti", isDirectory: true)
+        let plannedPaths = ["AGENTS.md", ".forsetti", ".forsetti/project.json", ".forsetti/modules.json",
+            ".forsetti/profile.lock.json", ".forsetti/policy.lock.json", ".forsetti/product.lock.json",
+            ".forsetti/instructions", ".forsetti/instructions/GOVERNANCE.md", ".forsetti/contracts",
+            ".forsetti/tasks", ".forsetti/evidence", ".forsetti/validation"]
+        for path in plannedPaths {
+            try requireSafePath(options.repositoryRoot.appendingPathComponent(path), repositoryRoot: options.repositoryRoot)
+        }
         let instructionText = try String(
             data: fileSystem.readFile(at: options.bundleRoot.appendingPathComponent("instructions/target-agents-section.md")),
             encoding: .utf8
@@ -245,7 +271,7 @@ public final class RepositoryBootstrapService {
                 "policyLockPath": ".forsetti/policy.lock.json",
                 "productLockPath": ".forsetti/product.lock.json",
                 "initializedAtUTC": initializedAt,
-                "initializedByVersion": ProductVersion.current
+                "initializedByVersion": existingStringField(at: projectURL, field: "initializedByVersion") ?? ProductVersion.current
             ])
         ))
         writes.append(PlannedWrite(
@@ -294,6 +320,33 @@ public final class RepositoryBootstrapService {
             data: Data(governanceText.utf8)
         ))
 
+        for index in writes.indices {
+            let write = writes[index]
+            if fileSystem.directoryExists(at: write.url) {
+                throw BootstrapResolutionError.installationConflict(write.url.path)
+            }
+            guard fileSystem.fileExists(at: write.url) else { continue }
+            let existing = try fileSystem.readFile(at: write.url)
+            if write.url.lastPathComponent == "modules.json" {
+                guard let object = try? JSONSerialization.jsonObject(with: existing) as? [String: Any],
+                      object["schemaVersion"] as? String == "2.0", object["modules"] is [Any] else {
+                    throw BootstrapResolutionError.installationConflict(write.url.path)
+                }
+                writes[index] = PlannedWrite(url: write.url, data: existing, expectedExisting: existing)
+            } else if write.url.pathExtension == "json" {
+                guard let oldObject = try? JSONSerialization.jsonObject(with: existing),
+                      let newObject = try? JSONSerialization.jsonObject(with: write.data),
+                      (oldObject as AnyObject).isEqual(newObject) else {
+                    throw BootstrapResolutionError.installationConflict(write.url.path)
+                }
+                writes[index] = PlannedWrite(url: write.url, data: existing, expectedExisting: existing)
+            } else if write.url.lastPathComponent != "AGENTS.md" && existing != write.data {
+                throw BootstrapResolutionError.installationConflict(write.url.path)
+            } else {
+                writes[index] = PlannedWrite(url: write.url, data: write.data, expectedExisting: existing)
+            }
+        }
+
         let directories = [
             forsettiRoot,
             forsettiRoot.appendingPathComponent("instructions", isDirectory: true),
@@ -312,26 +365,50 @@ public final class RepositoryBootstrapService {
 
     private func apply(plan: InstallPlan) throws {
         var createdDirectories: [URL] = []
-        var fileBackups: [URL: Data?] = [:]
+        var fileBackups: [(url: URL, data: Data?, written: Data)] = []
+        let repositoryRoot = plan.directories[0].deletingLastPathComponent()
         do {
-            for directory in plan.directories where !fileSystem.directoryExists(at: directory) {
-                try manager.createDirectory(at: directory, withIntermediateDirectories: true)
-                createdDirectories.append(directory)
+            for directory in plan.directories {
+                try requireSafePath(directory, repositoryRoot: repositoryRoot)
+                if !fileSystem.directoryExists(at: directory) {
+                    try manager.createDirectory(at: directory, withIntermediateDirectories: true)
+                    createdDirectories.append(directory)
+                }
             }
             for write in plan.writes {
-                fileBackups[write.url] = try? fileSystem.readFile(at: write.url)
+                try requireSafePath(write.url, repositoryRoot: repositoryRoot)
+                let previous = fileSystem.fileExists(at: write.url) ? try fileSystem.readFile(at: write.url) : nil
+                guard previous == write.expectedExisting else {
+                    throw BootstrapResolutionError.installationConflict(write.url.path)
+                }
+                if previous == write.data { continue }
+                fileBackups.append((write.url, previous, write.data))
                 try fileSystem.writeFileAtomically(write.data, to: write.url)
             }
         } catch {
-            for (url, data) in fileBackups {
-                if let data {
-                    try? fileSystem.writeFileAtomically(data, to: url)
-                } else {
-                    try? manager.removeItem(at: url)
+            var recoveryPaths: [String] = []
+            for (url, data, written) in fileBackups.reversed() {
+                do {
+                    try requireSafePath(url, repositoryRoot: repositoryRoot)
+                    let current = fileSystem.fileExists(at: url) ? try fileSystem.readFile(at: url) : nil
+                    if current == data { continue }
+                    guard current == written else { throw BootstrapResolutionError.installationConflict(url.path) }
+                    if let data {
+                        try fileSystem.writeFileAtomically(data, to: url)
+                    } else {
+                        try manager.removeItem(at: url)
+                    }
+                } catch {
+                    recoveryPaths.append(url.path)
                 }
             }
             for directory in createdDirectories.reversed() {
-                try? manager.removeItem(at: directory)
+                if (try? manager.contentsOfDirectory(atPath: directory.path).isEmpty) == true {
+                    try? manager.removeItem(at: directory)
+                }
+            }
+            if !recoveryPaths.isEmpty {
+                throw BootstrapResolutionError.rollbackIncomplete(original: String(describing: error), paths: recoveryPaths)
             }
             throw error
         }
@@ -343,6 +420,17 @@ public final class RepositoryBootstrapService {
             throw BootstrapResolutionError.ambiguousEdition
         }
         let platform = options.platform ?? defaultPlatform(for: edition)
+        guard ["apple", "windows"].contains(edition),
+              (edition == "apple" ? ["iOS", "macOS"] : ["Windows"]).contains(platform),
+              options.frameworkVersion == nil || options.frameworkVersion?.range(of: "^[0-9]+\\.[0-9]+\\.[0-9]+$", options: .regularExpression) != nil,
+              ["single_app_module", "multi_module_single_app", "developer_testing", "dashboard", "framework_governance"].contains(options.deploymentPattern) else {
+            return ResolvedTarget(edition: edition, platform: platform, frameworkVersion: options.frameworkVersion ?? "0.0.0",
+                repositoryType: discovered.repositoryType, versionMismatchFinding: blockingFinding(
+                    conditionID: "init.selection.invalid", message: "Edition, platform, framework version or deployment pattern is invalid.",
+                    path: options.repositoryRoot.path, evidence: [edition, platform, options.deploymentPattern],
+                    remediation: "Select a supported edition profile and its declared target platform."
+                ))
+        }
         let profileURL = profileURL(
             bundleRoot: options.bundleRoot,
             edition: edition,
@@ -443,7 +531,7 @@ public final class RepositoryBootstrapService {
                     message: "Profile lock does not match the installed bundle.",
                     path: ".forsetti/profile.lock.json",
                     evidence: [expectedProfileHash ?? ""],
-                    remediation: "Run init to repin the selected profile."
+                    remediation: "Preserve the lock and use the SDK's explicit upgrade workflow for a reviewed profile change."
                 ))
             }
         }
@@ -462,7 +550,7 @@ public final class RepositoryBootstrapService {
                 message: "Policy lock does not match the installed bundle.",
                 path: ".forsetti/policy.lock.json",
                 evidence: [manifest.policyBundleHash ?? ""],
-                remediation: "Run init to repin the policy bundle."
+                remediation: "Preserve the lock and use the SDK's explicit upgrade workflow for a reviewed policy change."
             ))
         }
 
@@ -482,7 +570,7 @@ public final class RepositoryBootstrapService {
                 message: "Product lock does not match the installed bundle.",
                 path: ".forsetti/product.lock.json",
                 evidence: [manifestHash],
-                remediation: "Run init to repin the product bundle."
+                remediation: "Preserve the lock and use the SDK's explicit upgrade workflow for a reviewed product change."
             ))
         }
         return findings
@@ -498,7 +586,7 @@ public final class RepositoryBootstrapService {
                     message: "Project configuration cannot be read.",
                     path: ".forsetti/project.json",
                     evidence: [projectURL.path],
-                    remediation: "Run init to recreate project configuration."
+                    remediation: "Preserve existing metadata and restore the reviewed project configuration before initialization."
                 )
             ]
         }
@@ -568,9 +656,20 @@ public final class RepositoryBootstrapService {
         if beginCount == 1,
            let beginRange = existingText.range(of: begin),
            let endRange = existingText.range(of: end, range: beginRange.upperBound..<existingText.endIndex) {
-            var updated = existingText
-            updated.replaceSubrange(beginRange.lowerBound..<endRange.upperBound, with: section.trimmingCharacters(in: .whitespacesAndNewlines))
-            return AgentsUpdate(text: updated.hasSuffix("\n") ? updated : updated + "\n", conflict: nil)
+            if existingText[beginRange.lowerBound..<endRange.upperBound] != section.trimmingCharacters(in: .whitespacesAndNewlines) {
+                return AgentsUpdate(text: existingText, conflict: blockingFinding(
+                    conditionID: "init.instructions.conflict", message: "Existing governance block differs from the selected bundle.",
+                    path: "AGENTS.md", evidence: ["FORSETTI-GOVERNANCE"],
+                    remediation: "Preserve the block and use the SDK's explicit upgrade workflow."
+                ))
+            }
+            return AgentsUpdate(text: existingText, conflict: nil)
+        }
+        if beginCount == 1 {
+            return AgentsUpdate(text: existingText, conflict: blockingFinding(
+                conditionID: "init.instructions.conflict", message: "Governance instruction markers are out of order.",
+                path: "AGENTS.md", evidence: ["FORSETTI-GOVERNANCE"], remediation: "Repair the managed block before running init."
+            ))
         }
         let separator = existingText.hasSuffix("\n") ? "\n" : "\n\n"
         return AgentsUpdate(
@@ -582,19 +681,49 @@ public final class RepositoryBootstrapService {
     private func hasSingleGovernanceSection(_ text: String) -> Bool {
         let beginCount = text.components(separatedBy: "<!-- FORSETTI-GOVERNANCE:BEGIN -->").count - 1
         let endCount = text.components(separatedBy: "<!-- FORSETTI-GOVERNANCE:END -->").count - 1
-        return beginCount == 1 && endCount == 1
+        guard beginCount == 1 && endCount == 1,
+              let begin = text.range(of: "<!-- FORSETTI-GOVERNANCE:BEGIN -->"),
+              let end = text.range(of: "<!-- FORSETTI-GOVERNANCE:END -->") else { return false }
+        return begin.upperBound <= end.lowerBound
     }
 
     private func existingAgentsText(url: URL) throws -> String? {
         guard fileSystem.fileExists(at: url) else {
             return nil
         }
-        return String(data: try fileSystem.readFile(at: url), encoding: .utf8)
+        guard let text = String(data: try fileSystem.readFile(at: url), encoding: .utf8) else {
+            throw BootstrapResolutionError.installationConflict(url.path)
+        }
+        return text
     }
 
     private func repositoryRootIsValid(_ repositoryRoot: URL) -> Bool {
         fileSystem.directoryExists(at: repositoryRoot) &&
-            fileSystem.directoryExists(at: repositoryRoot.appendingPathComponent(".git", isDirectory: true))
+            (fileSystem.directoryExists(at: repositoryRoot.appendingPathComponent(".git", isDirectory: true)) ||
+             fileSystem.fileExists(at: repositoryRoot.appendingPathComponent(".git")))
+    }
+
+    private func requireSafePath(_ url: URL, repositoryRoot: URL) throws {
+        let root = repositoryRoot.standardizedFileURL
+        var current = url.standardizedFileURL
+        guard current.path.hasPrefix(root.path + "/") else {
+            throw BootstrapResolutionError.installationConflict(url.path)
+        }
+        while current.path.hasPrefix(root.path + "/") || current == root {
+            if (try? current.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink) == true {
+                throw BootstrapResolutionError.installationConflict(current.path)
+            }
+            if current == root { break }
+            current.deleteLastPathComponent()
+        }
+    }
+
+    private func rootsOverlap(_ first: URL, _ second: URL) -> Bool {
+        let firstPath = first.resolvingSymlinksInPath().standardizedFileURL.path.lowercased()
+        let secondPath = second.resolvingSymlinksInPath().standardizedFileURL.path.lowercased()
+        let firstPrefix = firstPath.hasSuffix("/") ? firstPath : firstPath + "/"
+        let secondPrefix = secondPath.hasSuffix("/") ? secondPath : secondPath + "/"
+        return firstPath == secondPath || firstPath.hasPrefix(secondPrefix) || secondPath.hasPrefix(firstPrefix)
     }
 
     private func loadManifest(bundleRoot: URL) throws -> ProductManifest {
@@ -719,6 +848,13 @@ private struct InstallPlan {
 private struct PlannedWrite {
     let url: URL
     let data: Data
+    let expectedExisting: Data?
+
+    init(url: URL, data: Data, expectedExisting: Data? = nil) {
+        self.url = url
+        self.data = data
+        self.expectedExisting = expectedExisting
+    }
 }
 
 private struct AgentsUpdate {
@@ -733,4 +869,6 @@ private struct ProfileMetadata {
 
 private enum BootstrapResolutionError: Error {
     case ambiguousEdition
+    case installationConflict(String)
+    case rollbackIncomplete(original: String, paths: [String])
 }

@@ -2,9 +2,14 @@
 #include "ForsettiGovernance/SHA256.hpp"
 
 #include <optional>
+#include <algorithm>
+#include <cctype>
 #include <regex>
 #include <set>
 #include <sstream>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 namespace ForsettiGovernance {
 namespace {
@@ -126,7 +131,7 @@ std::vector<ManifestEntry> parseEntries(const std::string& manifestText) {
 }
 
 bool unsafeManifestPath(const std::string& path) {
-    if (path.empty() || path.front() == '/' || path.find('\\') != std::string::npos) {
+    if (path.empty() || path.front() == '/' || path.back() == '/' || path.find('\\') != std::string::npos || path.find(':') != std::string::npos) {
         return true;
     }
     std::istringstream parts(path);
@@ -137,6 +142,26 @@ bool unsafeManifestPath(const std::string& path) {
         }
     }
     return false;
+}
+
+bool unsafeLink(const std::filesystem::path& path, const std::filesystem::path& root) {
+    auto current = path;
+    for (;;) {
+        std::error_code error;
+        if (std::filesystem::is_symlink(std::filesystem::symlink_status(current, error))) { return true; }
+#ifdef _WIN32
+        const auto attributes = GetFileAttributesW(current.c_str());
+        if (attributes != INVALID_FILE_ATTRIBUTES && (attributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0) { return true; }
+#endif
+        if (current == root || current.empty() || current == current.parent_path()) { break; }
+        current = current.parent_path();
+    }
+    return false;
+}
+
+std::string portablePathKey(std::string path) {
+    std::transform(path.begin(), path.end(), path.begin(), [](unsigned char value) { return static_cast<char>(std::tolower(value)); });
+    return path;
 }
 
 ValidationFinding blockingFinding(
@@ -162,6 +187,10 @@ SimpleBundleVerifier::SimpleBundleVerifier(const IFileSystem& fileSystem)
 
 ValidationResult SimpleBundleVerifier::verify(const std::filesystem::path& bundleRoot) const {
     const auto manifestPath = bundleRoot / "product-manifest.json";
+    if (unsafeLink(manifestPath, bundleRoot)) {
+        return ValidationResult{"2.0", ValidationStatus::Block, "bundle verify", "1.1.0", "bundle-verification",
+            {blockingFinding("bundle.path.unsafe-link", "Bundle paths must not use symbolic links or reparse points.", "product-manifest.json", {manifestPath.string()})}};
+    }
     if (!fileSystem_.fileExists(manifestPath)) {
         return ValidationResult{
             "2.0",
@@ -199,7 +228,10 @@ ValidationResult SimpleBundleVerifier::verify(const std::filesystem::path& bundl
     }
 
     const auto lockPath = bundleRoot / "product-lock.json";
-    if (fileSystem_.fileExists(lockPath)) {
+    if (unsafeLink(lockPath, bundleRoot)) {
+        blocked = true;
+        findings.push_back(blockingFinding("bundle.path.unsafe-link", "Bundle paths must not use symbolic links or reparse points.", "product-lock.json", {lockPath.string()}));
+    } else if (fileSystem_.fileExists(lockPath)) {
         const auto lockText = fileSystem_.readText(lockPath);
         const auto manifestHash = sha256Hex(manifestText);
         const auto lockSchemaVersion = stringField(lockText, "schemaVersion");
@@ -254,7 +286,7 @@ ValidationResult SimpleBundleVerifier::verify(const std::filesystem::path& bundl
                 {entry.path}));
             continue;
         }
-        if (!seenPaths.insert(entry.path).second) {
+        if (!seenPaths.insert(portablePathKey(entry.path)).second) {
             blocked = true;
             findings.push_back(blockingFinding(
                 "bundle.path.duplicate",
@@ -264,6 +296,11 @@ ValidationResult SimpleBundleVerifier::verify(const std::filesystem::path& bundl
             continue;
         }
         const auto filePath = bundleRoot / std::filesystem::path(entry.path);
+        if (unsafeLink(filePath, bundleRoot)) {
+            blocked = true;
+            findings.push_back(blockingFinding("bundle.path.unsafe-link", "Bundle paths must not use symbolic links or reparse points.", entry.path, {filePath.string()}));
+            continue;
+        }
         if (!fileSystem_.fileExists(filePath)) {
             if (entry.required) {
                 blocked = true;
@@ -284,6 +321,38 @@ ValidationResult SimpleBundleVerifier::verify(const std::filesystem::path& bundl
                 entry.path,
                 {"expected=" + entry.sha256, "actual=" + actual}));
         }
+    }
+
+    std::set<std::string> allowedPaths{"product-manifest.json", "product-lock.json"};
+    for (const auto& entry : entries) { allowedPaths.insert(entry.path); }
+    std::set<std::string> allowedDirectories;
+    for (const auto& entry : entries) {
+        auto directory = std::filesystem::path(entry.path).parent_path();
+        while (!directory.empty()) {
+            allowedDirectories.insert(directory.generic_string());
+            directory = directory.parent_path();
+        }
+    }
+    std::error_code walkError;
+    std::filesystem::recursive_directory_iterator iterator(bundleRoot, walkError), end;
+    for (; !walkError && iterator != end; iterator.increment(walkError)) {
+        const auto path = iterator->path();
+        const auto relative = path.lexically_relative(bundleRoot).generic_string();
+        if (unsafeLink(path, bundleRoot)) {
+            iterator.disable_recursion_pending();
+            blocked = true;
+            findings.push_back(blockingFinding("bundle.path.unsafe-link", "Bundle paths must not use symbolic links or reparse points.", relative, {path.string()}));
+        } else if (iterator->is_directory() && !allowedDirectories.contains(relative)) {
+            blocked = true;
+            findings.push_back(blockingFinding("bundle.directory.unexpected", "Bundle contains an unlisted directory.", relative, {relative}));
+        } else if (!iterator->is_directory() && !allowedPaths.contains(relative)) {
+            blocked = true;
+            findings.push_back(blockingFinding("bundle.file.unexpected", "Bundle contains an unlisted file.", relative, {relative}));
+        }
+    }
+    if (walkError) {
+        blocked = true;
+        findings.push_back(blockingFinding("bundle.inventory.unreadable", "Bundle inventory cannot be read.", bundleRoot.string(), {walkError.message()}));
     }
 
     if (!blocked) {

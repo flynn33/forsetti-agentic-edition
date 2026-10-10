@@ -143,6 +143,32 @@ void runBundleVerifierTests() {
     assert(lockResult.status == ValidationStatus::Block);
     assert(hasFinding(lockResult, "bundle.product-lock.mismatch"));
     std::filesystem::remove_all(lock);
+
+    const auto extra = temporaryRoot("extra");
+    writeFile(extra / "payload.txt", "payload");
+    writeManifest(extra, manifestEntry("payload.txt", sha256Hex("payload"), true));
+    writeFile(extra / "unexpected.txt", "extra");
+    const auto extraResult = verifier.verify(extra);
+    assert(extraResult.status == ValidationStatus::Block);
+    assert(hasFinding(extraResult, "bundle.file.unexpected"));
+    std::filesystem::remove(extra / "unexpected.txt");
+    std::filesystem::create_directory(extra / "unlisted");
+    assert(hasFinding(verifier.verify(extra), "bundle.directory.unexpected"));
+    std::filesystem::remove_all(extra);
+
+    const auto link = temporaryRoot("link");
+    const auto outside = temporaryRoot("outside");
+    writeFile(outside / "payload.txt", "payload");
+    writeManifest(link, manifestEntry("payload.txt", sha256Hex("payload"), true));
+    std::error_code linkError;
+    std::filesystem::create_symlink(outside / "payload.txt", link / "payload.txt", linkError);
+    if (!linkError) {
+        const auto linkResult = verifier.verify(link);
+        assert(linkResult.status == ValidationStatus::Block);
+        assert(hasFinding(linkResult, "bundle.path.unsafe-link"));
+    }
+    std::filesystem::remove_all(link);
+    std::filesystem::remove_all(outside);
 }
 
 } // namespace

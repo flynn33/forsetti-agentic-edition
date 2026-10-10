@@ -16,6 +16,12 @@ public final class SHA256BundleVerifier: BundleVerifying {
 
     public func verify(bundleRoot: URL) throws -> ValidationResult {
         let manifestURL = bundleRoot.appendingPathComponent("product-manifest.json")
+        if containsSymbolicLink(manifestURL, bundleRoot: bundleRoot) {
+            return resultFactory.makeResult(status: .block, mode: "bundle verify", findings: [blockingFinding(
+                conditionID: "bundle.path.unsafe-link", message: "Bundle paths must not use symbolic links.",
+                path: "product-manifest.json", evidence: [manifestURL.path]
+            )])
+        }
         guard fileSystem.fileExists(at: manifestURL) else {
             return resultFactory.makeResult(
                 status: .block,
@@ -42,6 +48,12 @@ public final class SHA256BundleVerifier: BundleVerifying {
         var blocked = false
         var seenPaths = Set<String>()
 
+        if manifest.files.isEmpty {
+            blocked = true
+            findings.append(blockingFinding(conditionID: "bundle.manifest.files-missing",
+                message: "Product manifest has no file entries.", path: "product-manifest.json", evidence: ["files"]))
+        }
+
         if manifest.schemaVersion != "2.0" {
             blocked = true
             findings.append(blockingFinding(
@@ -54,7 +66,12 @@ public final class SHA256BundleVerifier: BundleVerifying {
 
         let manifestHash = sha256Hex(manifestData)
         let lockURL = bundleRoot.appendingPathComponent("product-lock.json")
-        if fileSystem.fileExists(at: lockURL) {
+        if containsSymbolicLink(lockURL, bundleRoot: bundleRoot) {
+            blocked = true
+            findings.append(blockingFinding(conditionID: "bundle.path.unsafe-link",
+                message: "Bundle paths must not use symbolic links.", path: "product-lock.json", evidence: [lockURL.path]))
+        }
+        if fileSystem.fileExists(at: lockURL) && !containsSymbolicLink(lockURL, bundleRoot: bundleRoot) {
             let lock = try loader.loadJSON(ProductLock.self, from: lockURL)
             if lock.schemaVersion != "2.0" {
                 blocked = true
@@ -96,7 +113,7 @@ public final class SHA256BundleVerifier: BundleVerifying {
                 ))
                 continue
             }
-            guard seenPaths.insert(file.path).inserted else {
+            guard seenPaths.insert(file.path.lowercased()).inserted else {
                 blocked = true
                 findings.append(blockingFinding(
                     conditionID: "bundle.path.duplicate",
@@ -107,6 +124,12 @@ public final class SHA256BundleVerifier: BundleVerifying {
                 continue
             }
             let fileURL = bundleRoot.appendingPathComponent(file.path)
+            if containsSymbolicLink(fileURL, bundleRoot: bundleRoot) {
+                blocked = true
+                findings.append(blockingFinding(conditionID: "bundle.path.unsafe-link",
+                    message: "Bundle paths must not use symbolic links.", path: file.path, evidence: [fileURL.path]))
+                continue
+            }
             guard fileSystem.fileExists(at: fileURL) else {
                 if file.required {
                     blocked = true
@@ -129,6 +152,46 @@ public final class SHA256BundleVerifier: BundleVerifying {
                     evidence: ["expected=\(file.sha256)", "actual=\(actual)"]
                 ))
             }
+        }
+
+        let allowedPaths = Set(manifest.files.map(\.path) + ["product-manifest.json", "product-lock.json"])
+        var allowedDirectories = Set<String>()
+        for path in allowedPaths {
+            let parts = path.split(separator: "/")
+            if parts.count > 1 {
+                for count in 1..<parts.count { allowedDirectories.insert(parts.prefix(count).joined(separator: "/")) }
+            }
+        }
+        var inventoryError: Error?
+        if let enumerator = FileManager.default.enumerator(at: bundleRoot, includingPropertiesForKeys: [.isDirectoryKey, .isSymbolicLinkKey], errorHandler: { _, error in
+            inventoryError = error
+            return false
+        }) {
+            for case let url as URL in enumerator {
+                let values = try url.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
+                let relative = String(url.standardizedFileURL.path.dropFirst(bundleRoot.resolvingSymlinksInPath().standardizedFileURL.path.count + 1))
+                if values.isSymbolicLink == true {
+                    blocked = true
+                    enumerator.skipDescendants()
+                    findings.append(blockingFinding(conditionID: "bundle.path.unsafe-link",
+                        message: "Bundle paths must not use symbolic links.", path: relative, evidence: [url.path]))
+                } else if values.isDirectory == true && !allowedDirectories.contains(relative) {
+                    blocked = true
+                    findings.append(blockingFinding(conditionID: "bundle.directory.unexpected",
+                        message: "Bundle contains an unlisted directory.", path: relative, evidence: [relative]))
+                } else if values.isDirectory != true && !allowedPaths.contains(relative) {
+                    blocked = true
+                    findings.append(blockingFinding(conditionID: "bundle.file.unexpected",
+                        message: "Bundle contains an unlisted file.", path: relative, evidence: [relative]))
+                }
+            }
+        } else {
+            inventoryError = CocoaError(.fileReadUnknown)
+        }
+        if let inventoryError {
+            blocked = true
+            findings.append(blockingFinding(conditionID: "bundle.inventory.unreadable",
+                message: "Bundle inventory cannot be read.", path: bundleRoot.path, evidence: [String(describing: inventoryError)]))
         }
 
         if findings.isEmpty {
@@ -178,9 +241,20 @@ public final class SHA256BundleVerifier: BundleVerifying {
     }
 
     private func isUnsafeManifestPath(_ path: String) -> Bool {
-        if path.isEmpty || path.hasPrefix("/") || path.contains("\\") {
+        if path.isEmpty || path.hasPrefix("/") || path.contains("\\") || path.contains(":") {
             return true
         }
-        return path.split(separator: "/").contains("..") || path.split(separator: "/").contains(".")
+        return path.split(separator: "/", omittingEmptySubsequences: false).contains { $0.isEmpty || $0 == ".." || $0 == "." }
+    }
+
+    private func containsSymbolicLink(_ url: URL, bundleRoot: URL) -> Bool {
+        let root = bundleRoot.standardizedFileURL
+        var current = url.standardizedFileURL
+        while current.path.hasPrefix(root.path + "/") || current == root {
+            if (try? current.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink) == true { return true }
+            if current == root { break }
+            current.deleteLastPathComponent()
+        }
+        return false
     }
 }

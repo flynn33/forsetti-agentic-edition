@@ -1,5 +1,8 @@
 # Glossary
 
+> **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
+> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+
 [![Glossary](https://img.shields.io/badge/glossary-product%20and%20governance%20terms-4f46e5)](Glossary)
 [![Rules](https://img.shields.io/badge/terms-linked%20to%20enforcement-0f766e)](Compliance)
 
@@ -58,6 +61,12 @@ flowchart LR
 | Public API Boundary | Constraint requiring consumer code to use public Forsetti products only. |
 | Release Impact | Version classification: none, patch, minor, major, or governance-only. |
 | Source Bundle | Versioned portable package under `bundle/` containing schemas, policies, profiles, instructions, and manifest hashes. |
+| Agentic SDK | External developer governance toolkit containing allowlisted immutable assets, consumer tools and templates; not an application runtime SDK. |
+| Consumption Policy | Canonical allowlist distinguishing external toolkit data, approved project-owned metadata, optional adapters, and excluded maintainer/runtime content. |
+| SDK Manifest | Outer delivery/source/hash provenance; does not replace the internal product manifest or canonical policy authority. |
+| Payload Map | Reviewed exact source-to-destination delivery allowlist; hash inventory alone does not authorize new inputs. |
+| Consumer Mode | Combined target validator workflow that excludes upstream maintainer `repo`/`all` requirements. |
+| Validator Context | Snake_case project-context record with module/capability selection, distinct from native schema-2.0 `project.json`. |
 | Task State | Installed target state showing active governed work and evidence obligations. |
 | Validator Mode | Local validator operation such as `repo`, `contract`, `manifest`, `dependencies`, or `evidence`. |
 | Wiki Mirror | Repository-tracked `wiki/*.md` page set used for reviewed wiki source content. |
@@ -93,7 +102,3 @@ flowchart LR
 ---
 
 **Navigation**: [Home](Home) | [Overview](Overview) | [Workflow](Workflow) | [Compliance](Compliance) | [Agent Roles](Agent-Roles) | [Documentation](Documentation) | [Releases](Releases) | [Changelog](Changelog) | [Constitution](Constitution)
-
-## Agentic product consumption
-
-The complete canonical [CONSUMPTION_POLICY.md](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CONSUMPTION_POLICY.md) defines the supported external governance toolkit boundary, project-owned metadata, managed instructions/locks, optional adapters, and excluded maintainer/runtime material. Governance policy data is product data; it does not authorize copying the development repository or installing a runtime framework. Canonical target instructions and external validator resource resolution use the authorized contract and independent-review workflow.

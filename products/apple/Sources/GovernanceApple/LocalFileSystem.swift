@@ -25,6 +25,7 @@ public final class LocalFileSystem: FileSystem {
     public func writeFileAtomically(_ data: Data, to url: URL) throws {
         let directory = url.deletingLastPathComponent()
         let temporaryURL = directory.appendingPathComponent(".\(url.lastPathComponent).tmp-\(UUID().uuidString)")
+        defer { try? manager.removeItem(at: temporaryURL) }
         try data.write(to: temporaryURL, options: .atomic)
         if fileExists(at: url) {
             _ = try manager.replaceItemAt(url, withItemAt: temporaryURL)

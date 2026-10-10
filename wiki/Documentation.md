@@ -1,10 +1,12 @@
 # Documentation
 
+> **Canonical source**: [`DOCUMENTATION_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/DOCUMENTATION_POLICY.md)
+> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+
 [![Docs](https://img.shields.io/badge/docs-canonical%20%2B%20derived-0f766e)](Documentation)
 [![Wiki](https://img.shields.io/badge/live%20wiki-separate%20git%20repo-2563eb)](Documentation)
 [![Sync](https://img.shields.io/badge/sync%20pairs-30-b91c1c)](Documentation)
 
-> **Canonical source**: [`DOCUMENTATION_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/DOCUMENTATION_POLICY.md)
 > **Publication model**: repository docs, repository wiki mirror, and the live GitHub Wiki are separate surfaces. They must be aligned intentionally.
 
 ---
@@ -39,6 +41,9 @@ flowchart TB
 | Live wiki | `forsetti-agentic-edition.wiki.git` | public GitHub Wiki pages | direct wiki repository publish |
 | Hosted adapter | `adapters/github-actions/workflows/sync-wiki-pages.ps1` | optional automation support | workflow wrapper |
 | Changelog | `changelog/CHANGELOG.md` | traceable release ledger | PR-based repository changes |
+| SDK consumer guides | `sdk/README.md`, `sdk/AGENTS.md`, `sdk/Documentation/`, `sdk/Release-Notes.md` | extracted external toolkit usage, command/compatibility matrix, source mapping and known verification limits | reviewed source copied through exact release allowlist |
+
+The canonical [Agentic consumption policy](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CONSUMPTION_POLICY.md) is included completely and byte-identically in every SDK variant. [SDK Source References](https://github.com/flynn33/forsetti-agentic-edition/blob/main/sdk/Documentation/Source-References.md) maps the preserved doctrine, role, standard, template, schema, and license dependency closure. Maintainer instructions, VISION, wiki, native source, and historical evidence remain excluded. Derived guides describe the installed layout and cannot alter policy authority.
 
 ---
 
@@ -123,7 +128,3 @@ flowchart LR
 ---
 
 **Navigation**: [Home](Home) | [Overview](Overview) | [Workflow](Workflow) | [Compliance](Compliance) | [Agent Roles](Agent-Roles) | [Releases](Releases) | [Changelog](Changelog) | [Constitution](Constitution) | [Glossary](Glossary)
-
-## Agentic product consumption
-
-The complete canonical [CONSUMPTION_POLICY.md](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CONSUMPTION_POLICY.md) defines the supported external governance toolkit boundary, project-owned metadata, managed instructions/locks, optional adapters, and excluded maintainer/runtime material. Governance policy data is product data; it does not authorize copying the development repository or installing a runtime framework. Canonical target instructions and external validator resource resolution use the authorized contract and independent-review workflow.

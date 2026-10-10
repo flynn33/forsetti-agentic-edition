@@ -1,11 +1,13 @@
 # Releases
 
+> **Canonical source**: [`RELEASE_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/RELEASE_POLICY.md)
+> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+
 [![Release](https://img.shields.io/badge/release-integrity%20gate-0f766e)](Releases)
 [![Version](https://img.shields.io/badge/current-v1.1.0-blue)](Changelog)
 [![Impact](https://img.shields.io/badge/impact-none%20patch%20minor%20major%20governance--only-7c3aed)](Releases)
 
-> **Canonical source**: [`RELEASE_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/RELEASE_POLICY.md)
-> **Current version**: `v1.1.0`
+> **Current product version**: `v1.1.0`; publication/readiness is recorded separately in actual release evidence.
 
 ---
 
@@ -13,12 +15,13 @@
 
 | Surface | Current State | Release Meaning |
 |---|---|---|
-| Repository version | `1.1.0` | Minor bump for Apple `0.1.5` governance alignment. |
-| Bundle version | `1.1.0` | Source bundle and repository version are aligned. |
-| Bundle manifest | schema `2.0`, 47 required files | Product payload is hash-verifiable. |
-| Apple product | Swift executable | Implements full current native command shell. |
-| Windows product | C++20 executable | Implements version and bundle verification. |
-| Release status | `v1.1.0` records Apple `0.1.5` alignment; Unreleased still contains earlier major/minor/patch/governance entries | Future remaining-queue release classification must use highest included impact. |
+| Repository version | `1.1.0` | Minor additive Agentic SDK delivery; framework profiles remain separate. |
+| Bundle version | `1.1.0` | Internal source bundle and repository version are aligned. |
+| Bundle manifest | schema `2.0`, exact required-file inventory | Internal bundle integrity; outer SDK metadata records delivery provenance. |
+| SDK assets | portable and macOS arm64 | Complete external governance toolkit and policy; no runtime-framework source/binaries. |
+| Apple product | Swift macOS host executable | Implemented version, bundle verification, init, doctor, discover. Actual executed evidence is required. |
+| Windows product | C++20 source implements version/bundle verification | Native asset omitted without actual Windows-host verification. Windows-profile fixtures are separate evidence. |
+| Release status | SDK contracts FAE-GOV-2026-10-10-016, FAE-TASK-2026-10-10-017, FAE-REL-2026-10-10-018 | Clean source, tests, independent review, publication and readiness remain separate gates. Earlier Unreleased records are outside these included SDK contracts. |
 
 ---
 
@@ -71,6 +74,8 @@ pie showData
 
 ## Release Readiness Checklist
 
+The canonical [SDK Release Notes](https://github.com/flynn33/forsetti-agentic-edition/blob/main/sdk/Release-Notes.md) and each asset's manifest/evidence disclose executed checks and exact unverified platforms. PowerShell target checks on macOS do not establish Windows-host execution. Missing required gates cannot be called a full verification pass; candidate publication and release readiness are separate decisions.
+
 | Gate | Required Evidence |
 |---|---|
 | Version classification | release policy and versioning policy agree with highest included impact |
@@ -118,10 +123,11 @@ gitGraph
 
 | Surface | Ready For | Not Yet Claimed |
 |---|---|---|
-| Source bundle | deterministic hash verification | published release artifact packaging beyond source tree |
+| Source bundle | deterministic internal integrity verification | target application compliance or task approval |
+| External SDK | reviewed portable/macOS arm64 payload and bounded metadata/target tooling | Windows native delivery without actual Windows execution |
 | Apple CLI | version, bundle verification, init, doctor, discover | downstream runtime behavior |
 | Windows CLI | version, bundle verification | init, doctor, discover parity |
-| PowerShell validator | repository and target validation modes | running without a PowerShell host |
+| PowerShell validator | maintainer modes and external target-only `consumer` workflow | running without PowerShell 7.4+, full runtime proof, independent approval |
 | Live wiki | public orientation and visual documentation | canonical authority over source files |
 
 ---

@@ -1,10 +1,12 @@
 # Changelog
 
+> **Canonical source**: [`changelog/CHANGELOG.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/changelog/CHANGELOG.md)
+> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+
 [![Ledger](https://img.shields.io/badge/changelog-governance%20ledger-111827)](Changelog)
 [![Unreleased](https://img.shields.io/badge/current-unreleased%20queue-f59e0b)](Changelog)
-[![Version](https://img.shields.io/badge/release-v1.1.0-blue)](Releases)
+[![Version](https://img.shields.io/badge/product-v1.1.0-blue)](Releases)
 
-> **Canonical source**: [`changelog/CHANGELOG.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/changelog/CHANGELOG.md)
 > **Purpose**: visual index for release history, unreleased impact, and traceability. The canonical changelog remains the authoritative ledger.
 
 ---
@@ -25,7 +27,17 @@ flowchart LR
 
 ---
 
-## Current Unreleased Queue
+## SDK 1.1.0 included changes
+
+| Contract | Change | Class | Impact |
+| --- | --- | --- | --- |
+| FAE-GOV-2026-10-10-016 | Complete consumption policy, truthful onboarding, external trusted-resource validation | governance | governance-only |
+| FAE-TASK-2026-10-10-017 | Explicit SDK payload/source map, bounded tooling, portable/macOS arm64 assembly and checks | feature | minor |
+| FAE-REL-2026-10-10-018 | Product/source-bundle/native version and release-provenance synchronization | release | none |
+
+The aggregate SDK impact is minor while existing valid integrations and policy meaning remain intact. Actual validation, independent review and publication are recorded separately; archive hashes do not prove runtime acceptance. The earlier Unreleased ledger below is retained history and is outside the three included SDK contracts. Each current contract has its own canonical changelog entry.
+
+## Earlier Unreleased Queue
 
 | Area | Change | Impact | Traceability |
 |---|---|---:|---|

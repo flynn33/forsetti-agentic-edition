@@ -263,6 +263,138 @@ final class ValidationResultTests: XCTestCase {
         XCTAssertTrue(result.findings.contains { $0.conditionID == "doctor.installation.missing-file" })
     }
 
+    func testBundleVerifierRejectsExtraFilesAndSymbolicLinks() throws {
+        let root = try TemporaryDirectory()
+        let payload = try writePayloadBundle(root: root.url)
+        let extra = root.url.appendingPathComponent("unexpected.txt")
+        try Data("extra".utf8).write(to: extra)
+        let extraResult = try makeVerifier().verify(bundleRoot: root.url)
+        XCTAssertEqual(extraResult.status, .block)
+        XCTAssertTrue(extraResult.findings.contains { $0.conditionID == "bundle.file.unexpected" })
+        try FileManager.default.removeItem(at: extra)
+        let extraDirectory = root.url.appendingPathComponent("unlisted", isDirectory: true)
+        try FileManager.default.createDirectory(at: extraDirectory, withIntermediateDirectories: false)
+        XCTAssertEqual(try makeVerifier().verify(bundleRoot: root.url).status, .block)
+        try FileManager.default.removeItem(at: extraDirectory)
+        let outside = try TemporaryDirectory()
+        let outsidePayload = outside.url.appendingPathComponent("payload.txt")
+        try Data("payload".utf8).write(to: outsidePayload)
+        try FileManager.default.removeItem(at: payload)
+        try FileManager.default.createSymbolicLink(at: payload, withDestinationURL: outsidePayload)
+        let linked = try makeVerifier().verify(bundleRoot: root.url)
+        XCTAssertEqual(linked.status, .block)
+        XCTAssertTrue(linked.findings.contains { $0.conditionID == "bundle.path.unsafe-link" })
+    }
+
+    func testInitPreservesModuleInventoryAndBlocksChangedLocksOrSelection() throws {
+        let repository = try makeFixtureRepository()
+        let options = bootstrapOptions(repository.url)
+        let service = makeBootstrapService()
+        XCTAssertEqual(try service.initialize(options: options).status, .pass)
+        let modulesURL = repository.url.appendingPathComponent(".forsetti/modules.json")
+        let customModules = Data("{\"schemaVersion\":\"2.0\",\"modules\":[{\"moduleID\":\"com.example.existing\"}]}\n".utf8)
+        try customModules.write(to: modulesURL)
+        XCTAssertEqual(try service.initialize(options: options).status, .pass)
+        XCTAssertEqual(try Data(contentsOf: modulesURL), customModules)
+        let policyURL = repository.url.appendingPathComponent(".forsetti/policy.lock.json")
+        let changed = Data("{\"schemaVersion\":\"2.0\",\"sha256\":\"changed\"}\n".utf8)
+        try changed.write(to: policyURL)
+        let result = try service.initialize(options: options)
+        XCTAssertEqual(result.status, .block)
+        XCTAssertTrue(result.findings.contains { $0.conditionID == "init.installation.conflict" })
+        XCTAssertEqual(try Data(contentsOf: policyURL), changed)
+        XCTAssertEqual(try Data(contentsOf: modulesURL), customModules)
+    }
+
+    func testInitRejectsReversedMarkersInvalidUTF8AndSymlinkPathsWithoutWrites() throws {
+        for text in [Data("<!-- FORSETTI-GOVERNANCE:END -->\n<!-- FORSETTI-GOVERNANCE:BEGIN -->\n".utf8), Data([0xff, 0xfe])] {
+            let repository = try makeFixtureRepository()
+            let agents = repository.url.appendingPathComponent("AGENTS.md")
+            try text.write(to: agents)
+            XCTAssertEqual(try makeBootstrapService().initialize(options: bootstrapOptions(repository.url)).status, .block)
+            XCTAssertEqual(try Data(contentsOf: agents), text)
+            XCTAssertFalse(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent(".forsetti").path))
+        }
+        let repository = try makeFixtureRepository()
+        let outside = try TemporaryDirectory()
+        try FileManager.default.createSymbolicLink(at: repository.url.appendingPathComponent(".forsetti"), withDestinationURL: outside.url)
+        let result = try makeBootstrapService().initialize(options: bootstrapOptions(repository.url))
+        XCTAssertEqual(result.status, .block)
+        XCTAssertTrue(try FileManager.default.contentsOfDirectory(atPath: outside.url.path).isEmpty)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent("AGENTS.md").path))
+    }
+
+    func testInitRollsBackNewFilesAfterWriteFailure() throws {
+        let repository = try makeFixtureRepository()
+        let fileSystem = FailOnceFileSystem(writeNumber: 3)
+        let clock = FixedClock(date: Date(timeIntervalSince1970: 1_780_000_000))
+        let factory = ResultFactory(clock: clock, identifiers: FixedIdentifierGenerator(value: "rollback"))
+        let service = RepositoryBootstrapService(fileSystem: fileSystem, resultFactory: factory,
+            verifier: SHA256BundleVerifier(fileSystem: fileSystem, resultFactory: factory), clock: clock)
+        XCTAssertThrowsError(try service.initialize(options: bootstrapOptions(repository.url)))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent("AGENTS.md").path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent(".forsetti").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent("Package.swift").path))
+    }
+
+    func testInitPreservesMetadataChangedDuringInstallation() throws {
+        let repository = try makeFixtureRepository()
+        let changedPath = repository.url.appendingPathComponent(".forsetti/project.json")
+        let ownerData = Data("owner concurrently supplied project metadata".utf8)
+        let fileSystem = MutatingFileSystem(path: changedPath, data: ownerData)
+        let clock = FixedClock(date: Date(timeIntervalSince1970: 1_780_000_000))
+        let factory = ResultFactory(clock: clock, identifiers: FixedIdentifierGenerator(value: "concurrent-write"))
+        let service = RepositoryBootstrapService(fileSystem: fileSystem, resultFactory: factory,
+            verifier: SHA256BundleVerifier(fileSystem: fileSystem, resultFactory: factory), clock: clock)
+        XCTAssertThrowsError(try service.initialize(options: bootstrapOptions(repository.url)))
+        XCTAssertEqual(try Data(contentsOf: changedPath), ownerData)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent("AGENTS.md").path))
+    }
+
+    func testInitRejectsBundleInsideRepositoryThroughParentAlias() throws {
+        let repository = try makeFixtureRepository()
+        let nestedBundle = repository.url.appendingPathComponent("nested SDK/bundle", isDirectory: true)
+        try FileManager.default.createDirectory(at: nestedBundle.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try FileManager.default.copyItem(at: repoRootURL().appendingPathComponent("bundle"), to: nestedBundle)
+        let aliases = try TemporaryDirectory()
+        let alias = aliases.url.appendingPathComponent("parent-alias")
+        try FileManager.default.createSymbolicLink(at: alias, withDestinationURL: repository.url.deletingLastPathComponent())
+        let aliasedRepository = alias.appendingPathComponent(repository.url.lastPathComponent, isDirectory: true)
+        let result = try makeBootstrapService().initialize(options: BootstrapOptions(repositoryRoot: aliasedRepository,
+            bundleRoot: nestedBundle, edition: "apple", platform: "macOS", frameworkVersion: "0.1.5",
+            deploymentPattern: "developer_testing", dryRun: false))
+        XCTAssertEqual(result.status, .block)
+        XCTAssertTrue(result.findings.contains { $0.conditionID == "init.installation.overlap" })
+        XCTAssertFalse(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent(".forsetti").path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent("AGENTS.md").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: repository.url.appendingPathComponent("Package.swift").path))
+    }
+
+    func testInitRejectsRepositoryInsideSDKParentOfBundle() throws {
+        let sdk = try TemporaryDirectory()
+        let bundle = sdk.url.appendingPathComponent("bundle", isDirectory: true)
+        try FileManager.default.copyItem(at: repoRootURL().appendingPathComponent("bundle"), to: bundle)
+        try Data("{}\n".utf8).write(to: sdk.url.appendingPathComponent("sdk-manifest.json"))
+        let repository = sdk.url.appendingPathComponent("consumer", isDirectory: true)
+        try FileManager.default.createDirectory(at: repository.appendingPathComponent(".git"), withIntermediateDirectories: true)
+        let appFile = repository.appendingPathComponent("Package.swift")
+        let appData = Data("// owner application file\n".utf8)
+        try appData.write(to: appFile)
+        let result = try makeBootstrapService().initialize(options: BootstrapOptions(repositoryRoot: repository,
+            bundleRoot: bundle, edition: "apple", platform: "macOS", frameworkVersion: "0.1.5",
+            deploymentPattern: "developer_testing", dryRun: false))
+        XCTAssertEqual(result.status, .block)
+        XCTAssertTrue(result.findings.contains { $0.conditionID == "init.installation.overlap" })
+        XCTAssertEqual(try Data(contentsOf: appFile), appData)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: repository.appendingPathComponent(".forsetti").path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: repository.appendingPathComponent("AGENTS.md").path))
+    }
+
+    private func bootstrapOptions(_ repositoryRoot: URL) -> BootstrapOptions {
+        BootstrapOptions(repositoryRoot: repositoryRoot, bundleRoot: repoRootURL().appendingPathComponent("bundle", isDirectory: true),
+            edition: "apple", platform: "macOS", frameworkVersion: "0.1.5", deploymentPattern: "developer_testing", dryRun: false)
+    }
+
     func testDiscoverSingleSwiftPackageModuleWritesProposal() throws {
         let repository = try makeSwiftPackageFixture(targets: [("AppModule", [])])
         try writeModuleManifest(
@@ -511,6 +643,38 @@ private final class FixedClock: Clock {
 
     func now() -> Date {
         date
+    }
+}
+
+private final class FailOnceFileSystem: FileSystem {
+    private let underlying = LocalFileSystem()
+    private let writeNumber: Int
+    private var count = 0
+    init(writeNumber: Int) { self.writeNumber = writeNumber }
+    func fileExists(at url: URL) -> Bool { underlying.fileExists(at: url) }
+    func directoryExists(at url: URL) -> Bool { underlying.directoryExists(at: url) }
+    func readFile(at url: URL) throws -> Data { try underlying.readFile(at: url) }
+    func currentDirectory() -> URL { underlying.currentDirectory() }
+    func writeFileAtomically(_ data: Data, to url: URL) throws {
+        count += 1
+        if count == writeNumber { throw CocoaError(.fileWriteUnknown) }
+        try underlying.writeFileAtomically(data, to: url)
+    }
+}
+
+private final class MutatingFileSystem: FileSystem {
+    private let underlying = LocalFileSystem()
+    private let path: URL
+    private let data: Data
+    private var didMutate = false
+    init(path: URL, data: Data) { self.path = path; self.data = data }
+    func fileExists(at url: URL) -> Bool { underlying.fileExists(at: url) }
+    func directoryExists(at url: URL) -> Bool { underlying.directoryExists(at: url) }
+    func readFile(at url: URL) throws -> Data { try underlying.readFile(at: url) }
+    func currentDirectory() -> URL { underlying.currentDirectory() }
+    func writeFileAtomically(_ data: Data, to url: URL) throws {
+        try underlying.writeFileAtomically(data, to: url)
+        if !didMutate { didMutate = true; try self.data.write(to: path) }
     }
 }
 

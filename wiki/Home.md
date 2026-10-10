@@ -1,12 +1,14 @@
 # Forsetti Agentic Edition
 
+> **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
+> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+
 [![Version](https://img.shields.io/badge/product-v1.1.0-2563eb)](Releases)
-[![Bundle](https://img.shields.io/badge/bundle-schema%202.0%20%7C%2047%20files-0f766e)](Overview)
+[![Bundle](https://img.shields.io/badge/bundle-schema%202.0%20%7C%20hashed%20inventory-0f766e)](Overview)
 [![Profiles](https://img.shields.io/badge/profiles-Apple%200.1.5%20%7C%20Windows%200.2.0-7c3aed)](Overview)
 [![Rules](https://img.shields.io/badge/rules-12%20compliance%20%7C%2020%20Forsetti-b91c1c)](Compliance)
 [![Surface](https://img.shields.io/badge/wiki-derived%20public%20surface-334155)](Documentation)
 
-> **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
 > **Live purpose**: fast, visual, product-aligned orientation for the GitHub Wiki. Repository files remain authoritative.
 
 ---
@@ -15,11 +17,13 @@
 
 Forsetti Agentic Edition is a governance-only enforcement product for Forsetti-compliant application and module delivery. It does not become the downstream runtime. It packages portable governance rules, edition profiles, schemas, source-bundle integrity, native command surfaces, workflow adapters, role boundaries, documentation synchronization, and release evidence into one auditable product.
 
+SDK `1.1.0` delivers a developer governance toolkit through portable and macOS arm64 archives. Keep it outside the target repository; generate only the approved project metadata and managed instruction section. Read the complete canonical [consumption policy](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CONSUMPTION_POLICY.md) and [SDK Getting Started](https://github.com/flynn33/forsetti-agentic-edition/blob/main/sdk/Documentation/Getting-Started.md). Windows-profile checks run independently of Windows-host readiness; no native Windows asset is shipped without actual Windows execution evidence.
+
 | Current Product Fact | Value | Evidence Surface |
 |---|---:|---|
 | Product version | `1.1.0` | `VERSION`, `bundle/VERSION`, native `version` commands |
 | Bundle manifest schema | `2.0` | `bundle/product-manifest.json` |
-| Required bundle files | `47` | `bundle/product-manifest.json` |
+| Required bundle files | exact hashed inventory | `bundle/product-manifest.json` |
 | Compliance rules | `12` | `core/policies/compliance-rules.json` |
 | Forsetti enforcement rules | `20` | `core/policies/forsetti-enforcement-rules.json` |
 | Documentation sync pairs | `30` | `core/policies/docs-sync-rules.json` |
@@ -98,7 +102,7 @@ flowchart TB
 |---|---|---|---|
 | Apple native product | `version`, `bundle verify`, `init`, `doctor`, `discover` | Full local product shell for bundle verification, repository bootstrap, installation health, and project discovery. | Apple command surface is the richer native path. |
 | Windows native product | `version`, `bundle verify` | C++20 source bundle verification and structured version reporting. | Bootstrap, doctor, and discovery parity are not implemented in the current Windows CLI. |
-| PowerShell validator | `repo`, `contract`, `project-context`, `edition-profile`, `manifest`, `dependencies`, `capabilities`, `module-isolation`, `evidence`, `all` | Canonical local validator for repository and target Forsetti checks. | Requires a PowerShell host. |
+| PowerShell validator | `consumer`, `contract`, `project-context`, `edition-profile`, `manifest`, `dependencies`, `capabilities`, `module-isolation`, `evidence`; maintainer `repo`/`all` | Canonical local validator with an external SDK target wrapper. | PowerShell 7.4+; static findings and supplied evidence do not replace native tests or independent review. |
 | GitHub Actions adapter | PR policy, changelog, version, protected path, accountability, docs/wiki helper workflows | Optional hosted automation wrapper around repository-local logic. | Hosted checks are convenience automation, not canonical authority. |
 
 ---
@@ -141,7 +145,7 @@ flowchart TB
 
 1. Read [Overview](Overview) to understand the product boundary.
 2. Select the target edition profile: Apple `0.1.5` for current work, explicit Apple `0.1.3` only for compatibility, or Windows `0.2.0`.
-3. Verify the source bundle before native product operations.
+3. Install the external SDK, verify SDK and bundle integrity, and review setup with an explicitly authored context and a dry run.
 4. Bind all work to a task contract and Forsetti project context.
 5. Run the applicable validator modes or native command checks.
 6. Update changelog, documentation, and wiki surfaces with the same factual product state.

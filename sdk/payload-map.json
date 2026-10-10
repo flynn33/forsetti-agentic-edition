@@ -1,0 +1,449 @@
+{
+  "schemaVersion": "1.0",
+  "entries": [
+    {
+      "source": "sdk/AGENTS.md",
+      "destination": "AGENTS.md"
+    },
+    {
+      "source": "CONSUMPTION_POLICY.md",
+      "destination": "CONSUMPTION_POLICY.md"
+    },
+    {
+      "source": "sdk/Documentation/Command-Matrix.md",
+      "destination": "Documentation/Command-Matrix.md"
+    },
+    {
+      "source": "sdk/Documentation/Compatibility.md",
+      "destination": "Documentation/Compatibility.md"
+    },
+    {
+      "source": "sdk/Documentation/Getting-Started.md",
+      "destination": "Documentation/Getting-Started.md"
+    },
+    {
+      "source": "sdk/Documentation/Governance-Workflow.md",
+      "destination": "Documentation/Governance-Workflow.md"
+    },
+    {
+      "source": "sdk/Documentation/Source-References.md",
+      "destination": "Documentation/Source-References.md"
+    },
+    {
+      "source": "ACCOUNTABILITY_POLICY.md",
+      "destination": "Governance/ACCOUNTABILITY_POLICY.md"
+    },
+    {
+      "source": "CHANGE_CONTROL_POLICY.md",
+      "destination": "Governance/CHANGE_CONTROL_POLICY.md"
+    },
+    {
+      "source": "CODE_OF_DELIVERY.md",
+      "destination": "Governance/CODE_OF_DELIVERY.md"
+    },
+    {
+      "source": "COMPLIANCE_POLICY.md",
+      "destination": "Governance/COMPLIANCE_POLICY.md"
+    },
+    {
+      "source": "DOCUMENTATION_POLICY.md",
+      "destination": "Governance/DOCUMENTATION_POLICY.md"
+    },
+    {
+      "source": "FORSETTI_CONSTITUTION.md",
+      "destination": "Governance/FORSETTI_CONSTITUTION.md"
+    },
+    {
+      "source": "LICENSE",
+      "destination": "Governance/LICENSE"
+    },
+    {
+      "source": "RELEASE_POLICY.md",
+      "destination": "Governance/RELEASE_POLICY.md"
+    },
+    {
+      "source": "agents/architect.md",
+      "destination": "Governance/agents/architect.md"
+    },
+    {
+      "source": "agents/builder.md",
+      "destination": "Governance/agents/builder.md"
+    },
+    {
+      "source": "agents/docs-manager.md",
+      "destination": "Governance/agents/docs-manager.md"
+    },
+    {
+      "source": "agents/release-manager.md",
+      "destination": "Governance/agents/release-manager.md"
+    },
+    {
+      "source": "agents/validator.md",
+      "destination": "Governance/agents/validator.md"
+    },
+    {
+      "source": "contracts/bugfix-contract-template.md",
+      "destination": "Governance/contracts/bugfix-contract-template.md"
+    },
+    {
+      "source": "contracts/governance-change-template.md",
+      "destination": "Governance/contracts/governance-change-template.md"
+    },
+    {
+      "source": "contracts/release-contract-template.md",
+      "destination": "Governance/contracts/release-contract-template.md"
+    },
+    {
+      "source": "contracts/task-contract-template.md",
+      "destination": "Governance/contracts/task-contract-template.md"
+    },
+    {
+      "source": "core/contracts/forsetti-project-context-template.json",
+      "destination": "Governance/core/contracts/forsetti-project-context-template.json"
+    },
+    {
+      "source": "core/contracts/task-contract-template.json",
+      "destination": "Governance/core/contracts/task-contract-template.json"
+    },
+    {
+      "source": "core/schemas/forsetti-project-context.schema.json",
+      "destination": "Governance/core/schemas/forsetti-project-context.schema.json"
+    },
+    {
+      "source": "core/schemas/module-manifest-1.1.schema.json",
+      "destination": "Governance/core/schemas/module-manifest-1.1.schema.json"
+    },
+    {
+      "source": "core/schemas/task-contract.schema.json",
+      "destination": "Governance/core/schemas/task-contract.schema.json"
+    },
+    {
+      "source": "standards/changelog-standard.md",
+      "destination": "Governance/standards/changelog-standard.md"
+    },
+    {
+      "source": "standards/documentation-standard.md",
+      "destination": "Governance/standards/documentation-standard.md"
+    },
+    {
+      "source": "standards/mcp-local-helper-standard.md",
+      "destination": "Governance/standards/mcp-local-helper-standard.md"
+    },
+    {
+      "source": "standards/naming-standard.md",
+      "destination": "Governance/standards/naming-standard.md"
+    },
+    {
+      "source": "standards/review-standard.md",
+      "destination": "Governance/standards/review-standard.md"
+    },
+    {
+      "source": "standards/versioning-standard.md",
+      "destination": "Governance/standards/versioning-standard.md"
+    },
+    {
+      "source": "LICENSE",
+      "destination": "LICENSE"
+    },
+    {
+      "source": "sdk/README.md",
+      "destination": "README.md"
+    },
+    {
+      "source": "sdk/Release-Notes.md",
+      "destination": "Release-Notes.md"
+    },
+    {
+      "source": "contracts/bugfix-contract-template.md",
+      "destination": "Templates/contracts/bugfix-contract-template.md"
+    },
+    {
+      "source": "contracts/governance-change-template.md",
+      "destination": "Templates/contracts/governance-change-template.md"
+    },
+    {
+      "source": "contracts/release-contract-template.md",
+      "destination": "Templates/contracts/release-contract-template.md"
+    },
+    {
+      "source": "contracts/task-contract-template.md",
+      "destination": "Templates/contracts/task-contract-template.md"
+    },
+    {
+      "source": "core/contracts/forsetti-project-context-template.json",
+      "destination": "Templates/core/contracts/forsetti-project-context-template.json"
+    },
+    {
+      "source": "core/contracts/task-contract-template.json",
+      "destination": "Templates/core/contracts/task-contract-template.json"
+    },
+    {
+      "source": "core/schemas/forsetti-project-context.schema.json",
+      "destination": "Templates/core/schemas/forsetti-project-context.schema.json"
+    },
+    {
+      "source": "core/schemas/module-manifest-1.1.schema.json",
+      "destination": "Templates/core/schemas/module-manifest-1.1.schema.json"
+    },
+    {
+      "source": "core/schemas/task-contract.schema.json",
+      "destination": "Templates/core/schemas/task-contract.schema.json"
+    },
+    {
+      "source": "sdk/Tools/Initialize-Consumer.ps1",
+      "destination": "Tools/Initialize-Consumer.ps1"
+    },
+    {
+      "source": "sdk/Tools/SDK-Integrity.ps1",
+      "destination": "Tools/SDK-Integrity.ps1"
+    },
+    {
+      "source": "sdk/Tools/Validate-Consumer.ps1",
+      "destination": "Tools/Validate-Consumer.ps1"
+    },
+    {
+      "source": "VERSION",
+      "destination": "VERSION"
+    },
+    {
+      "source": "bundle/VERSION",
+      "destination": "bundle/VERSION"
+    },
+    {
+      "source": "bundle/editions/apple/forsetti-apple-0.1.3.profile.json",
+      "destination": "bundle/editions/apple/forsetti-apple-0.1.3.profile.json"
+    },
+    {
+      "source": "bundle/editions/apple/forsetti-apple-0.1.5.profile.json",
+      "destination": "bundle/editions/apple/forsetti-apple-0.1.5.profile.json"
+    },
+    {
+      "source": "bundle/editions/shared/shared-forsetti-invariants.json",
+      "destination": "bundle/editions/shared/shared-forsetti-invariants.json"
+    },
+    {
+      "source": "bundle/editions/windows/forsetti-windows-0.2.0.profile.json",
+      "destination": "bundle/editions/windows/forsetti-windows-0.2.0.profile.json"
+    },
+    {
+      "source": "bundle/instructions/target-agents-section.md",
+      "destination": "bundle/instructions/target-agents-section.md"
+    },
+    {
+      "source": "bundle/policies/accountability-rules.json",
+      "destination": "bundle/policies/accountability-rules.json"
+    },
+    {
+      "source": "bundle/policies/agent-enforcement-actions.json",
+      "destination": "bundle/policies/agent-enforcement-actions.json"
+    },
+    {
+      "source": "bundle/policies/agent-roles.json",
+      "destination": "bundle/policies/agent-roles.json"
+    },
+    {
+      "source": "bundle/policies/capability-rules.json",
+      "destination": "bundle/policies/capability-rules.json"
+    },
+    {
+      "source": "bundle/policies/changelog-rules.json",
+      "destination": "bundle/policies/changelog-rules.json"
+    },
+    {
+      "source": "bundle/policies/compliance-rules.json",
+      "destination": "bundle/policies/compliance-rules.json"
+    },
+    {
+      "source": "bundle/policies/dependency-boundary-rules.json",
+      "destination": "bundle/policies/dependency-boundary-rules.json"
+    },
+    {
+      "source": "bundle/policies/docs-sync-rules.json",
+      "destination": "bundle/policies/docs-sync-rules.json"
+    },
+    {
+      "source": "bundle/policies/forsetti-enforcement-rules.json",
+      "destination": "bundle/policies/forsetti-enforcement-rules.json"
+    },
+    {
+      "source": "bundle/policies/labels.json",
+      "destination": "bundle/policies/labels.json"
+    },
+    {
+      "source": "bundle/policies/manifest-rules.json",
+      "destination": "bundle/policies/manifest-rules.json"
+    },
+    {
+      "source": "bundle/policies/mcp-provider-policy.json",
+      "destination": "bundle/policies/mcp-provider-policy.json"
+    },
+    {
+      "source": "bundle/policies/mcp-resolution-order.json",
+      "destination": "bundle/policies/mcp-resolution-order.json"
+    },
+    {
+      "source": "bundle/policies/module-isolation-rules.json",
+      "destination": "bundle/policies/module-isolation-rules.json"
+    },
+    {
+      "source": "bundle/policies/public-api-rules.json",
+      "destination": "bundle/policies/public-api-rules.json"
+    },
+    {
+      "source": "bundle/policies/repo-boundaries.json",
+      "destination": "bundle/policies/repo-boundaries.json"
+    },
+    {
+      "source": "bundle/policies/runtime-requirement-rules.json",
+      "destination": "bundle/policies/runtime-requirement-rules.json"
+    },
+    {
+      "source": "bundle/policies/service-access-rules.json",
+      "destination": "bundle/policies/service-access-rules.json"
+    },
+    {
+      "source": "bundle/policies/ui-contribution-rules.json",
+      "destination": "bundle/policies/ui-contribution-rules.json"
+    },
+    {
+      "source": "bundle/policies/versioning-rules.json",
+      "destination": "bundle/policies/versioning-rules.json"
+    },
+    {
+      "source": "bundle/product-manifest.json",
+      "destination": "bundle/product-manifest.json"
+    },
+    {
+      "source": "bundle/schemas/command-evidence.schema.json",
+      "destination": "bundle/schemas/command-evidence.schema.json"
+    },
+    {
+      "source": "bundle/schemas/edition-profile-v2.schema.json",
+      "destination": "bundle/schemas/edition-profile-v2.schema.json"
+    },
+    {
+      "source": "bundle/schemas/edition-profile.schema.json",
+      "destination": "bundle/schemas/edition-profile.schema.json"
+    },
+    {
+      "source": "bundle/schemas/evidence-bundle.schema.json",
+      "destination": "bundle/schemas/evidence-bundle.schema.json"
+    },
+    {
+      "source": "bundle/schemas/fixture-expectation.schema.json",
+      "destination": "bundle/schemas/fixture-expectation.schema.json"
+    },
+    {
+      "source": "bundle/schemas/forsetti-module-manifest-1.0.schema.json",
+      "destination": "bundle/schemas/forsetti-module-manifest-1.0.schema.json"
+    },
+    {
+      "source": "bundle/schemas/forsetti-module-manifest-1.1.schema.json",
+      "destination": "bundle/schemas/forsetti-module-manifest-1.1.schema.json"
+    },
+    {
+      "source": "bundle/schemas/forsetti-project-context.schema.json",
+      "destination": "bundle/schemas/forsetti-project-context.schema.json"
+    },
+    {
+      "source": "bundle/schemas/module-manifest-1.1.schema.json",
+      "destination": "bundle/schemas/module-manifest-1.1.schema.json"
+    },
+    {
+      "source": "bundle/schemas/modules.schema.json",
+      "destination": "bundle/schemas/modules.schema.json"
+    },
+    {
+      "source": "bundle/schemas/policy-lock.schema.json",
+      "destination": "bundle/schemas/policy-lock.schema.json"
+    },
+    {
+      "source": "bundle/schemas/policy-registry-v2.schema.json",
+      "destination": "bundle/schemas/policy-registry-v2.schema.json"
+    },
+    {
+      "source": "bundle/schemas/product-lock.schema.json",
+      "destination": "bundle/schemas/product-lock.schema.json"
+    },
+    {
+      "source": "bundle/schemas/product-manifest.schema.json",
+      "destination": "bundle/schemas/product-manifest.schema.json"
+    },
+    {
+      "source": "bundle/schemas/profile-lock.schema.json",
+      "destination": "bundle/schemas/profile-lock.schema.json"
+    },
+    {
+      "source": "bundle/schemas/profile-registry.schema.json",
+      "destination": "bundle/schemas/profile-registry.schema.json"
+    },
+    {
+      "source": "bundle/schemas/project-discovery-result.schema.json",
+      "destination": "bundle/schemas/project-discovery-result.schema.json"
+    },
+    {
+      "source": "bundle/schemas/project.schema.json",
+      "destination": "bundle/schemas/project.schema.json"
+    },
+    {
+      "source": "bundle/schemas/release-manifest.schema.json",
+      "destination": "bundle/schemas/release-manifest.schema.json"
+    },
+    {
+      "source": "bundle/schemas/role-ledger.schema.json",
+      "destination": "bundle/schemas/role-ledger.schema.json"
+    },
+    {
+      "source": "bundle/schemas/task-contract-v2.schema.json",
+      "destination": "bundle/schemas/task-contract-v2.schema.json"
+    },
+    {
+      "source": "bundle/schemas/task-contract.schema.json",
+      "destination": "bundle/schemas/task-contract.schema.json"
+    },
+    {
+      "source": "bundle/schemas/task-state.schema.json",
+      "destination": "bundle/schemas/task-state.schema.json"
+    },
+    {
+      "source": "bundle/schemas/validation-request-v2.schema.json",
+      "destination": "bundle/schemas/validation-request-v2.schema.json"
+    },
+    {
+      "source": "bundle/schemas/validation-result-v2.schema.json",
+      "destination": "bundle/schemas/validation-result-v2.schema.json"
+    },
+    {
+      "source": "core/schemas/edition-profile.schema.json",
+      "destination": "core/schemas/edition-profile.schema.json"
+    },
+    {
+      "source": "core/schemas/forsetti-project-context.schema.json",
+      "destination": "core/schemas/forsetti-project-context.schema.json"
+    },
+    {
+      "source": "core/schemas/module-manifest-1.1.schema.json",
+      "destination": "core/schemas/module-manifest-1.1.schema.json"
+    },
+    {
+      "source": "core/schemas/task-contract.schema.json",
+      "destination": "core/schemas/task-contract.schema.json"
+    },
+    {
+      "source": "core/validator/contract_rules.ps1",
+      "destination": "core/validator/contract_rules.ps1"
+    },
+    {
+      "source": "core/validator/forsetti_validate.ps1",
+      "destination": "core/validator/forsetti_validate.ps1"
+    },
+    {
+      "source": "core/validator/rules/forsetti_project_rules.ps1",
+      "destination": "core/validator/rules/forsetti_project_rules.ps1"
+    },
+    {
+      "source": "core/validator/sdk_integrity.ps1",
+      "destination": "core/validator/sdk_integrity.ps1"
+    }
+  ]
+}
