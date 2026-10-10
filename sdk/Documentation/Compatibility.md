@@ -1,6 +1,6 @@
 # Compatibility and verification limits
 
-Forsetti Agentic Edition SDK `1.1.0` is a developer governance toolkit. Host OS/architecture support describes where a tool executes; target profiles describe the framework rules it checks. They are independent.
+Forsetti Agentic Edition SDK `1.2.0` is a developer governance toolkit. Host OS/architecture support describes where a tool executes; target profiles describe the framework rules it checks. They are independent.
 
 ## Delivery variants and prerequisites
 
@@ -20,7 +20,7 @@ No Intel macOS native asset or Windows native architecture is implied by arm64 o
 
 | Metadata | Value or source | Interpretation |
 | --- | --- | --- |
-| Agentic product version | `1.1.0`, SDK and bundle `VERSION` | Toolkit release version. |
+| Agentic product version | `1.2.0`, SDK and bundle `VERSION` | Toolkit release version. |
 | Internal product bundle schema | `2.0` | Bundle inventory/metadata contract. Internal platform remains `source`. |
 | Native generated project record | schema `2.0`, `.forsetti/project.json` | Native bootstrap representation. |
 | Validator context | `core/schemas/forsetti-project-context.schema.json` | Separate snake_case target context, generated from an explicitly authored selection. |

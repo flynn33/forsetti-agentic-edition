@@ -4,19 +4,7 @@ All notable changes to the Forsetti Agentic Edition governance framework are doc
 
 The changelog is a governance record. Entries must be accurate, specific, and traceable.
 
-## [Unreleased]
-
-### Features
-
-**Title**: Add an explicitly allowlisted external governance developer kit
-**Change Class**: feature
-**Version Impact**: minor
-**Summary**: Added deterministic SDK assembly and a reviewed source-to-destination map for complete doctrine, roles/standards, templates, trusted bundle data, validator/helper closure, and consumer documentation. Added bounded PowerShell integrity, initialization, explicit-upgrade, and target-validation tools; delivery variants are portable and macOS arm64, with Windows native delivery omitted without actual Windows host evidence.
-**Affected Area**: sdk, packaging, native bootstrap/integrity, installation, consumer validation, documentation, tests
-**PR Reference**: Owner-authorized SDK implementation and release preparation
-**Task Reference**: FAE-TASK-2026-10-10-017
-**Approval Class**: sensitive
-
+## [1.2.0] - 2026-10-10
 
 ### Governance
 
@@ -29,6 +17,29 @@ The changelog is a governance record. Entries must be accurate, specific, and tr
 **Task Reference**: FAE-GOV-2026-10-10-016
 **Approval Class**: governance-class
 
+### Features
+
+**Title**: Add an explicitly allowlisted external governance developer kit
+**Change Class**: feature
+**Version Impact**: minor
+**Summary**: Added deterministic SDK assembly and a reviewed source-to-destination map for complete doctrine, roles/standards, templates, trusted bundle data, validator/helper closure, and consumer documentation. Added bounded PowerShell integrity, initialization, explicit-upgrade, and target-validation tools; delivery variants are portable and macOS arm64, with Windows native delivery omitted without actual Windows host evidence.
+**Affected Area**: sdk, packaging, native bootstrap/integrity, installation, consumer validation, documentation, tests
+**PR Reference**: Owner-authorized SDK implementation and release preparation
+**Task Reference**: FAE-TASK-2026-10-10-017
+**Approval Class**: sensitive
+
+### Release
+
+**Title**: Record Agentic SDK product version 1.2.0 and release provenance
+**Change Class**: release
+**Version Impact**: none
+**Summary**: Synchronized product and native version declarations, source-bundle metadata, consumer release notes, README/wiki summaries, and archive provenance for the additive SDK release. Source cleanliness, platform execution evidence, independent review, and release readiness remain separate recorded gates; archive hashes do not establish application runtime acceptance.
+**Affected Area**: VERSION, bundle metadata, native version declarations, release notes, source/hash provenance, README, changelog, wiki
+**PR Reference**: Owner-authorized SDK implementation and release preparation
+**Task Reference**: FAE-REL-2026-10-10-018
+**Approval Class**: release-critical
+
+## [Unreleased]
 
 ### Breaking Changes
 

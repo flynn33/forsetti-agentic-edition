@@ -1,7 +1,7 @@
 # Overview
 
 > **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
-> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+> **Last synced**: 2026-10-10, SDK 1.2.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
 
 [![Architecture](https://img.shields.io/badge/architecture-core%20%2B%20bundle%20%2B%20native%20products-0ea5e9)](Overview)
 [![Boundary](https://img.shields.io/badge/boundary-governance--only-16a34a)](Compliance)
@@ -119,8 +119,8 @@ flowchart LR
 |---|---|
 | `schemaVersion` | `2.0` |
 | `product` | `Forsetti Agentic Edition` |
-| `version` | `1.1.0` |
-| `bundleID` | `ffae-1.1.0-source` |
+| `version` | `1.2.0` |
+| `bundleID` | `ffae-1.2.0-source` |
 | `platform` | `source` |
 | `architecture` | `portable` |
 | `files` | exact required entries in the generated manifest |

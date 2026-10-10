@@ -1,11 +1,11 @@
 # Changelog
 
 > **Canonical source**: [`changelog/CHANGELOG.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/changelog/CHANGELOG.md)
-> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+> **Last synced**: 2026-10-10, SDK 1.2.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
 
 [![Ledger](https://img.shields.io/badge/changelog-governance%20ledger-111827)](Changelog)
 [![Unreleased](https://img.shields.io/badge/current-unreleased%20queue-f59e0b)](Changelog)
-[![Version](https://img.shields.io/badge/product-v1.1.0-blue)](Releases)
+[![Version](https://img.shields.io/badge/product-v1.2.0-blue)](Releases)
 
 > **Purpose**: visual index for release history, unreleased impact, and traceability. The canonical changelog remains the authoritative ledger.
 
@@ -27,7 +27,7 @@ flowchart LR
 
 ---
 
-## SDK 1.1.0 included changes
+## SDK 1.2.0 included changes
 
 | Contract | Change | Class | Impact |
 | --- | --- | --- | --- |

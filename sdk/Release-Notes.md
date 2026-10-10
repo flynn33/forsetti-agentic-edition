@@ -1,4 +1,4 @@
-# Forsetti Agentic Edition SDK 1.1.0
+# Forsetti Agentic Edition SDK 1.2.0
 
 Developer governance toolkit, not an application runtime SDK. This additive SDK delivery introduces an external portable kit and a macOS arm64 host variant. It does not distribute either Forsetti runtime framework or a Windows native executable without actual Windows host evidence.
 
@@ -6,7 +6,7 @@ Developer governance toolkit, not an application runtime SDK. This additive SDK 
 
 - **FAE-GOV-2026-10-10-016 — governance-only:** establish the complete Agentic consumption policy, distinguish external immutable toolkit assets from project-owned metadata, correct downstream instructions that previously required unsupported native task commands and Windows `doctor`, and separate trusted validator resources from the target root without changing policy meaning.
 - **FAE-TASK-2026-10-10-017 — minor:** add the reviewed payload/source map, deterministic SDK assembly, bounded PowerShell setup/integrity/target wrappers, consumer documentation, and focused packaging/install/validation checks.
-- **FAE-REL-2026-10-10-018 — release:** synchronize product version `1.1.0`, source bundle metadata, native version declarations, documentation, provenance, and archive/checksum delivery.
+- **FAE-REL-2026-10-10-018 — release:** synchronize product version `1.2.0`, source bundle metadata, native version declarations, documentation, provenance, and archive/checksum delivery.
 
 Existing source-library products remain available to their current users; this CLI-first release adds no governance-library embedding distribution or native task orchestration engine. Apple framework profiles `0.1.5` and explicit `0.1.3`, Windows profile `0.2.0`, and module manifest/template `1.1` remain distinct from the Agentic product version. No newer runtime profile alignment is claimed.
 

@@ -1,7 +1,7 @@
 # Documentation
 
 > **Canonical source**: [`DOCUMENTATION_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/DOCUMENTATION_POLICY.md)
-> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+> **Last synced**: 2026-10-10, SDK 1.2.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
 
 [![Docs](https://img.shields.io/badge/docs-canonical%20%2B%20derived-0f766e)](Documentation)
 [![Wiki](https://img.shields.io/badge/live%20wiki-separate%20git%20repo-2563eb)](Documentation)

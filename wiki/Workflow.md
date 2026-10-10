@@ -1,7 +1,7 @@
 # Workflow
 
 > **Canonical source**: [`AGENTS.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/AGENTS.md), [`CHANGE_CONTROL_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CHANGE_CONTROL_POLICY.md), [`DOCUMENTATION_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/DOCUMENTATION_POLICY.md)
-> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+> **Last synced**: 2026-10-10, SDK 1.2.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
 
 [![Flow](https://img.shields.io/badge/flow-contract%20before%20action-2563eb)](Workflow)
 [![Evidence](https://img.shields.io/badge/evidence-before%20completion-0f766e)](Compliance)
@@ -93,7 +93,7 @@ flowchart LR
 
 | Workflow | Inputs | Validation Behavior | Outputs |
 |---|---|---|---|
-| `version` | optional `--format json` | emits structured product version result | product `1.1.0` |
+| `version` | optional `--format json` | emits structured product version result | product `1.2.0` |
 | `bundle verify` | `--bundle-root` | checks manifest presence, schema, safe paths, duplicates, required files, hashes, optional product lock | pass or integrity failure |
 | Apple `init` | repository root, bundle root, optional edition/platform/framework/deployment, `--dry-run` | verifies bundle, requires git repo, resolves profile, plans bounded metadata writes | native `.forsetti` records and instruction section; full validator context remains separate |
 | Apple `doctor` | repository root, bundle root | verifies bundle, install files, instruction section, profile/policy/product locks, native tools, task state | pass/request/block findings |

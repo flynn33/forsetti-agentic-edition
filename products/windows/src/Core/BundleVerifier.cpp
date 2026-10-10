@@ -188,7 +188,7 @@ SimpleBundleVerifier::SimpleBundleVerifier(const IFileSystem& fileSystem)
 ValidationResult SimpleBundleVerifier::verify(const std::filesystem::path& bundleRoot) const {
     const auto manifestPath = bundleRoot / "product-manifest.json";
     if (unsafeLink(manifestPath, bundleRoot)) {
-        return ValidationResult{"2.0", ValidationStatus::Block, "bundle verify", "1.1.0", "bundle-verification",
+        return ValidationResult{"2.0", ValidationStatus::Block, "bundle verify", "1.2.0", "bundle-verification",
             {blockingFinding("bundle.path.unsafe-link", "Bundle paths must not use symbolic links or reparse points.", "product-manifest.json", {manifestPath.string()})}};
     }
     if (!fileSystem_.fileExists(manifestPath)) {
@@ -196,7 +196,7 @@ ValidationResult SimpleBundleVerifier::verify(const std::filesystem::path& bundl
             "2.0",
             ValidationStatus::Block,
             "bundle verify",
-            "1.1.0",
+            "1.2.0",
             "bundle-verification",
             {ValidationFinding{
                 "FAE-F020",
@@ -371,7 +371,7 @@ ValidationResult SimpleBundleVerifier::verify(const std::filesystem::path& bundl
         "2.0",
         blocked ? ValidationStatus::Block : ValidationStatus::Pass,
         "bundle verify",
-        "1.1.0",
+        "1.2.0",
         "bundle-verification",
         findings};
 }

@@ -9,7 +9,7 @@ Extract the archive into a versioned directory outside the target repository. Ve
 In PowerShell, use quoted absolute paths, including paths with spaces:
 
 ```powershell
-$SDK = '/path with spaces/Forsetti-Agentic-SDK-1.1.0-portable'
+$SDK = '/path with spaces/Forsetti-Agentic-SDK-1.2.0-portable'
 $Target = '/path/to/MyApplication'
 . "$SDK/Tools/SDK-Integrity.ps1"
 Test-ForsettiSDKIntegrity -SDKRoot $SDK | Out-Null

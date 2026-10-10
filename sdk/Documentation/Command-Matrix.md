@@ -1,6 +1,6 @@
 # Command matrix
 
-The command router sources and actual release evidence define availability. The archive's `sdk-manifest.json` records the host, architecture, prerequisites, and advertised capabilities; actual command results are recorded in release evidence. Product `1.1.0`, bundle schema `2.0`, framework profiles, and module manifest/template versions are separate values.
+The command router sources and actual release evidence define availability. The archive's `sdk-manifest.json` records the host, architecture, prerequisites, and advertised capabilities; actual command results are recorded in release evidence. Product `1.2.0`, bundle schema `2.0`, framework profiles, and module manifest/template versions are separate values.
 
 ## SDK tools
 

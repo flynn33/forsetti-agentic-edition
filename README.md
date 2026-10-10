@@ -2,7 +2,7 @@
 
 **Governance Framework for Coding Agents Building Forsetti-Compliant Apps and Modules**
 
-**Product version:** `1.1.0`
+**Product version:** `1.2.0`
 **Active Apple profile:** `0.1.5` (compatibility profile `0.1.3` remains explicitly selectable)  
 **Windows profile:** `0.2.0`
 
@@ -96,7 +96,7 @@ Overlays provide usable guidance profiles: `overlays/generic/` for host-neutral 
 
 GitHub Actions support belongs in `adapters/github-actions/` as an optional adapter surface. It does not define canonical compliance rules. Workflow files under `.github/workflows/` are thin hosted wrappers that preserve GitHub check names and delegate implementation to adapter-owned scripts under `adapters/github-actions/workflows/`.
 
-`bundle/product-manifest.json` declares product version `1.1.0`, schema version `2.0`, source platform `source`, portable architecture, bundle ID `ffae-1.1.0-source`, and its exact required hashed bundle entries. `scripts/generate-product-manifest.py` regenerates that manifest deterministically from the approved bundle inputs. The repository `VERSION` file, source bundle `VERSION`, and native `version` commands report the same product version. The SDK's outer `sdk-manifest.json` records delivery provenance and preserves this internal source-bundle authority.
+`bundle/product-manifest.json` declares product version `1.2.0`, schema version `2.0`, source platform `source`, portable architecture, bundle ID `ffae-1.2.0-source`, and its exact required hashed bundle entries. `scripts/generate-product-manifest.py` regenerates that manifest deterministically from the approved bundle inputs. The repository `VERSION` file, source bundle `VERSION`, and native `version` commands report the same product version. The SDK's outer `sdk-manifest.json` records delivery provenance and preserves this internal source-bundle authority.
 
 The Apple native product in `products/apple/` builds the `forsetti-governance` Swift executable and the `GovernanceContracts`, `GovernanceCore`, and `GovernanceApple` libraries. Its implemented commands are `version`, `bundle verify`, `init`, `doctor`, and `discover`.
 

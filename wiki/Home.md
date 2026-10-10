@@ -1,9 +1,9 @@
 # Forsetti Agentic Edition
 
 > **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
-> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+> **Last synced**: 2026-10-10, SDK 1.2.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
 
-[![Version](https://img.shields.io/badge/product-v1.1.0-2563eb)](Releases)
+[![Version](https://img.shields.io/badge/product-v1.2.0-2563eb)](Releases)
 [![Bundle](https://img.shields.io/badge/bundle-schema%202.0%20%7C%20hashed%20inventory-0f766e)](Overview)
 [![Profiles](https://img.shields.io/badge/profiles-Apple%200.1.5%20%7C%20Windows%200.2.0-7c3aed)](Overview)
 [![Rules](https://img.shields.io/badge/rules-12%20compliance%20%7C%2020%20Forsetti-b91c1c)](Compliance)
@@ -17,11 +17,11 @@
 
 Forsetti Agentic Edition is a governance-only enforcement product for Forsetti-compliant application and module delivery. It does not become the downstream runtime. It packages portable governance rules, edition profiles, schemas, source-bundle integrity, native command surfaces, workflow adapters, role boundaries, documentation synchronization, and release evidence into one auditable product.
 
-SDK `1.1.0` delivers a developer governance toolkit through portable and macOS arm64 archives. Keep it outside the target repository; generate only the approved project metadata and managed instruction section. Read the complete canonical [consumption policy](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CONSUMPTION_POLICY.md) and [SDK Getting Started](https://github.com/flynn33/forsetti-agentic-edition/blob/main/sdk/Documentation/Getting-Started.md). Windows-profile checks run independently of Windows-host readiness; no native Windows asset is shipped without actual Windows execution evidence.
+SDK `1.2.0` delivers a developer governance toolkit through portable and macOS arm64 archives. Keep it outside the target repository; generate only the approved project metadata and managed instruction section. Read the complete canonical [consumption policy](https://github.com/flynn33/forsetti-agentic-edition/blob/main/CONSUMPTION_POLICY.md) and [SDK Getting Started](https://github.com/flynn33/forsetti-agentic-edition/blob/main/sdk/Documentation/Getting-Started.md). Windows-profile checks run independently of Windows-host readiness; no native Windows asset is shipped without actual Windows execution evidence.
 
 | Current Product Fact | Value | Evidence Surface |
 |---|---:|---|
-| Product version | `1.1.0` | `VERSION`, `bundle/VERSION`, native `version` commands |
+| Product version | `1.2.0` | `VERSION`, `bundle/VERSION`, native `version` commands |
 | Bundle manifest schema | `2.0` | `bundle/product-manifest.json` |
 | Required bundle files | exact hashed inventory | `bundle/product-manifest.json` |
 | Compliance rules | `12` | `core/policies/compliance-rules.json` |

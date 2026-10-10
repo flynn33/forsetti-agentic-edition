@@ -1,7 +1,7 @@
 # Glossary
 
 > **Canonical source**: [`README.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/README.md)
-> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+> **Last synced**: 2026-10-10, SDK 1.2.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
 
 [![Glossary](https://img.shields.io/badge/glossary-product%20and%20governance%20terms-4f46e5)](Glossary)
 [![Rules](https://img.shields.io/badge/terms-linked%20to%20enforcement-0f766e)](Compliance)
@@ -81,7 +81,7 @@ flowchart LR
 | `FAE-F###` | Forsetti-specific enforcement rule identifier. |
 | `DOCSYNC-###` | Documentation synchronization policy rule identifier. |
 | `CHANGELOG-*` | Changelog policy rule family. |
-| `ffae-1.1.0-source` | Current source bundle ID. |
+| `ffae-1.2.0-source` | Current source bundle ID. |
 | `product-manifest.schema.json` | Bundle manifest schema for product file inventory. |
 | `forsetti-governance` | Native executable name for Apple and Windows command surfaces. |
 

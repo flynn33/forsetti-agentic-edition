@@ -1,6 +1,6 @@
 # Forsetti Agentic Edition SDK
 
-**Product version: 1.1.0. Developer governance toolkit, not an application runtime SDK.**
+**Product version: 1.2.0. Developer governance toolkit, not an application runtime SDK.**
 
 Install this versioned toolkit outside the application repository. It supplies trusted governance data, approved contract/context templates, PowerShell target validation, bounded metadata setup, and a native macOS host executable in the macOS arm64 variant. It does not include the Apple or Windows application runtime.
 

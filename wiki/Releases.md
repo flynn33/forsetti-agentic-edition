@@ -1,13 +1,13 @@
 # Releases
 
 > **Canonical source**: [`RELEASE_POLICY.md`](https://github.com/flynn33/forsetti-agentic-edition/blob/main/RELEASE_POLICY.md)
-> **Last synced**: 2026-10-10, SDK 1.1.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
+> **Last synced**: 2026-10-10, SDK 1.2.0 contracts FAE-GOV-2026-10-10-016 / FAE-TASK-2026-10-10-017 / FAE-REL-2026-10-10-018.
 
 [![Release](https://img.shields.io/badge/release-integrity%20gate-0f766e)](Releases)
-[![Version](https://img.shields.io/badge/current-v1.1.0-blue)](Changelog)
+[![Version](https://img.shields.io/badge/current-v1.2.0-blue)](Changelog)
 [![Impact](https://img.shields.io/badge/impact-none%20patch%20minor%20major%20governance--only-7c3aed)](Releases)
 
-> **Current product version**: `v1.1.0`; publication/readiness is recorded separately in actual release evidence.
+> **Current product version**: `v1.2.0`; publication/readiness is recorded separately in actual release evidence.
 
 ---
 
@@ -15,8 +15,8 @@
 
 | Surface | Current State | Release Meaning |
 |---|---|---|
-| Repository version | `1.1.0` | Minor additive Agentic SDK delivery; framework profiles remain separate. |
-| Bundle version | `1.1.0` | Internal source bundle and repository version are aligned. |
+| Repository version | `1.2.0` | Minor additive Agentic SDK delivery; framework profiles remain separate. |
+| Bundle version | `1.2.0` | Internal source bundle and repository version are aligned. |
 | Bundle manifest | schema `2.0`, exact required-file inventory | Internal bundle integrity; outer SDK metadata records delivery provenance. |
 | SDK assets | portable and macOS arm64 | Complete external governance toolkit and policy; no runtime-framework source/binaries. |
 | Apple product | Swift macOS host executable | Implemented version, bundle verification, init, doctor, discover. Actual executed evidence is required. |
