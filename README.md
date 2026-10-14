@@ -347,7 +347,7 @@ Each step has requirements defined in the relevant policy document. Skipping ste
 
 ## Contributing
 
-This project is dual-licensed. Non-commercial, academic, and personal use is free under [LICENSE](LICENSE). Commercial use requires a separate written license from the copyright holder.
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
 
 Outside contributions to this repository are not accepted. Pull requests and collaboration requests will not be reviewed or merged. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -366,5 +366,5 @@ This framework is maintained solely by its owner. Outside contributions, collabo
 
 Copyright 2026 James Daley
 
-This project is dual-licensed. Non-commercial, academic, and personal use is free. Commercial use requires a separate written license.
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
 See the [LICENSE](LICENSE) file for the full terms.
